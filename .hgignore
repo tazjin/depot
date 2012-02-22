@@ -1,0 +1,10 @@
+syntax: glob
+.DS_Store
+reServe
+convertdb
+music
+*.o
+*.hi
+*.esproj
+*.sublime*
+*.8
