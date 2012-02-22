@@ -1,0 +1,99 @@
+@charset "UTF-8";
+/* CSS Document */
+
+@font-face {
+  font-family: 'PT Sans';
+  font-style: normal;
+  font-weight: normal;
+  src: local('PT Sans'), local('PTSans-Regular'), url('http://themes.googleusercontent.com/static/fonts/ptsans/v2/7YGmE4Ls5b94ct65u07hVQLUuEpTyoUstqEm5AMlJo4.woff') format('woff');
+}
+
+body {
+	padding-top: 20px;
+	font-family: 'PT Sans', sans-serif;
+	background-image: linear-gradient(bottom, rgb(245,245,245) 66%, rgb(239,239,239) 83%);
+	background-image: -o-linear-gradient(bottom, rgb(245,245,245) 66%, rgb(239,239,239) 83%);
+	background-image: -moz-linear-gradient(bottom, rgb(245,245,245) 66%, rgb(239,239,239) 83%);
+	background-image: -webkit-linear-gradient(bottom, rgb(245,245,245) 66%, rgb(239,239,239) 83%);
+	background-image: -ms-linear-gradient(bottom, rgb(245,245,245) 66%, rgb(239,239,239) 83%);
+	background-image: -webkit-gradient(
+		linear,
+		left bottom,
+		left top,
+		color-stop(0.66, rgb(245,245,245)),
+		color-stop(0.83, rgb(239,239,239))
+	);
+}
+
+.mainshell {
+	width: 98%;
+	margin: auto;
+}
+
+.gradBox {
+	width: 98%;
+	margin: auto;
+}
+
+.myclear {
+	clear: both;
+}
+
+.centerbox {
+	text-align:center;
+}
+
+.innerBox {
+	width: 100%;
+	margin-top: 20px;
+}
+
+.innerBoxTop {
+	height: 28px;
+	color: #000000;
+	font-weight: bold;
+	font-size: 16px;
+	padding-left: 20px;
+	padding-top: 11px;
+	border: 1px solid #b6b6b6;
+	border-top-left-radius: 6px;
+	border-top-right-radius: 6px;
+	-moz-border-radius-topleft: 6px;
+	-moz-border-radius-topright: 6px;
+	-webkit-border-top-left-radius: 6px;
+	-webkit-border-top-right-radius: 6px;	
+	border-bottom: 1px solid #dcdcdc;
+	background-image: linear-gradient(bottom, rgb(246,246,246) 31%, rgb(234,234,234) 83%);
+	background-image: -o-linear-gradient(bottom, rgb(246,246,246) 31%, rgb(234,234,234) 83%);
+	background-image: -moz-linear-gradient(bottom, rgb(246,246,246) 31%, rgb(234,234,234) 83%);
+	background-image: -webkit-linear-gradient(bottom, rgb(246,246,246) 31%, rgb(234,234,234) 83%);
+	background-image: -ms-linear-gradient(bottom, rgb(246,246,246) 31%, rgb(234,234,234) 83%);
+	
+	background-image: -webkit-gradient(
+		linear,
+		left bottom,
+		left top,
+		color-stop(0.31, rgb(246,246,246)),
+		color-stop(0.83, rgb(234,234,234))
+	);
+}
+
+.innerBoxMiddle {
+	border: 1px solid #b6b6b6;
+	border-bottom-left-radius: 6px;
+	border-bottom-right-radius: 6px;
+	-moz-border-radius-bottomleft: 6px;
+	-moz-border-radius-bottomright: 6px;
+	-webkit-border-bottom-left-radius: 6px;
+	-webkit-border-bottom-right-radius: 6px;
+	border-top: 0px hidden;
+	background-color: #FFFFFF;
+	min-height: 200px;
+	height: auto;
+	padding-top: 21px;
+	padding-right: 2px;
+}
+
+.innerBoxComments {
+	padding-left: 20px
+}
