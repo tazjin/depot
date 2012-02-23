@@ -85,8 +85,8 @@ stripResult :: Result a -> a
 stripResult (Ok z) = z
 stripResult (Error s) = error $ "JSON error: " ++ s
 -- CouchDB View Setup
-latestDEView = "function(doc){ if(doc.lang == \"de\"){ emit([doc.year, doc.month, doc.day, doc.id_], doc); } }"
-latestENView = "function(doc){ if(doc.lang == \"en\"){ emit([doc.year, doc.month, doc.day, doc.id_]], doc); } }"
+latestDEView = "function(doc){ if(doc.lang == \"DE\"){ emit([doc.year, doc.month, doc.day, doc.id_], doc); } }"
+latestENView = "function(doc){ if(doc.lang == \"EN\"){ emit([doc.year, doc.month, doc.day, doc.id_]], doc); } }"
 
 latestDE = ViewMap "latestDE" latestDEView
 latestEN = ViewMap "latestEN" latestENView

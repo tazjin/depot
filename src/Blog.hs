@@ -91,17 +91,20 @@ renderEntry entry = H.div ! A.class_ "innerBox" $ do
 renderComments :: [Comment] -> BlogLang -> Html
 renderComments [] DE = H.li $ toHtml (" Keine Kommentare" :: String)
 renderComments [] EN = H.li $ toHtml (" No comments yet" :: String)
-renderComments comments _ = sequence_ $ map showComment comments
+renderComments comments lang = sequence_ $ map showComment comments
     where
         showComment :: Comment -> Html
         showComment c = H.li $ do
-            H.a ! A.name (toValue $ cdate c) ! A.href (toValue $ "#" ++ show c) $
+            H.a ! A.name (toValue $ cdate c) ! A.href (toValue $ "#" ++ (show $ cdate c)) ! A.class_ "cl" $
                H.i $ toHtml $ (cauthor c ++ ": ")
             preEscapedString $ ctext c
+            H.p ! A.class_ "tt" $ toHtml (timeString $ cdate c)
         getTime :: Integer -> Maybe UTCTime
-        getTime = parseTime defaultTimeLocale "%s" (show )
-        showTime (Just t) = formatTime defaultTimeLocale "[Am %d.%m.%y um %H:%M Uhr]" t
-        showTime Nothing = "???" -- this can not happen??
+        getTime t = parseTime defaultTimeLocale "%s" (show t)
+        showTime DE (Just t) = formatTime defaultTimeLocale "[Am %d.%m.%y um %H:%M Uhr]" t
+        showTime EN (Just t) = formatTime defaultTimeLocale "[On %D at %H:%M Uhr]" t
+        showTime _ Nothing = "[???]" -- this can not happen??
+        timeString = (showTime lang) . getTime
 
 --[Am %d.%m.%y um %H:%M Uhr]
 

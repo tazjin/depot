@@ -52,6 +52,15 @@ body {
 	margin-top: 20px;
 }
 
+.tt { 
+	font-family: "courier new",courier,monospace; 
+	font-size: 13px;
+}
+
+.cl {
+	text-decoration:none;color:black;
+}
+
 .innerBoxTop {
 	height: 28px;
 	color: #000000;
