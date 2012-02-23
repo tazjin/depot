@@ -5,6 +5,8 @@ module Blog where
 --import           Control.Monad(when)
 import           Data.Data (Data, Typeable)
 import           Data.Monoid (mempty)
+import           Data.Time
+import           System.Locale (defaultTimeLocale)
 import           Text.Blaze (toValue, preEscapedString)
 import           Text.Blaze.Html5 (Html, (!), a, form, input, p, toHtml, label)
 import           Text.Blaze.Html5.Attributes (action, enctype, href, name, size, type_, value)
@@ -80,13 +82,28 @@ renderEntry entry = H.div ! A.class_ "innerBox" $ do
             preEscapedString $ text entry
             preEscapedString $ mtext entry
         H.div ! A.class_ "innerBoxComments" $ do
-            H.div ! A.name "cHead" ! A.style "font-size:large;font-weight:bold;" $ toHtml cHead
-            H.ul $ H.li $ toHtml noC
+            H.div ! A.name "cHead" ! A.style "font-size:large;font-weight:bold;" $ toHtml $ cHead (lang entry)
+            H.ul $ renderComments (comments entry) (lang entry)
     where
-        getTexts :: BlogLang -> (String, String)
-        getTexts EN = ("Comments:", " No comments yet")
-        getTexts DE = ("Kommentare:", " Keine Kommentare")
-        (cHead,noC) = getTexts (lang entry)
+        cHead EN = ("Comments:" :: String)
+        cHead DE = ("Kommentare:" :: String)
+
+renderComments :: [Comment] -> BlogLang -> Html
+renderComments [] DE = H.li $ toHtml (" Keine Kommentare" :: String)
+renderComments [] EN = H.li $ toHtml (" No comments yet" :: String)
+renderComments comments _ = sequence_ $ map showComment comments
+    where
+        showComment :: Comment -> Html
+        showComment c = H.li $ do
+            H.a ! A.name (toValue $ cdate c) ! A.href (toValue $ "#" ++ show c) $
+               H.i $ toHtml $ (cauthor c ++ ": ")
+            preEscapedString $ ctext c
+        getTime :: Integer -> Maybe UTCTime
+        getTime = parseTime defaultTimeLocale "%s" (show )
+        showTime (Just t) = formatTime defaultTimeLocale "[Am %d.%m.%y um %H:%M Uhr]" t
+        showTime Nothing = "???" -- this can not happen??
+
+--[Am %d.%m.%y um %H:%M Uhr]
 
 emptyTest :: BlogLang -> Html
 emptyTest lang = H.div ! A.class_ "innerBox" $ do
