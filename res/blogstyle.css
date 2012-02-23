@@ -43,6 +43,10 @@ body {
 	text-align:center;
 }
 
+.rightbox {
+	text-align:right;
+}
+
 .innerBox {
 	width: 100%;
 	margin-top: 20px;
