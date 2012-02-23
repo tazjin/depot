@@ -26,7 +26,7 @@ type OldEntry struct {
 	Comments []OldComment
 }
 
-//new
+//old
 type Comment struct {
 	Author string 	`json:"cauthor"`
 	Text   string 	`json:"ctext"`
@@ -37,7 +37,7 @@ type Entry struct {
 	Id       string `json:"_id"`
 	Year     int    `json:"year"`
 	Month    int    `json:"month"`
-	Day		 int
+	Day      int    `json:"day"`
 	Lang     string `json:"lang"`
 	Title    string `json:"title"`
 	Author   string `json:"author"`
@@ -100,17 +100,12 @@ func convertEntry(oEntry OldEntry, p string) Entry{
 	nEntry.Mtext 	= oEntry.Mtext
 	nEntry.Text 	= oEntry.Text
 	nEntry.Comments = nComments
-	nEntry.Lang 	= "de"
+	nEntry.Lang 	= "DE"
 
 	return nEntry
 }
 
-//http://tazj.in/2012/02/10.155234
-func parseEntryTime(year, month, day int, ids string) string {
-	x := fmt.Sprintf()
-}
-
-func parseDumbTime(Year, Month, Day int, ) int64 {
+func parseDumbTime(ct string) int64 {
 	x, err := time.Parse("[Am 02.01.2006 um 15:04 Uhr]", ct)
 	if err != nil {
 		fmt.Println(err.String())

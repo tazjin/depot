@@ -1,15 +1,15 @@
-{-# LANGUAGE OverloadedStrings, ScopedTypeVariables, DeriveDataTypeable #-}
+{-# LANGUAGE OverloadedStrings, ScopedTypeVariables #-}
 
 module Main where
 
 import           Control.Monad (msum, mzero)
-import           Data.Data (Data, Typeable)
 import           Data.Monoid (mempty)
 import           Data.ByteString.Char8 (ByteString)
 import           Data.Text hiding (map, length, zip, head)
 import           Data.Time
 import           Database.CouchDB
 import           Happstack.Server
+import           Network.CGI (liftIO)
 import           Text.Blaze (toValue, preEscapedString)
 import           Text.Blaze.Html5 (Html, (!), a, form, input, p, toHtml, label)
 import           Text.Blaze.Html5.Attributes (action, enctype, href, name, size, type_, value)
@@ -22,31 +22,6 @@ import           Blog
 tmpPolicy :: BodyPolicy
 tmpPolicy = (defaultBodyPolicy "./tmp/" 0 1000 1000)
 
-
-data Comment = Comment{
-    cauthor :: String,
-    ctext   :: String,
-    cdate   :: Integer
-} deriving (Show, Data, Typeable)
-
-data Entry = Entry{
-    _id      :: String,
-    year     :: Int,
-    month    :: Int,
-    day      :: Int,
-    lang     :: BlogLang,
-    title    :: String,
-    author   :: String,
-    text     :: String,
-    mtext    :: String,
-    comments :: [Comment]
-} deriving (Show, Data, Typeable)
-
-data BlogLang = EN | DE deriving (Data, Typeable)
-
-instance Show BlogLang where
-    show EN = "en"
-    show DE = "de"
 
 --TazBlog version
 version = ("2.2b" :: String)
@@ -71,24 +46,44 @@ tazBlog = do
 blogHandler :: BlogLang -> ServerPart Response
 blogHandler lang = 
     msum [ path $ \(year :: Int) -> path $ \(month :: Int) -> path $ --single entry
-                      \(day :: Int) -> path $ \(id_ :: String) -> showEntry lang year month day id_
+                      \(day :: Int) -> path $ \(id_ :: String) -> showEntry year month day id_
          , do nullDir
               ok $ showIndex lang
          ]
 
-showEntry :: BlogLang -> Int -> Int -> Int -> String -> ServerPart Response
-showEntry EN y m d i = undefined
-showEntry DE y m d i = undefined
+showEntry :: Int -> Int -> Int -> String -> ServerPart Response
+showEntry y m d i = do
+    entryJS <- liftIO $ runCouchDB' $ getDoc (db "tazblog") (doc i)
+    let entry = maybeDoc entryJS
+    ok $ tryEntry entry
+
+tryEntry :: Maybe Entry -> Response
+tryEntry Nothing = toResponse $ showError NotFound
+tryEntry (Just entry) = toResponse $ renderBlog eLang $ renderEntry entry
+    where
+        eLang = lang entry
 
 showIndex :: BlogLang -> Response
 showIndex lang = toResponse $ renderBlogHeader lang
 
+renderBlog :: BlogLang -> Html -> Html
+renderBlog DE body = blogTemplate "Tazjins Blog" "Wer mich kontaktieren will: " " oder " version DE body
+renderBlog EN body = blogTemplate "Tazjin's Blog" "Get in touch with me: " " or " version EN body
+
 renderBlogHeader :: BlogLang -> Html
-renderBlogHeader DE = blogTemplate "Tazjins Blog" "Wer mich kontaktieren will: " " oder " "de" version
-renderBlogHeader EN = blogTemplate "Tazjin's Blog" "Get in touch with me: " " or " "en" version
+renderBlogHeader DE = blogTemplate "Tazjins Blog" "Wer mich kontaktieren will: " " oder " version DE (emptyTest DE)
+renderBlogHeader EN = blogTemplate "Tazjin's Blog" "Get in touch with me: " " or " version EN (emptyTest EN)
 
 -- http://tazj.in/2012/02/10.155234
 
+-- CouchDB functions
+maybeDoc :: Data a => Maybe (Doc, Rev, JSValue) -> Maybe a
+maybeDoc (Just(_,_,v)) = Just( stripResult $ fromJSON v)
+maybeDoc Nothing = Nothing
+
+stripResult :: Result a -> a
+stripResult (Ok z) = z
+stripResult (Error s) = error $ "JSON error: " ++ s
 -- CouchDB View Setup
 latestDEView = "function(doc){ if(doc.lang == \"de\"){ emit([doc.year, doc.month, doc.day, doc.id_], doc); } }"
 latestENView = "function(doc){ if(doc.lang == \"en\"){ emit([doc.year, doc.month, doc.day, doc.id_]], doc); } }"
