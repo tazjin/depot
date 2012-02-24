@@ -24,6 +24,46 @@ blogTitle EN = "Tazjin's Blog"
 topText DE = "Aktuelle Einträge"
 topText EN = "Latest entries"
 
+getMonth :: BlogLang -> Int -> Int -> String
+getMonth l y m = monthName l m ++ show y
+  where
+    monthName :: BlogLang -> Int -> String
+    monthName DE m = case m of 
+                    1 -> "Januar "
+                    2 -> "Februar "
+                    3 -> "März "
+                    4 -> "April "
+                    5 -> "Mai "
+                    6 -> "Juni "
+                    7 -> "Juli "
+                    8 -> "August "
+                    9 -> "September "
+                    10 -> "Oktober "
+                    11 -> "November"
+                    12 -> "Dezember"
+    monthName EN m = case m of
+                    1 -> "January "
+                    2 -> "February "
+                    3 -> "March "
+                    4 -> "April "
+                    5 -> "May "
+                    6 -> "June "
+                    7 -> "July "
+                    8 -> "August "
+                    9 -> "September "
+                    10 -> "October "
+                    11 -> "November "
+                    12 -> "December "
+
+entireMonth DE = "Ganzer Monat"
+entireMonth EN = "Entire month"
+
+prevMonth DE = "Früher"
+prevMonth EN = "Earlier"
+
+nextMonth DE = "Später"
+nextMonth EN = "Later"
+
 -- contact information
 contactText DE = "Wer mich kontaktieren will: "
 contactText EN = "Get in touch with me: "

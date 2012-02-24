@@ -44,6 +44,10 @@ blogHandler :: BlogLang -> ServerPart Response
 blogHandler lang = 
     msum [ path $ \(year :: Int) -> path $ \(month :: Int) -> path $ --single entry
                       \(day :: Int) -> path $ \(id_ :: String) -> showEntry year month day id_
+         , path $ \(year :: Int) -> path $ \(month :: Int) -> path $ 
+                      \(day :: Int) -> showDay year month day lang
+         , path $ \(year :: Int ) -> path $ \(month :: Int) -> showMonth year month lang
+         , path $ \(year :: Int ) -> showYear year lang
          , do nullDir
               showIndex lang
          ]
@@ -56,18 +60,29 @@ showEntry y m d i = do
 
 tryEntry :: Maybe Entry -> Response
 tryEntry Nothing = toResponse $ showError NotFound
-tryEntry (Just entry) = toResponse $ renderBlog eLang $ renderEntry entry
+tryEntry (Just entry) = toResponse $ blogTemplate eLang $ renderEntry entry
     where
         eLang = lang entry
 
 showIndex :: BlogLang -> ServerPart Response
 showIndex lang = do
     entries <- getLatest lang []
-    ok $ toResponse $ renderBlog lang $ renderEntries entries 6 (topText lang)
-  where
+    ok $ toResponse $ blogTemplate lang $ renderEntries entries 6 (topText lang)
 
-renderBlog :: BlogLang -> Html -> Html
-renderBlog lang body = blogTemplate lang body
+showDay :: Int -> Int -> Int -> BlogLang -> ServerPart Response
+showDay y m d lang = undefined
+
+showMonth :: Int -> Int -> BlogLang -> ServerPart Response
+showMonth y m lang = do
+    entries <- getLatest lang $ makeQuery startkey endkey
+    ok $ toResponse $ blogTemplate lang $ renderEntries entries (length entries) $ getMonth lang y  m
+  where
+    startkey = JSArray [toJSON y, toJSON m]
+    endkey = JSArray [toJSON y, toJSON m, JSObject (toJSObject [] )]
+
+showYear :: Int -> BlogLang -> ServerPart Response
+showYear y lang = undefined
+
 
 -- http://tazj.in/2012/02/10.155234
 
@@ -82,6 +97,10 @@ getLatest lang arg = do
                 EN -> "latestEN"
                 DE -> "latestDE"
 
+makeQuery :: JSON a => a -> a -> [(String, JSValue)]
+makeQuery qsk qek = [("startkey", (showJSON qsk))
+                    ,("endkey", (showJSON qek))]
+
 queryDB :: JSON a => String -> [(String, JSValue)] -> ServerPart [(Doc, a)]
 queryDB view arg = liftIO $ runCouchDB' $ queryView (db "tazblog") (doc "entries") (doc view) arg
 
@@ -92,6 +111,7 @@ maybeDoc Nothing = Nothing
 stripResult :: Result a -> a
 stripResult (Ok z) = z
 stripResult (Error s) = error $ "JSON error: " ++ s
+
 -- CouchDB View Setup
 latestDEView = "function(doc){ if(doc.lang == 'DE'){ emit([doc.year, doc.month, doc.day, doc.id_], doc); } }"
 latestENView = "function(doc){ if(doc.lang == 'EN'){ emit([doc.year, doc.month, doc.day, doc.id_], doc); } }"
