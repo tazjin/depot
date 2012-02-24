@@ -18,13 +18,10 @@ import qualified Text.Blaze.Html5.Attributes as A
 import           Text.JSON.Generic
 
 import           Blog
+import           Locales
 
 tmpPolicy :: BodyPolicy
 tmpPolicy = (defaultBodyPolicy "./tmp/" 0 1000 1000)
-
-
---TazBlog version
-version = ("2.2b" :: String)
 
 main :: IO()
 main = do
@@ -33,8 +30,8 @@ main = do
 
 tazBlog :: ServerPart Response
 tazBlog = do
-    msum [ dir "en" $ blogHandler EN
-         , dir "de" $ blogHandler DE
+    msum [ dir (show DE) $ blogHandler DE
+         , dir (show EN) $ blogHandler EN
          , do nullDir
               showIndex DE
          , do dir " " $ nullDir
@@ -68,13 +65,9 @@ showIndex lang = do
     entries <- getLatest lang []
     ok $ toResponse $ renderBlog lang $ renderEntries entries 6 (topText lang)
   where
-    topText EN = "Latest entries"
-    topText DE = "Aktuelle Einträge"
-
 
 renderBlog :: BlogLang -> Html -> Html
-renderBlog DE body = blogTemplate "Tazjins Blog" "Wer mich kontaktieren will: " " oder " version DE body
-renderBlog EN body = blogTemplate "Tazjin's Blog" "Get in touch with me: " " or " version EN body
+renderBlog lang body = blogTemplate lang body
 
 -- http://tazj.in/2012/02/10.155234
 
