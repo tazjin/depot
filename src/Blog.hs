@@ -4,6 +4,7 @@ module Blog where
 
 --import           Control.Monad(when)
 import           Data.Data (Data, Typeable)
+import           Data.List (intersperse)
 import           Data.Monoid (mempty)
 import           Data.Time
 import           System.Locale (defaultTimeLocale)
@@ -61,6 +62,7 @@ blogTemplate title ctext1 ortext version lang body = H.docTypeHtml $ do --add bo
                -- H.span ! A.id "cios" ! A.style "display:none;" $ H.b $ contactInfo "sms:tazjin@me.com"
             H.div ! A.class_ "myclear" $ mempty
             body
+            H.div ! A.class_ "myclear" $ mempty
             showFooter lang version
         H.div ! A.class_ "centerbox" $
             H.img ! A.src "http://getpunchd.com/img/june/idiots.png" ! A.alt ""
@@ -73,6 +75,21 @@ blogTemplate title ctext1 ortext version lang body = H.docTypeHtml $ do --add bo
             toHtml ortext
             H.a ! A.href (toValue imu) ! A.target "_blank" $ "iMessage"
             "."
+
+renderEntries :: [Entry] -> Int -> String-> Html
+renderEntries entries num topText = H.div ! A.class_ "innerBox" $ do
+    H.div ! A.class_ "innerBoxTop" $ toHtml topText
+    H.div ! A.class_ "innerBoxMiddle" $ do
+        H.ul $ 
+            sequence_ $ take num $ reverse $ map showEntry entries
+    where
+        showEntry :: Entry -> Html
+        showEntry e = H.li $ do 
+            entryLink e
+            preEscapedString $ " " ++ (text e) ++ "<br>&nbsp;</br>"
+        entryLink e = H.a ! A.href (toValue $ concat $ intersperse "/" $ linkElems e) $
+                        toHtml ("[" ++ show(length $ comments e) ++ "]")
+        linkElems e = [show(lang e), show(year e), show(month e), show(day e), _id e]
 
 renderEntry :: Entry -> Html
 renderEntry entry = H.div ! A.class_ "innerBox" $ do
@@ -102,11 +119,9 @@ renderComments comments lang = sequence_ $ map showComment comments
         getTime :: Integer -> Maybe UTCTime
         getTime t = parseTime defaultTimeLocale "%s" (show t)
         showTime DE (Just t) = formatTime defaultTimeLocale "[Am %d.%m.%y um %H:%M Uhr]" t
-        showTime EN (Just t) = formatTime defaultTimeLocale "[On %D at %H:%M Uhr]" t
+        showTime EN (Just t) = formatTime defaultTimeLocale "[On %D at %H:%M]" t
         showTime _ Nothing = "[???]" -- this can not happen??
         timeString = (showTime lang) . getTime
-
---[Am %d.%m.%y um %H:%M Uhr]
 
 emptyTest :: BlogLang -> Html
 emptyTest lang = H.div ! A.class_ "innerBox" $ do

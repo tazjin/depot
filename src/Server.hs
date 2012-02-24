@@ -36,7 +36,7 @@ tazBlog = do
     msum [ dir "en" $ blogHandler EN
          , dir "de" $ blogHandler DE
          , do nullDir
-              ok $ showIndex DE
+              showIndex DE
          , do dir " " $ nullDir
               seeOther ("https://plus.google.com/115916629925754851590" :: String) (toResponse ())
          , dir "res" $ serveDirectory DisableBrowsing [] "../res"
@@ -48,7 +48,7 @@ blogHandler lang =
     msum [ path $ \(year :: Int) -> path $ \(month :: Int) -> path $ --single entry
                       \(day :: Int) -> path $ \(id_ :: String) -> showEntry year month day id_
          , do nullDir
-              ok $ showIndex lang
+              showIndex lang
          ]
 
 showEntry :: Int -> Int -> Int -> String -> ServerPart Response
@@ -63,20 +63,35 @@ tryEntry (Just entry) = toResponse $ renderBlog eLang $ renderEntry entry
     where
         eLang = lang entry
 
-showIndex :: BlogLang -> Response
-showIndex lang = toResponse $ renderBlogHeader lang
+showIndex :: BlogLang -> ServerPart Response
+showIndex lang = do
+    entries <- getLatest lang []
+    ok $ toResponse $ renderBlog lang $ renderEntries entries 6 (topText lang)
+  where
+    topText EN = "Latest entries"
+    topText DE = "Aktuelle Einträge"
+
 
 renderBlog :: BlogLang -> Html -> Html
 renderBlog DE body = blogTemplate "Tazjins Blog" "Wer mich kontaktieren will: " " oder " version DE body
 renderBlog EN body = blogTemplate "Tazjin's Blog" "Get in touch with me: " " or " version EN body
 
-renderBlogHeader :: BlogLang -> Html
-renderBlogHeader DE = blogTemplate "Tazjins Blog" "Wer mich kontaktieren will: " " oder " version DE (emptyTest DE)
-renderBlogHeader EN = blogTemplate "Tazjin's Blog" "Get in touch with me: " " or " version EN (emptyTest EN)
-
 -- http://tazj.in/2012/02/10.155234
 
 -- CouchDB functions
+getLatest :: BlogLang -> [(String, JSValue)] -> ServerPart [Entry]
+getLatest lang arg = do
+        queryResult <- queryDB view arg
+        let entries = map (stripResult . fromJSON . snd) queryResult
+        return entries
+    where
+        view = case lang of
+                EN -> "latestEN"
+                DE -> "latestDE"
+
+queryDB :: JSON a => String -> [(String, JSValue)] -> ServerPart [(Doc, a)]
+queryDB view arg = liftIO $ runCouchDB' $ queryView (db "tazblog") (doc "entries") (doc view) arg
+
 maybeDoc :: Data a => Maybe (Doc, Rev, JSValue) -> Maybe a
 maybeDoc (Just(_,_,v)) = Just( stripResult $ fromJSON v)
 maybeDoc Nothing = Nothing
@@ -85,8 +100,8 @@ stripResult :: Result a -> a
 stripResult (Ok z) = z
 stripResult (Error s) = error $ "JSON error: " ++ s
 -- CouchDB View Setup
-latestDEView = "function(doc){ if(doc.lang == \"DE\"){ emit([doc.year, doc.month, doc.day, doc.id_], doc); } }"
-latestENView = "function(doc){ if(doc.lang == \"EN\"){ emit([doc.year, doc.month, doc.day, doc.id_]], doc); } }"
+latestDEView = "function(doc){ if(doc.lang == 'DE'){ emit([doc.year, doc.month, doc.day, doc.id_], doc); } }"
+latestENView = "function(doc){ if(doc.lang == 'EN'){ emit([doc.year, doc.month, doc.day, doc.id_], doc); } }"
 
 latestDE = ViewMap "latestDE" latestDEView
 latestEN = ViewMap "latestEN" latestENView

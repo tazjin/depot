@@ -37,6 +37,7 @@ body {
 
 .myclear {
 	clear: both;
+	height: 20px;
 }
 
 .centerbox {
@@ -101,7 +102,7 @@ body {
 	-webkit-border-bottom-right-radius: 6px;
 	border-top: 0px hidden;
 	background-color: #FFFFFF;
-	min-height: 200px;
+	min-height: 500px;
 	height: auto;
 	padding-top: 21px;
 	padding-right: 2px;
