@@ -36,10 +36,14 @@ data Entry = Entry{
 
 data BlogError = NoEntries | NotFound | DBError
 
-blogTemplate :: BlogLang -> Html -> Html
-blogTemplate lang body = H.docTypeHtml $ do --add body
+
+intersperse' :: a -> [a] -> [a]
+intersperse' sep l = sep : intersperse sep l
+
+blogTemplate :: BlogLang -> String -> Html -> Html
+blogTemplate lang t_append body = H.docTypeHtml $ do --add body
     H.head $ do
-        H.title $ (toHtml $ blogTitle lang)
+        H.title $ (toHtml $ blogTitle lang t_append)
         H.link ! A.rel "alternate" ! A.type_ "application/rss+xml" ! A.title "RSS-Feed" ! A.href "/rss"
         H.link ! A.rel "stylesheet" ! A.type_ "text/css" ! A.href "/res/blogstyle.css" ! A.media "all"
         H.meta ! A.httpEquiv "content-type" ! A.content "text/html;charset=UTF-8"
@@ -48,7 +52,7 @@ blogTemplate lang body = H.docTypeHtml $ do --add body
         H.div ! A.class_ "mainshell" $ H.div ! A.class_ "gradBox" $ do
             H.div ! A.class_ "header" $ do
                 H.a ! A.href "/" ! A.style "text-decoration:none;color:black;font-size:x-large;font-weight:bold;" $
-                        (toHtml $ blogTitle lang)
+                        toHtml $ blogTitle lang ""
                 H.br
                 H.span ! A.id "cosx" ! A.style "display:block;" $ H.b $ contactInfo iMessage
                -- H.span ! A.id "cios" ! A.style "display:none;" $ H.b $ contactInfo "sms:tazjin@me.com"
@@ -79,7 +83,7 @@ renderEntries entries num topText = H.div ! A.class_ "innerBox" $ do
         showEntry e = H.li $ do 
             entryLink e
             preEscapedString $ " " ++ (text e) ++ "<br>&nbsp;</br>"
-        entryLink e = H.a ! A.href (toValue $ concat $ intersperse "/" $ linkElems e) $
+        entryLink e = H.a ! A.href (toValue $ concat $ intersperse' "/" $ linkElems e) $
                         toHtml ("[" ++ show(length $ comments e) ++ "]")
         linkElems e = [show(lang e), show(year e), show(month e), show(day e), _id e]
 

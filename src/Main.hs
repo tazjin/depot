@@ -60,14 +60,15 @@ showEntry y m d i = do
 
 tryEntry :: Maybe Entry -> Response
 tryEntry Nothing = toResponse $ showError NotFound
-tryEntry (Just entry) = toResponse $ blogTemplate eLang $ renderEntry entry
+tryEntry (Just entry) = toResponse $ blogTemplate eLang eTitle $ renderEntry entry
     where
+        eTitle = ": " ++ title entry
         eLang = lang entry
 
 showIndex :: BlogLang -> ServerPart Response
 showIndex lang = do
     entries <- getLatest lang []
-    ok $ toResponse $ blogTemplate lang $ renderEntries entries 6 (topText lang)
+    ok $ toResponse $ blogTemplate lang "" $ renderEntries entries 6 (topText lang)
 
 showDay :: Int -> Int -> Int -> BlogLang -> ServerPart Response
 showDay y m d lang = undefined
@@ -75,8 +76,10 @@ showDay y m d lang = undefined
 showMonth :: Int -> Int -> BlogLang -> ServerPart Response
 showMonth y m lang = do
     entries <- getLatest lang $ makeQuery startkey endkey
-    ok $ toResponse $ blogTemplate lang $ renderEntries entries (length entries) $ getMonth lang y  m
+    ok $ toResponse $ blogTemplate lang month 
+        $ renderEntries entries (length entries) month
   where
+    month = getMonth lang y  m
     startkey = JSArray [toJSON y, toJSON m]
     endkey = JSArray [toJSON y, toJSON m, JSObject (toJSObject [] )]
 
@@ -113,12 +116,17 @@ stripResult (Ok z) = z
 stripResult (Error s) = error $ "JSON error: " ++ s
 
 -- CouchDB View Setup
-latestDEView = "function(doc){ if(doc.lang == 'DE'){ emit([doc.year, doc.month, doc.day, doc.id_], doc); } }"
-latestENView = "function(doc){ if(doc.lang == 'EN'){ emit([doc.year, doc.month, doc.day, doc.id_], doc); } }"
+latestDEView = "function(doc){ if(doc.lang == 'DE'){ emit([doc.year, doc.month, doc.day, doc._id], doc); } }"
+latestENView = "function(doc){ if(doc.lang == 'EN'){ emit([doc.year, doc.month, doc.day, doc._id], doc); } }"
+countDEView  = "function(doc){ if(doc.lang == 'DE'){ emit([doc.year, doc.month, doc.day, doc._id], 1); } }"
+countENView  = "function(doc){ if(doc.lang == 'EN'){ emit([doc.year, doc.month, doc.day, doc._id], 1); } }"
+countReduce = "function(keys, values, rereduce) { return sum(values); }"
 
 latestDE = ViewMap "latestDE" latestDEView
 latestEN = ViewMap "latestEN" latestENView
+countDE  = ViewMapReduce "countDE" countDEView countReduce
+countEN  = ViewMapReduce "countEN" countENView countReduce
 
 setupBlogViews :: IO ()
 setupBlogViews = runCouchDB' $ 
-    newView "tazblog" "entries" [latestDE, latestEN]
+    newView "tazblog" "entries" [latestDE, latestEN, countDE, countEN]

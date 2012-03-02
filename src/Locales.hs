@@ -4,7 +4,7 @@ module Locales where
 
 import           Data.Data (Data, Typeable)
 
-{- to add a language simply define it's abbreviation and show instance then
+{- to add a language simply define its abbreviation and Show instance then
  - translate the appropriate strings and add CouchDB views in Server.hs -}
 
 data BlogLang = EN | DE deriving (Data, Typeable)
@@ -17,8 +17,9 @@ version = ("2.2b" :: String)
 
 allLang = [EN, DE]
 
-blogTitle DE = "Tazjins Blog"
-blogTitle EN = "Tazjin's Blog"
+blogTitle :: BlogLang -> String -> String
+blogTitle DE s = "Tazjins Blog" ++ s
+blogTitle EN s = "Tazjin's Blog" ++ s
 
 -- index site headline
 topText DE = "Aktuelle Einträge"
@@ -39,8 +40,8 @@ getMonth l y m = monthName l m ++ show y
                     8 -> "August "
                     9 -> "September "
                     10 -> "Oktober "
-                    11 -> "November"
-                    12 -> "Dezember"
+                    11 -> "November "
+                    12 -> "Dezember "
     monthName EN m = case m of
                     1 -> "January "
                     2 -> "February "
