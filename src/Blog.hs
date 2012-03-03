@@ -72,12 +72,12 @@ blogTemplate lang t_append body = H.docTypeHtml $ do --add body
             H.a ! A.href (toValue imu) ! A.target "_blank" $ "iMessage"
             "."
 
-renderEntries :: [Entry] -> Int -> String-> Html
-renderEntries entries num topText = H.div ! A.class_ "innerBox" $ do
+renderEntries :: [Entry] -> String-> Html
+renderEntries entries topText = H.div ! A.class_ "innerBox" $ do
     H.div ! A.class_ "innerBoxTop" $ toHtml topText
     H.div ! A.class_ "innerBoxMiddle" $ do
         H.ul $ 
-            sequence_ $ take num $ reverse $ map showEntry entries
+            sequence_ $ reverse $ map showEntry entries
     where
         showEntry :: Entry -> Html
         showEntry e = H.li $ do 

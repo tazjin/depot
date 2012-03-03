@@ -64,14 +64,14 @@ tryEntry (Just entry) = toResponse $ blogTemplate eLang eTitle $ renderEntry ent
 
 showIndex :: BlogLang -> ServerPart Response
 showIndex lang = do
-    entries <- getLatest lang []
-    ok $ toResponse $ blogTemplate lang "" $ renderEntries entries 6 (topText lang)
+    entries <- getLatest lang [("limit", toJSON (6 :: Int)), ("descending", toJSON True)]
+    ok $ toResponse $ blogTemplate lang "" $ renderEntries entries (topText lang)
 
 showMonth :: Int -> Int -> BlogLang -> ServerPart Response
 showMonth y m lang = do
     entries <- getLatest lang $ makeQuery startkey endkey
     ok $ toResponse $ blogTemplate lang month 
-        $ renderEntries entries (length entries) month
+        $ renderEntries entries month
   where
     month = getMonth lang y  m
     startkey = JSArray [toJSON y, toJSON m]
