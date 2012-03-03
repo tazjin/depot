@@ -17,6 +17,10 @@ version = ("2.2b" :: String)
 
 allLang = [EN, DE]
 
+if' :: Bool -> a -> a -> a
+if' True x _ = x
+if' False _ y = y
+
 blogTitle :: BlogLang -> String -> String
 blogTitle DE s = "Tazjins Blog" ++ s
 blogTitle EN s = "Tazjin's Blog" ++ s
@@ -59,11 +63,11 @@ getMonth l y m = monthName l m ++ show y
 entireMonth DE = "Ganzer Monat"
 entireMonth EN = "Entire month"
 
-prevMonth DE = "Früher"
-prevMonth EN = "Earlier"
+backText DE = "Früher"
+backText EN = "Earlier"
 
-nextMonth DE = "Später"
-nextMonth EN = "Later"
+nextText DE = "Später"
+nextText EN = "Later"
 
 -- contact information
 contactText DE = "Wer mich kontaktieren will: "

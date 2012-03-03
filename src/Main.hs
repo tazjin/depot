@@ -2,10 +2,11 @@
 
 module Main where
 
-import           Control.Monad (msum, mzero)
+import           Control.Applicative (optional)
+import           Control.Monad (msum)
 import           Data.Monoid (mempty)
 import           Data.ByteString.Char8 (ByteString)
-import           Data.Text hiding (map, length, zip, head)
+import           Data.Text hiding (map, length, zip, head, drop)
 import           Data.Time
 import           Database.CouchDB
 import           Happstack.Server
@@ -64,14 +65,20 @@ tryEntry (Just entry) = toResponse $ blogTemplate eLang eTitle $ renderEntry ent
 
 showIndex :: BlogLang -> ServerPart Response
 showIndex lang = do
-    entries <- getLatest lang [("limit", toJSON (7 :: Int)), ("descending", toJSON True)]
-    ok $ toResponse $ blogTemplate lang "" $ renderEntries entries (topText lang)
-
+    entries <- getLatest lang [("descending", showJSON True)]
+    (page :: Maybe Int) <- optional $ lookRead "page"
+    ok $ toResponse $ blogTemplate lang "" $ 
+        renderEntries False (eDrop page entries) (topText lang) (Just $ showLinks page lang)
+  where
+    eDrop :: Maybe Int -> [a] -> [a]
+    eDrop (Just i) = drop ((i-1) * 6)
+    eDrop Nothing = drop 0 
+    
 showMonth :: Int -> Int -> BlogLang -> ServerPart Response
 showMonth y m lang = do
-    entries <- getLatest lang $ makeQuery startkey endkey
+    entries <- getLatest lang $ ("descending", showJSON True) : makeQuery startkey endkey
     ok $ toResponse $ blogTemplate lang month 
-        $ renderEntries entries month
+        $ renderEntries True entries month Nothing
   where
     month = getMonth lang y  m
     startkey = JSArray [toJSON y, toJSON m]

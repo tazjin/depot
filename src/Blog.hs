@@ -72,12 +72,15 @@ blogTemplate lang t_append body = H.docTypeHtml $ do --add body
             H.a ! A.href (toValue imu) ! A.target "_blank" $ "iMessage"
             "."
 
-renderEntries :: [Entry] -> String-> Html
-renderEntries entries topText = H.div ! A.class_ "innerBox" $ do
-    H.div ! A.class_ "innerBoxTop" $ toHtml topText
-    H.div ! A.class_ "innerBoxMiddle" $ do
-        H.ul $ 
-            sequence_ . reverse $ map showEntry entries
+renderEntries :: Bool -> [Entry] -> String -> Maybe Html -> Html
+renderEntries showAll entries topText footerLinks = 
+    H.div ! A.class_ "innerBox" $ do
+        H.div ! A.class_ "innerBoxTop" $ toHtml topText
+        H.div ! A.class_ "innerBoxMiddle" $ do
+            H.ul $ if' showAll
+                (sequence_ $ map showEntry entries)
+                (sequence_ . take 6 $ map showEntry entries)
+            getFooterLinks footerLinks
     where
         showEntry :: Entry -> Html
         showEntry e = H.li $ do 
@@ -86,6 +89,8 @@ renderEntries entries topText = H.div ! A.class_ "innerBox" $ do
         entryLink e = H.a ! A.href (toValue $ concat $ intersperse' "/" $ linkElems e) $
                         toHtml ("[" ++ show(length $ comments e) ++ "]")
         linkElems e = [show(lang e), show(year e), show(month e), show(day e), _id e]
+        getFooterLinks (Just h) = h
+        getFooterLinks Nothing = mempty
 
 renderEntry :: Entry -> Html
 renderEntry entry = H.div ! A.class_ "innerBox" $ do
@@ -113,6 +118,14 @@ renderComments comments lang = sequence_ $ map showComment comments
         showTime lang (Just t) = formatTime defaultTimeLocale (cTimeFormat lang) t
         showTime _ Nothing = "[???]" -- this can not happen??
         timeString = (showTime lang) . getTime
+
+showLinks :: Maybe Int -> BlogLang -> Html
+showLinks (Just i) lang = H.div ! A.class_ "centerbox" $ do
+    H.a ! A.href (toValue $ "/?page=" ++ show (i+1)) $ toHtml $ backText lang
+    toHtml (" -- " :: String)
+    H.a ! A.href (toValue $ "/?page=" ++ show (i-1)) $ toHtml $ nextText lang
+showLinks Nothing lang = H.div ! A.class_ "centerbox" $
+    H.a ! A.href "/?page=2" $ toHtml $  backText lang
 
 showFooter :: BlogLang -> String -> Html
 showFooter l v = H.div ! A.class_ "rightbox" ! A.style "text-align:right;" $ do
