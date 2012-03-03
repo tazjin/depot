@@ -44,10 +44,7 @@ blogHandler :: BlogLang -> ServerPart Response
 blogHandler lang = 
     msum [ path $ \(year :: Int) -> path $ \(month :: Int) -> path $ --single entry
                       \(day :: Int) -> path $ \(id_ :: String) -> showEntry year month day id_
-         , path $ \(year :: Int) -> path $ \(month :: Int) -> path $ 
-                      \(day :: Int) -> showDay year month day lang
          , path $ \(year :: Int ) -> path $ \(month :: Int) -> showMonth year month lang
-         , path $ \(year :: Int ) -> showYear year lang
          , do nullDir
               showIndex lang
          ]
@@ -70,9 +67,6 @@ showIndex lang = do
     entries <- getLatest lang []
     ok $ toResponse $ blogTemplate lang "" $ renderEntries entries 6 (topText lang)
 
-showDay :: Int -> Int -> Int -> BlogLang -> ServerPart Response
-showDay y m d lang = undefined
-
 showMonth :: Int -> Int -> BlogLang -> ServerPart Response
 showMonth y m lang = do
     entries <- getLatest lang $ makeQuery startkey endkey
@@ -82,10 +76,6 @@ showMonth y m lang = do
     month = getMonth lang y  m
     startkey = JSArray [toJSON y, toJSON m]
     endkey = JSArray [toJSON y, toJSON m, JSObject (toJSObject [] )]
-
-showYear :: Int -> BlogLang -> ServerPart Response
-showYear y lang = undefined
-
 
 -- http://tazj.in/2012/02/10.155234
 
@@ -105,7 +95,7 @@ makeQuery qsk qek = [("startkey", (showJSON qsk))
                     ,("endkey", (showJSON qek))]
 
 queryDB :: JSON a => String -> [(String, JSValue)] -> ServerPart [(Doc, a)]
-queryDB view arg = liftIO $ runCouchDB' $ queryView (db "tazblog") (doc "entries") (doc view) arg
+queryDB view arg = liftIO . runCouchDB' $ queryView (db "tazblog") (doc "entries") (doc view) arg
 
 maybeDoc :: Data a => Maybe (Doc, Rev, JSValue) -> Maybe a
 maybeDoc (Just(_,_,v)) = Just( stripResult $ fromJSON v)
@@ -115,12 +105,25 @@ stripResult :: Result a -> a
 stripResult (Ok z) = z
 stripResult (Error s) = error $ "JSON error: " ++ s
 
+getMonthCount :: Int -> Int -> ServerPart Int
+getMonthCount y m  = do
+    count <- queryDB "countDE" $ makeQuery startkey endkey
+    let x = map (stripResult . fromJSON . snd) count
+    return $ stripCount x
+  where
+    startkey = JSArray [toJSON ("count" :: String), toJSON y, toJSON m]
+    endkey = JSArray [toJSON ("count" :: String), toJSON y, toJSON m, JSObject (toJSObject [] )]
+    stripCount :: [Int] -> Int
+    stripCount [x] = x
+    stripCount [] = 0
+
+
 -- CouchDB View Setup
 latestDEView = "function(doc){ if(doc.lang == 'DE'){ emit([doc.year, doc.month, doc.day, doc._id], doc); } }"
 latestENView = "function(doc){ if(doc.lang == 'EN'){ emit([doc.year, doc.month, doc.day, doc._id], doc); } }"
 countDEView  = "function(doc){ if(doc.lang == 'DE'){ emit([doc.year, doc.month, doc.day, doc._id], 1); } }"
 countENView  = "function(doc){ if(doc.lang == 'EN'){ emit([doc.year, doc.month, doc.day, doc._id], 1); } }"
-countReduce = "function(keys, values, rereduce) { return sum(values); }"
+countReduce  = "function(keys, values, rereduce) { return sum(values); }"
 
 latestDE = ViewMap "latestDE" latestDEView
 latestEN = ViewMap "latestEN" latestENView
