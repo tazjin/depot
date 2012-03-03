@@ -108,8 +108,7 @@ stripResult (Error s) = error $ "JSON error: " ++ s
 getMonthCount :: Int -> Int -> ServerPart Int
 getMonthCount y m  = do
     count <- queryDB "countDE" $ makeQuery startkey endkey
-    let x = map (stripResult . fromJSON . snd) count
-    return $ stripCount x
+    return . stripCount $ map (stripResult . fromJSON . snd) count
   where
     startkey = JSArray [toJSON ("count" :: String), toJSON y, toJSON m]
     endkey = JSArray [toJSON ("count" :: String), toJSON y, toJSON m, JSObject (toJSObject [] )]
