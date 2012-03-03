@@ -77,7 +77,7 @@ renderEntries entries topText = H.div ! A.class_ "innerBox" $ do
     H.div ! A.class_ "innerBoxTop" $ toHtml topText
     H.div ! A.class_ "innerBoxMiddle" $ do
         H.ul $ 
-            sequence_ $ reverse $ map showEntry entries
+            sequence_ . reverse $ map showEntry entries
     where
         showEntry :: Entry -> Html
         showEntry e = H.li $ do 

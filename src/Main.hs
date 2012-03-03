@@ -64,7 +64,7 @@ tryEntry (Just entry) = toResponse $ blogTemplate eLang eTitle $ renderEntry ent
 
 showIndex :: BlogLang -> ServerPart Response
 showIndex lang = do
-    entries <- getLatest lang [("limit", toJSON (6 :: Int)), ("descending", toJSON True)]
+    entries <- getLatest lang [("limit", toJSON (7 :: Int)), ("descending", toJSON True)]
     ok $ toResponse $ blogTemplate lang "" $ renderEntries entries (topText lang)
 
 showMonth :: Int -> Int -> BlogLang -> ServerPart Response
