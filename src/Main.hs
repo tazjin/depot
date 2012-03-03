@@ -105,9 +105,9 @@ stripResult :: Result a -> a
 stripResult (Ok z) = z
 stripResult (Error s) = error $ "JSON error: " ++ s
 
-getMonthCount :: Int -> Int -> ServerPart Int
-getMonthCount y m  = do
-    count <- queryDB "countDE" $ makeQuery startkey endkey
+getMonthCount :: BlogLang -> Int -> Int -> ServerPart Int
+getMonthCount lang y m  = do
+    count <- queryDB (view lang) $ makeQuery startkey endkey
     return . stripCount $ map (stripResult . fromJSON . snd) count
   where
     startkey = JSArray [toJSON ("count" :: String), toJSON y, toJSON m]
@@ -115,13 +115,15 @@ getMonthCount y m  = do
     stripCount :: [Int] -> Int
     stripCount [x] = x
     stripCount [] = 0
+    view DE = "countDE"
+    view EN = "countEN"
 
 
 -- CouchDB View Setup
 latestDEView = "function(doc){ if(doc.lang == 'DE'){ emit([doc.year, doc.month, doc.day, doc._id], doc); } }"
 latestENView = "function(doc){ if(doc.lang == 'EN'){ emit([doc.year, doc.month, doc.day, doc._id], doc); } }"
-countDEView  = "function(doc){ if(doc.lang == 'DE'){ emit([doc.year, doc.month, doc.day, doc._id], 1); } }"
-countENView  = "function(doc){ if(doc.lang == 'EN'){ emit([doc.year, doc.month, doc.day, doc._id], 1); } }"
+countDEView  = "function(doc){ if(doc.lang == 'DE'){ emit(['count', doc.year, doc.month, doc.day, doc._id], 1); } }"
+countENView  = "function(doc){ if(doc.lang == 'EN'){ emit(['count', doc.year, doc.month, doc.day, doc._id], 1); } }"
 countReduce  = "function(keys, values, rereduce) { return sum(values); }"
 
 latestDE = ViewMap "latestDE" latestDEView
