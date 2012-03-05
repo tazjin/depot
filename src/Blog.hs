@@ -102,6 +102,20 @@ renderEntry entry = H.div ! A.class_ "innerBox" $ do
         H.div ! A.class_ "innerBoxComments" $ do
             H.div ! A.name "cHead" ! A.style "font-size:large;font-weight:bold;" $ toHtml $ cHead (lang entry)
             H.ul $ renderComments (comments entry) (lang entry)
+            renderCommentBox $ lang entry
+
+renderCommentBox :: BlogLang -> Html
+renderCommentBox lang = do
+    H.div ! A.name "cHead" $ toHtml $ cwHead lang
+    H.form $ do
+        H.p $ H.label $ do
+            toHtml ("Name:" :: String)
+            H.input 
+{-
+<form>
+ <p><label>Customer name: <input></label></p>
+</form>
+-}
 
 renderComments :: [Comment] -> BlogLang -> Html
 renderComments [] lang = H.li $ toHtml $ noComments lang

@@ -87,6 +87,9 @@ noComments EN = " No comments yet"
 cHead DE = "Kommentare:"
 cHead EN = "Comments:"
 
+cwHead DE = "Kommentieren:"
+cwHead EN = "Comment:"
+
 cTimeFormat DE = "[Am %d.%m.%y um %H:%M Uhr]"
 cTimeFormat EN = "[On %D at %H:%M]"
 
