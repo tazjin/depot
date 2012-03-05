@@ -46,6 +46,9 @@ blogHandler lang =
     msum [ path $ \(year :: Int) -> path $ \(month :: Int) -> path $ --single entry
                       \(day :: Int) -> path $ \(id_ :: String) -> showEntry year month day id_
          , path $ \(year :: Int ) -> path $ \(month :: Int) -> showMonth year month lang
+         , do
+            decodeBody tmpPolicy
+            dir "postcomment" $ path $ \(id_ :: String) -> addComment id_
          , do nullDir
               showIndex lang
          ]
@@ -83,6 +86,9 @@ showMonth y m lang = do
     month = getMonth lang y  m
     startkey = JSArray [toJSON y, toJSON m]
     endkey = JSArray [toJSON y, toJSON m, JSObject (toJSObject [] )]
+
+addComment :: String -> ServerPart Response
+addComment id_ = undefined
 
 -- http://tazj.in/2012/02/10.155234
 

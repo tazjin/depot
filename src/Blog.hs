@@ -100,22 +100,20 @@ renderEntry entry = H.div ! A.class_ "innerBox" $ do
             preEscapedString $ text entry
             preEscapedString $ mtext entry
         H.div ! A.class_ "innerBoxComments" $ do
-            H.div ! A.name "cHead" ! A.style "font-size:large;font-weight:bold;" $ toHtml $ cHead (lang entry)
+            H.div ! A.class_ "cHead" $ toHtml $ cHead (lang entry) -- ! A.style "font-size:large;font-weight:bold;"
             H.ul $ renderComments (comments entry) (lang entry)
-            renderCommentBox $ lang entry
+            renderCommentBox (lang entry) (_id entry)
 
-renderCommentBox :: BlogLang -> Html
-renderCommentBox lang = do
-    H.div ! A.name "cHead" $ toHtml $ cwHead lang
-    H.form $ do
+renderCommentBox :: BlogLang -> String -> Html
+renderCommentBox cLang cId = do
+    H.div ! A.class_ "cHead" $ toHtml $ cwHead cLang
+    H.form ! A.method "POST" ! A.action (toValue $ "/" ++ (show cLang) ++  "/postcomment/" ++ cId) $ do
         H.p $ H.label $ do
-            toHtml ("Name:" :: String)
-            H.input 
-{-
-<form>
- <p><label>Customer name: <input></label></p>
-</form>
--}
+            H.span $ "Name:" --toHtml ("Name:" :: String)
+            H.input ! A.name "cname"
+        H.p $ H.label $ do
+            H.span $ toHtml $ cSingle cLang -- toHtml (cSingle lang)
+            H.textarea ! A.name "ctext" ! A.cols "50" ! A.rows "13" $ mempty
 
 renderComments :: [Comment] -> BlogLang -> Html
 renderComments [] lang = H.li $ toHtml $ noComments lang

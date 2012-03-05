@@ -63,6 +63,11 @@ body {
 	text-decoration:none;color:black;
 }
 
+.cHead {
+    font-size:large;
+    font-weight:bold;
+}
+
 .innerBoxTop {
 	height: 28px;
 	color: #000000;
@@ -111,4 +116,14 @@ body {
 
 .innerBoxComments {
 	padding-left: 20px
+}
+
+
+label span {
+    width: 6%;
+    float: left;
+}
+
+label input {
+    display: block;
 }

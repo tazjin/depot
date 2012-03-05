@@ -90,6 +90,9 @@ cHead EN = "Comments:"
 cwHead DE = "Kommentieren:"
 cwHead EN = "Comment:"
 
+cSingle DE = "Kommentar:" --input label
+cSingle EN = "Comment:" 
+
 cTimeFormat DE = "[Am %d.%m.%y um %H:%M Uhr]"
 cTimeFormat EN = "[On %D at %H:%M]"
 
