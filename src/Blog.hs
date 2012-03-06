@@ -5,9 +5,11 @@ module Blog where
 import           Data.Data (Data, Typeable)
 import           Data.List (intersperse)
 import           Data.Monoid (mempty)
+import           Data.Text (Text)
+import qualified Data.Text as T
 import           Data.Time
 import           System.Locale (defaultTimeLocale)
-import           Text.Blaze (toValue, preEscapedString)
+import           Text.Blaze (toValue, preEscapedText)
 import           Text.Blaze.Html5 (Html, (!), a, form, input, p, toHtml, label)
 import           Text.Blaze.Html5.Attributes (action, enctype, href, name, size, type_, value)
 import qualified Text.Blaze.Html5 as H
@@ -36,6 +38,8 @@ data Entry = Entry{
 
 data BlogError = NoEntries | NotFound | DBError
 
+blogText :: (a -> String) -> a -> Text
+blogText f = T.pack . f
 
 intersperse' :: a -> [a] -> [a]
 intersperse' sep l = sep : intersperse sep l
@@ -85,7 +89,7 @@ renderEntries showAll entries topText footerLinks =
         showEntry :: Entry -> Html
         showEntry e = H.li $ do 
             entryLink e
-            preEscapedString $ " " ++ (text e) ++ "<br>&nbsp;</br>"
+            preEscapedText $ T.concat [" ", blogText text e, "<br>&nbsp;</br>"]
         entryLink e = H.a ! A.href (toValue $ concat $ intersperse' "/" $ linkElems e) $
                         toHtml ("[" ++ show(length $ comments e) ++ "]")
         linkElems e = [show(lang e), show(year e), show(month e), show(day e), _id e]
@@ -97,8 +101,8 @@ renderEntry entry = H.div ! A.class_ "innerBox" $ do
     H.div ! A.class_ "innerBoxTop" $ toHtml $ title entry
     H.div ! A.class_ "innerBoxMiddle" $ do
         H.article $ H.ul $ H.li $ do
-            preEscapedString $ text entry
-            preEscapedString $ mtext entry
+            preEscapedText $ blogText text entry
+            preEscapedText $ blogText mtext entry
         H.div ! A.class_ "innerBoxComments" $ do
             H.div ! A.name "cHead" ! A.style "font-size:large;font-weight:bold;" $ toHtml $ cHead (lang entry)
             H.ul $ renderComments (comments entry) (lang entry)
@@ -125,7 +129,7 @@ renderComments comments lang = sequence_ $ map showComment comments
         showComment c = H.li $ do
             H.a ! A.name (toValue $ cdate c) ! A.href (toValue $ "#" ++ (show $ cdate c)) ! A.class_ "cl" $
                H.i $ toHtml $ (cauthor c ++ ": ")
-            preEscapedString $ ctext c
+            preEscapedText $ blogText ctext c
             H.p ! A.class_ "tt" $ toHtml (timeString $ cdate c)
         getTime :: Integer -> Maybe UTCTime
         getTime t = parseTime defaultTimeLocale "%s" (show t)
@@ -150,7 +154,7 @@ showFooter l v = H.div ! A.class_ "rightbox" ! A.style "text-align:right;" $ do
     toHtml (" and without PHP, Java, Perl, MySQL and Python." :: String)
     H.br
     H.a ! A.href (toValue repoURL) $ toHtml $ ("Version " :: String) ++ v
-    preEscapedString "&nbsp;"
+    preEscapedText "&nbsp;"
     H.a ! A.href "/notice" $ toHtml $ noticeText l
 
 -- Error pages
