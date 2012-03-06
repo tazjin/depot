@@ -44,7 +44,7 @@ blogText f = T.pack . f
 intersperse' :: a -> [a] -> [a]
 intersperse' sep l = sep : intersperse sep l
 
-blogTemplate :: BlogLang -> String -> Html -> Html
+blogTemplate :: BlogLang -> Text -> Html -> Html
 blogTemplate lang t_append body = H.docTypeHtml $ do --add body
     H.head $ do
         H.title $ (toHtml $ blogTitle lang t_append)
@@ -63,20 +63,20 @@ blogTemplate lang t_append body = H.docTypeHtml $ do --add body
             H.div ! A.class_ "myclear" $ mempty
             body
             H.div ! A.class_ "myclear" $ mempty
-            showFooter lang version
+            showFooter lang $ T.pack version
         H.div ! A.class_ "centerbox" $
             H.img ! A.src "http://getpunchd.com/img/june/idiots.png" ! A.alt ""
     where
-        contactInfo (imu :: String) = do
+        contactInfo (imu :: Text) = do
             toHtml $ contactText lang
             H.a ! A.href (toValue mailTo) $ "Mail"
             ", "
             H.a ! A.href (toValue twitter) ! A.target "_blank" $ "Twitter"
-            toHtml $ orString lang
+            toHtml $ orText lang
             H.a ! A.href (toValue imu) ! A.target "_blank" $ "iMessage"
             "."
 
-renderEntries :: Bool -> [Entry] -> String -> Maybe Html -> Html
+renderEntries :: Bool -> [Entry] -> Text -> Maybe Html -> Html
 renderEntries showAll entries topText footerLinks = 
     H.div ! A.class_ "innerBox" $ do
         H.div ! A.class_ "innerBoxTop" $ toHtml topText
@@ -113,7 +113,7 @@ renderCommentBox lang = do
     H.div ! A.name "cHead" $ toHtml $ cwHead lang
     H.form $ do
         H.p $ H.label $ do
-            toHtml ("Name:" :: String)
+            toHtml ("Name:" :: Text)
             H.input 
 {-
 <form>
@@ -140,20 +140,20 @@ renderComments comments lang = sequence_ $ map showComment comments
 showLinks :: Maybe Int -> BlogLang -> Html
 showLinks (Just i) lang = H.div ! A.class_ "centerbox" $ do
     H.a ! A.href (toValue $ "/?page=" ++ show (i+1)) $ toHtml $ backText lang
-    toHtml (" -- " :: String)
+    toHtml (" -- " :: Text)
     H.a ! A.href (toValue $ "/?page=" ++ show (i-1)) $ toHtml $ nextText lang
 showLinks Nothing lang = H.div ! A.class_ "centerbox" $
     H.a ! A.href "/?page=2" $ toHtml $  backText lang
 
-showFooter :: BlogLang -> String -> Html
+showFooter :: BlogLang -> Text -> Html
 showFooter l v = H.div ! A.class_ "rightbox" ! A.style "text-align:right;" $ do
-    toHtml ("Proudly made with " :: String)
+    toHtml ("Proudly made with " :: Text)
     H.a ! A.href "http://haskell.org" $ "Haskell"
-    toHtml (", " :: String)
+    toHtml (", " :: Text)
     H.a ! A.href "http://couchdb.apache.org/" $ "CouchDB"
-    toHtml (" and without PHP, Java, Perl, MySQL and Python." :: String)
+    toHtml (" and without PHP, Java, Perl, MySQL and Python." :: Text)
     H.br
-    H.a ! A.href (toValue repoURL) $ toHtml $ ("Version " :: String) ++ v
+    H.a ! A.href (toValue repoURL) $ toHtml $ T.concat ["Version ", v]
     preEscapedText "&nbsp;"
     H.a ! A.href "/notice" $ toHtml $ noticeText l
 
