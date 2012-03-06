@@ -5,9 +5,11 @@ module Blog where
 import           Data.Data (Data, Typeable)
 import           Data.List (intersperse)
 import           Data.Monoid (mempty)
+import           Data.Text (Text)
+import qualified Data.Text as T
 import           Data.Time
 import           System.Locale (defaultTimeLocale)
-import           Text.Blaze (toValue, preEscapedString)
+import           Text.Blaze (toValue, preEscapedText)
 import           Text.Blaze.Html5 (Html, (!), a, form, input, p, toHtml, label)
 import           Text.Blaze.Html5.Attributes (action, enctype, href, name, size, type_, value)
 import qualified Text.Blaze.Html5 as H
@@ -34,13 +36,15 @@ data Entry = Entry{
     comments :: [Comment]
 } deriving (Show, Data, Typeable)
 
-data BlogError = NoEntries | NotFound | DBError
+blogText :: (a -> String) -> a -> Text
+blogText f = T.pack . f
 
+data BlogError = NoEntries | NotFound | DBError
 
 intersperse' :: a -> [a] -> [a]
 intersperse' sep l = sep : intersperse sep l
 
-blogTemplate :: BlogLang -> String -> Html -> Html
+blogTemplate :: BlogLang -> Text -> Html -> Html
 blogTemplate lang t_append body = H.docTypeHtml $ do --add body
     H.head $ do
         H.title $ (toHtml $ blogTitle lang t_append)
@@ -59,20 +63,20 @@ blogTemplate lang t_append body = H.docTypeHtml $ do --add body
             H.div ! A.class_ "myclear" $ mempty
             body
             H.div ! A.class_ "myclear" $ mempty
-            showFooter lang version
+            showFooter lang $ T.pack version
         H.div ! A.class_ "centerbox" $
             H.img ! A.src "http://getpunchd.com/img/june/idiots.png" ! A.alt ""
     where
-        contactInfo (imu :: String) = do
+        contactInfo (imu :: Text) = do
             toHtml $ contactText lang
             H.a ! A.href (toValue mailTo) $ "Mail"
             ", "
             H.a ! A.href (toValue twitter) ! A.target "_blank" $ "Twitter"
-            toHtml $ orString lang
+            toHtml $ orText lang
             H.a ! A.href (toValue imu) ! A.target "_blank" $ "iMessage"
             "."
 
-renderEntries :: Bool -> [Entry] -> String -> Maybe Html -> Html
+renderEntries :: Bool -> [Entry] -> Text -> Maybe Html -> Html
 renderEntries showAll entries topText footerLinks = 
     H.div ! A.class_ "innerBox" $ do
         H.div ! A.class_ "innerBoxTop" $ toHtml topText
@@ -85,7 +89,7 @@ renderEntries showAll entries topText footerLinks =
         showEntry :: Entry -> Html
         showEntry e = H.li $ do 
             entryLink e
-            preEscapedString $ " " ++ (text e) ++ "<br>&nbsp;</br>"
+            preEscapedText $ T.concat [" ", blogText text e, "<br>&nbsp;</br>"]
         entryLink e = H.a ! A.href (toValue $ concat $ intersperse' "/" $ linkElems e) $
                         toHtml ("[" ++ show(length $ comments e) ++ "]")
         linkElems e = [show(lang e), show(year e), show(month e), show(day e), _id e]
@@ -97,8 +101,8 @@ renderEntry entry = H.div ! A.class_ "innerBox" $ do
     H.div ! A.class_ "innerBoxTop" $ toHtml $ title entry
     H.div ! A.class_ "innerBoxMiddle" $ do
         H.article $ H.ul $ H.li $ do
-            preEscapedString $ text entry
-            preEscapedString $ mtext entry
+            preEscapedText $ blogText text entry
+            preEscapedText $ blogText mtext entry
         H.div ! A.class_ "innerBoxComments" $ do
             H.div ! A.class_ "cHead" $ toHtml $ cHead (lang entry) -- ! A.style "font-size:large;font-weight:bold;"
             H.ul $ renderComments (comments entry) (lang entry)
@@ -123,7 +127,7 @@ renderComments comments lang = sequence_ $ map showComment comments
         showComment c = H.li $ do
             H.a ! A.name (toValue $ cdate c) ! A.href (toValue $ "#" ++ (show $ cdate c)) ! A.class_ "cl" $
                H.i $ toHtml $ (cauthor c ++ ": ")
-            preEscapedString $ ctext c
+            preEscapedText $ blogText ctext c
             H.p ! A.class_ "tt" $ toHtml (timeString $ cdate c)
         getTime :: Integer -> Maybe UTCTime
         getTime t = parseTime defaultTimeLocale "%s" (show t)
@@ -132,23 +136,25 @@ renderComments comments lang = sequence_ $ map showComment comments
         timeString = (showTime lang) . getTime
 
 showLinks :: Maybe Int -> BlogLang -> Html
-showLinks (Just i) lang = H.div ! A.class_ "centerbox" $ do
-    H.a ! A.href (toValue $ "/?page=" ++ show (i+1)) $ toHtml $ backText lang
-    toHtml (" -- " :: String)
-    H.a ! A.href (toValue $ "/?page=" ++ show (i-1)) $ toHtml $ nextText lang
+showLinks (Just i) lang
+    | ( i > 1) = H.div ! A.class_ "centerbox" $ do
+        H.a ! A.href (toValue $ "/?page=" ++ show (i+1)) $ toHtml $ backText lang
+        toHtml (" -- " :: Text)
+        H.a ! A.href (toValue $ "/?page=" ++ show (i-1)) $ toHtml $ nextText lang
+    | ( i <= 1 ) = showLinks Nothing lang 
 showLinks Nothing lang = H.div ! A.class_ "centerbox" $
     H.a ! A.href "/?page=2" $ toHtml $  backText lang
 
-showFooter :: BlogLang -> String -> Html
+showFooter :: BlogLang -> Text -> Html
 showFooter l v = H.div ! A.class_ "rightbox" ! A.style "text-align:right;" $ do
-    toHtml ("Proudly made with " :: String)
+    toHtml ("Proudly made with " :: Text)
     H.a ! A.href "http://haskell.org" $ "Haskell"
-    toHtml (", " :: String)
+    toHtml (", " :: Text)
     H.a ! A.href "http://couchdb.apache.org/" $ "CouchDB"
-    toHtml (" and without PHP, Java, Perl, MySQL and Python." :: String)
+    toHtml (" and without PHP, Java, Perl, MySQL and Python." :: Text)
     H.br
-    H.a ! A.href (toValue repoURL) $ toHtml $ ("Version " :: String) ++ v
-    preEscapedString "&nbsp;"
+    H.a ! A.href (toValue repoURL) $ toHtml $ T.append "Version " v
+    preEscapedText "&nbsp;"
     H.a ! A.href "/notice" $ toHtml $ noticeText l
 
 -- Error pages

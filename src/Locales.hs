@@ -1,4 +1,4 @@
-{-# LANGUAGE ScopedTypeVariables, DeriveDataTypeable #-}
+{-# LANGUAGE ScopedTypeVariables, DeriveDataTypeable, OverloadedStrings #-}
 
 module Locales where
 
@@ -101,6 +101,7 @@ cwHead :: BlogLang -> Text
 cwHead DE = "Kommentieren:"
 cwHead EN = "Comment:"
 
+cSingle :: BlogLang -> Text
 cSingle DE = "Kommentar:" --input label
 cSingle EN = "Comment:" 
 
