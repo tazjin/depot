@@ -1,1 +1,1 @@
-* create entirely new CouchDB views to return the blog IDs in descending order
+* handle BlogErrors

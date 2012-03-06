@@ -15,6 +15,9 @@ instance Show BlogLang where
     show EN = "en"
     show DE = "de"
 
+data BlogError = NotFound | DBError
+
+
 version = "2.2b"
 
 allLang = [EN, DE]
@@ -111,8 +114,8 @@ cTimeFormat EN = "[On %D at %H:%M]"
 
 -- right side text (this is inserted AS IS. Escape HTML!)
 rightText :: BlogLang -> Text
-rightText DE = "English version <a href=\"en\">available here</a>"
-rightText EN = "Deutsche Version <a href=\"de\">hier verf&uuml;gbar</a>"
+rightText DE = "English version <a href=\"/en\" style=\"color: black;\">available here</a>."
+rightText EN = "Deutsche Version <a href=\"/de\" style=\"color: black;\">hier verf&uuml;gbar</a>."
 
 -- static information
 repoURL   :: Text = "https://bitbucket.org/tazjin/tazblog-haskell"

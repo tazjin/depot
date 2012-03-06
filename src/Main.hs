@@ -39,13 +39,14 @@ tazBlog = do
          , do dir " " $ nullDir
               seeOther ("https://plus.google.com/115916629925754851590" :: String) (toResponse ())
          , dir "res" $ serveDirectory DisableBrowsing [] "../res"
+         , dir "notice" $ ok $ toResponse showSiteNotice
          , serveDirectory DisableBrowsing [] "../res"
          ]
 
 blogHandler :: BlogLang -> ServerPart Response
 blogHandler lang = 
     msum [ path $ \(year :: Int) -> path $ \(month :: Int) -> path $ --single entry
-                      \(day :: Int) -> path $ \(id_ :: String) -> showEntry year month day id_
+                      \(day :: Int) -> path $ \(id_ :: String) -> showEntry lang id_
          , path $ \(year :: Int ) -> path $ \(month :: Int) -> showMonth year month lang
          , do
             decodeBody tmpPolicy
@@ -54,15 +55,15 @@ blogHandler lang =
               showIndex lang
          ]
 
-showEntry :: Int -> Int -> Int -> String -> ServerPart Response
-showEntry y m d i = do
-    entryJS <- liftIO $ runCouchDB' $ getDoc (db "tazblog") (doc i)
+showEntry :: BlogLang -> String -> ServerPart Response
+showEntry lang id_ = do
+    entryJS <- liftIO $ runCouchDB' $ getDoc (db "tazblog") (doc id_)
     let entry = maybeDoc entryJS
-    ok $ tryEntry entry
+    ok $ tryEntry entry lang
 
-tryEntry :: Maybe Entry -> Response
-tryEntry Nothing = toResponse $ showError NotFound
-tryEntry (Just entry) = toResponse $ blogTemplate eLang eTitle $ renderEntry entry
+tryEntry :: Maybe Entry -> BlogLang -> Response
+tryEntry Nothing lang = toResponse $ showError NotFound lang
+tryEntry (Just entry) _ = toResponse $ blogTemplate eLang eTitle $ renderEntry entry
     where
         eTitle = T.pack $ ": " ++ title entry
         eLang = lang entry

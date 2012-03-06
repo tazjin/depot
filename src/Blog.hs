@@ -39,8 +39,6 @@ data Entry = Entry{
 blogText :: (a -> String) -> a -> Text
 blogText f = T.pack . f
 
-data BlogError = NoEntries | NotFound | DBError
-
 intersperse' :: a -> [a] -> [a]
 intersperse' sep l = sep : intersperse sep l
 
@@ -55,11 +53,12 @@ blogTemplate lang t_append body = H.docTypeHtml $ do --add body
     H.body $ do
         H.div ! A.class_ "mainshell" $ H.div ! A.class_ "gradBox" $ do
             H.div ! A.class_ "header" $ do
-                H.a ! A.href "/" ! A.style "text-decoration:none;color:black;font-size:x-large;font-weight:bold;" $
                         toHtml $ blogTitle lang ""
-                H.br
-                H.span ! A.id "cosx" ! A.style "display:block;" $ H.b $ contactInfo iMessage
-               -- H.span ! A.id "cios" ! A.style "display:none;" $ H.b $ contactInfo "sms:tazjin@me.com"
+                H.a ! A.href "/" ! A.style "text-decoration:none;color:black;font-size:x-large;font-weight:bold;" $
+                H.p ! A.style "clear: both;" $ do
+                    H.span ! A.style "float: left;" ! A.id "cosx" $ H.b $ contactInfo iMessage
+                   -- H.span ! A.id "cios" ! A.style "display:none;" $ H.b $ contactInfo "sms:tazjin@me.com"
+                    H.span ! A.style "float:right;" $ preEscapedText $ rightText lang
             H.div ! A.class_ "myclear" $ mempty
             body
             H.div ! A.class_ "myclear" $ mempty
@@ -157,6 +156,28 @@ showFooter l v = H.div ! A.class_ "rightbox" ! A.style "text-align:right;" $ do
     preEscapedText "&nbsp;"
     H.a ! A.href "/notice" $ toHtml $ noticeText l
 
+showSiteNotice :: Html
+showSiteNotice = H.docTypeHtml $ do
+    H.title $ "Impressum"
+    H.h2 $ preEscapedText "Impressum und <a alt=\"Verantwortlich im Sinne des Presserechtes\">ViSdP</a>"
+    H.i $ "[German law demands this]"
+    H.br
+    H.p $ do
+        toHtml ("Vincent Ambo" :: Text)
+        H.br
+        toHtml ("Benfleetstr. 8" :: Text)
+        H.br 
+        toHtml ("50858 Köln" :: Text)
+        H.p $ H.a ! A.href "/" ! A.style "color:black" $ "Back"
+
+{-
+<title>Impressum</title>
+
+<h2>Impressum und <a alt="Verantwortlich im Sinne des Presserechtes">ViSdP</a></h2>
+
+<i>[German law demands this]</i><p>Vincent Ambo<br>Benfleetstr. 8<br>50858 Köln<br /><br /><a href="/" style="color:black">Back</a>
+-}
+
 -- Error pages
-showError :: BlogError -> Html
-showError _ = undefined
+showError :: BlogError -> BlogLang -> Html
+showError NotFound l = undefined
