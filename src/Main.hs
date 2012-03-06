@@ -6,7 +6,8 @@ import           Control.Applicative (optional)
 import           Control.Monad (msum)
 import           Data.Monoid (mempty)
 import           Data.ByteString.Char8 (ByteString)
-import           Data.Text hiding (map, length, zip, head, drop)
+import           Data.Text (Text)
+import qualified Data.Text as T
 import           Data.Time
 import           Database.CouchDB
 import           Happstack.Server
@@ -63,7 +64,7 @@ tryEntry :: Maybe Entry -> Response
 tryEntry Nothing = toResponse $ showError NotFound
 tryEntry (Just entry) = toResponse $ blogTemplate eLang eTitle $ renderEntry entry
     where
-        eTitle = ": " ++ title entry
+        eTitle = T.pack $ ": " ++ title entry
         eLang = lang entry
 
 showIndex :: BlogLang -> ServerPart Response
