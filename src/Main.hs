@@ -1,27 +1,53 @@
-{-# LANGUAGE OverloadedStrings, ScopedTypeVariables #-}
+{-# LANGUAGE OverloadedStrings, ScopedTypeVariables, GeneralizedNewtypeDeriving,
+    DeriveDataTypeable, FlexibleContexts, MultiParamTypeClasses, TemplateHaskell, 
+    TypeFamilies, RecordWildCards #-}
 
 module Main where
 
 import           Control.Applicative ((<$>), (<*>), optional, pure)
 import           Control.Monad (msum)
-import           Data.Monoid (mempty)
+import           Control.Monad.State (get, put)
+import           Control.Monad.Reader (ask)
+import           Data.Acid
+import           Data.Acid.Advanced
+import           Data.Acid.Local
 import           Data.ByteString.Char8 (ByteString)
+import           Data.Data (Data, Typeable)
+import           Data.Monoid (mempty)
 import           Data.Text (Text)
 import qualified Data.Text as T
 import           Data.Time
+import           Data.SafeCopy (base, deriveSafeCopy)
 import           Database.CouchDB
 import           Happstack.Server
 import           Network.CGI (liftIO)
-import           Text.Blaze (toValue, preEscapedString)
-import           Text.Blaze.Html5 (Html, (!), a, form, input, p, toHtml, label)
-import           Text.Blaze.Html5.Attributes (action, enctype, href, name, size, type_, value)
-import qualified Text.Blaze.Html5 as H
-import qualified Text.Blaze.Html5.Attributes as A
 import           Text.JSON.Generic
 import           System.Locale (defaultTimeLocale)
 
 import           Blog
 import           Locales
+
+{-session handling functions-}
+
+data SessionState = SessionState { sessions :: [(String, Integer)] } -- id/date
+  deriving (Eq, Ord, Read, Show, Data, Typeable)
+
+$(deriveSafeCopy 0 'base ''SessionState)
+
+initialSession :: SessionState
+initialSession = SessionState []
+
+addSession :: (String, Integer) -> Update SessionState [(String, Integer)]
+addSession newS = do
+  s@SessionState{..} <- get
+  let newSessions = newS : sessions
+  put $ s{ sessions = newSessions }
+  return newSessions
+
+querySessions :: Query SessionState [(String, Integer)]
+querySessions = sessions <$> ask
+
+$(makeAcidic ''SessionState ['addSession, 'querySessions])
 
 tmpPolicy :: BodyPolicy
 tmpPolicy = (defaultBodyPolicy "./tmp/" 0 1000 1000)
