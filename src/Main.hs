@@ -43,6 +43,9 @@ tazBlog = do
          , path $ \(year :: Int) -> path $ \(month :: Int) -> path $ \(id_ :: String) -> formatOldLink year month id_
          , dir "res" $ serveDirectory DisableBrowsing [] "../res"
          , dir "notice" $ ok $ toResponse showSiteNotice
+         , do adminSession <- lookCookieValue "session"
+              ok $ toResponse ("Eingeloggt" :: String)
+         , dir "admin" $ ok $ toResponse $ adminTemplate adminLogin "Login"
          , serveDirectory DisableBrowsing [] "../res"
          ]
 

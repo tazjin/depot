@@ -177,13 +177,26 @@ showSiteNotice = H.docTypeHtml $ do
         toHtml ("50858 Köln" :: Text)
         H.p $ H.a ! A.href "/" ! A.style "color:black" $ "Back"
 
-{-
-<title>Impressum</title>
+{- Administration pages -}
 
-<h2>Impressum und <a alt="Verantwortlich im Sinne des Presserechtes">ViSdP</a></h2>
+adminTemplate :: Html -> Text -> Html
+adminTemplate body title = H.docTypeHtml $ do
+    H.head $ do
+        H.link ! A.rel "stylesheet" ! A.type_ "text/css" ! A.href "/res/admin.css" ! A.media "all"
+        H.meta ! A.httpEquiv "content-type" ! A.content "text/html;charset=UTF-8"
+        H.title $ toHtml $ T.append "TazBlog Admin: " title
+    H.body
+        body
 
-<i>[German law demands this]</i><p>Vincent Ambo<br>Benfleetstr. 8<br>50858 Köln<br /><br /><a href="/" style="color:black">Back</a>
--}
+adminLogin :: Html
+adminLogin = H.div ! A.class_ "loginBox" $ do
+    H.div ! A.class_ "loginBoxTop" $ "TazBlog Admin: Login"
+    H.div ! A.class_ "loginBoxMiddle" $ H.form ! A.action "/login" ! A.method "post" $ do
+        H.p $ "Account ID"
+        H.p $ H.input ! A.type_ "text" ! A.style "font-size: 2;" 
+            ! A.name "account" ! A.value "tazjin" ! A.readonly "1"
+        H.p $ "Passwort"
+        H.p $ H.input ! A.type_ "password" ! A.style "font-size: 2;" ! A.name "pass"
 
 -- Error pages
 showError :: BlogError -> BlogLang -> Html
