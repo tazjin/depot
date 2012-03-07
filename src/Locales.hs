@@ -112,6 +112,10 @@ cTimeFormat :: BlogLang -> String --formatTime expects a String
 cTimeFormat DE = "[Am %d.%m.%y um %H:%M Uhr]"
 cTimeFormat EN = "[On %D at %H:%M]"
 
+cSend :: BlogLang -> Text
+cSend DE = "Absenden"
+cSend EN = "Submit"
+
 -- right side text (this is inserted AS IS. Escape HTML!)
 rightText :: BlogLang -> Text
 rightText DE = "English version <a href=\"/en\" style=\"color: black;\">available here</a>."

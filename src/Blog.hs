@@ -14,6 +14,7 @@ import           Text.Blaze.Html5 (Html, (!), a, form, input, p, toHtml, label)
 import           Text.Blaze.Html5.Attributes (action, enctype, href, name, size, type_, value)
 import qualified Text.Blaze.Html5 as H
 import qualified Text.Blaze.Html5.Attributes as A
+import           System.Locale (defaultTimeLocale)
 
 import           Locales
 
@@ -53,8 +54,9 @@ blogTemplate lang t_append body = H.docTypeHtml $ do --add body
     H.body $ do
         H.div ! A.class_ "mainshell" $ H.div ! A.class_ "gradBox" $ do
             H.div ! A.class_ "header" $ do
+                H.a ! A.href (toValue $ "/" ++ show lang) ! 
+                    A.style "text-decoration:none;color:black;font-size:x-large;font-weight:bold;" $
                         toHtml $ blogTitle lang ""
-                H.a ! A.href "/" ! A.style "text-decoration:none;color:black;font-size:x-large;font-weight:bold;" $
                 H.p ! A.style "clear: both;" $ do
                     H.span ! A.style "float: left;" ! A.id "cosx" $ H.b $ contactInfo iMessage
                    -- H.span ! A.id "cios" ! A.style "display:none;" $ H.b $ contactInfo "sms:tazjin@me.com"
@@ -117,6 +119,7 @@ renderCommentBox cLang cId = do
         H.p $ H.label $ do
             H.span $ toHtml $ cSingle cLang -- toHtml (cSingle lang)
             H.textarea ! A.name "ctext" ! A.cols "50" ! A.rows "13" $ mempty
+        H.p $ H.input ! A.type_ "submit" ! A.value (toValue $ cSend cLang)
 
 renderComments :: [Comment] -> BlogLang -> Html
 renderComments [] lang = H.li $ toHtml $ noComments lang

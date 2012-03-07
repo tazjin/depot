@@ -2,7 +2,7 @@
 
 module Main where
 
-import           Control.Applicative (optional)
+import           Control.Applicative ((<$>), (<*>), optional, pure)
 import           Control.Monad (msum)
 import           Data.Monoid (mempty)
 import           Data.ByteString.Char8 (ByteString)
@@ -18,6 +18,7 @@ import           Text.Blaze.Html5.Attributes (action, enctype, href, name, size,
 import qualified Text.Blaze.Html5 as H
 import qualified Text.Blaze.Html5.Attributes as A
 import           Text.JSON.Generic
+import           System.Locale (defaultTimeLocale)
 
 import           Blog
 import           Locales
@@ -38,6 +39,7 @@ tazBlog = do
               showIndex DE
          , do dir " " $ nullDir
               seeOther ("https://plus.google.com/115916629925754851590" :: String) (toResponse ())
+         , path $ \(id_ :: Int) -> getEntryLink id_
          , dir "res" $ serveDirectory DisableBrowsing [] "../res"
          , dir "notice" $ ok $ toResponse showSiteNotice
          , serveDirectory DisableBrowsing [] "../res"
@@ -68,6 +70,16 @@ tryEntry (Just entry) _ = toResponse $ blogTemplate eLang eTitle $ renderEntry e
         eTitle = T.pack $ ": " ++ title entry
         eLang = lang entry
 
+getEntryLink :: Int -> ServerPart Response
+getEntryLink id_ = do
+    entryJS <- liftIO $ runCouchDB' $ getDoc (db "tazblog") (doc $ show id_)
+    let entry = maybeDoc entryJS
+    seeOther (makeLink entry) (toResponse())
+  where
+    makeLink :: Maybe Entry -> String
+    makeLink (Just e) = concat $ intersperse' "/" [show $ lang e, show $ year e, show $ month e, show $ day e, show id_]
+    makeLink Nothing = "/"
+
 showIndex :: BlogLang -> ServerPart Response
 showIndex lang = do
     entries <- getLatest lang [("descending", showJSON True)]
@@ -90,9 +102,22 @@ showMonth y m lang = do
     endkey = JSArray [toJSON y, toJSON m, JSObject (toJSObject [] )]
 
 addComment :: String -> ServerPart Response
-addComment id_ = undefined
+addComment id_ = do
+  rda <- liftIO $ currentSeconds >>= return
+  nComment <- Comment <$> look "cname"
+                      <*> look "ctext"
+                      <*> pure rda
+  rev <- updateDBDoc (doc id_) $ insertComment nComment
+  liftIO $ putStrLn $ show rev
+  seeOther ("/" ++ id_) (toResponse())
 
 -- http://tazj.in/2012/02/10.155234
+
+currentSeconds :: IO Integer
+currentSeconds = do
+    now <- getCurrentTime
+    let s =  read (formatTime defaultTimeLocale "%s" now) :: Integer
+    return s
 
 -- CouchDB functions
 getLatest :: BlogLang -> [(String, JSValue)] -> ServerPart [Entry]
@@ -105,6 +130,11 @@ getLatest lang arg = do
                 EN -> "latestEN"
                 DE -> "latestDE"
 
+insertComment :: Comment -> JSValue -> IO JSValue
+insertComment c jEntry = return $ toJSON $ e { comments = c : (comments e)}
+  where
+    e = convertJSON jEntry :: Entry
+
 makeQuery :: JSON a => a -> a -> [(String, JSValue)]
 makeQuery qsk qek = [("startkey", (showJSON qsk))
                     ,("endkey", (showJSON qek))]
@@ -116,9 +146,15 @@ maybeDoc :: Data a => Maybe (Doc, Rev, JSValue) -> Maybe a
 maybeDoc (Just(_,_,v)) = Just( stripResult $ fromJSON v)
 maybeDoc Nothing = Nothing
 
+updateDBDoc :: JSON a => Doc -> (a -> IO a) -> ServerPart (Maybe Rev)
+updateDBDoc docn f = liftIO $ runCouchDB' $ getAndUpdateDoc (db "tazblog") docn f
+
 stripResult :: Result a -> a
 stripResult (Ok z) = z
 stripResult (Error s) = error $ "JSON error: " ++ s
+
+convertJSON :: Data a => JSValue -> a
+convertJSON = stripResult . fromJSON
 
 getMonthCount :: BlogLang -> Int -> Int -> ServerPart Int
 getMonthCount lang y m  = do
