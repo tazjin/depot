@@ -40,6 +40,7 @@ tazBlog = do
          , do dir " " $ nullDir
               seeOther ("https://plus.google.com/115916629925754851590" :: String) (toResponse ())
          , path $ \(id_ :: Int) -> getEntryLink id_
+         , path $ \(year :: Int) -> path $ \(month :: Int) -> path $ \(id_ :: String) -> formatOldLink year month id_
          , dir "res" $ serveDirectory DisableBrowsing [] "../res"
          , dir "notice" $ ok $ toResponse showSiteNotice
          , serveDirectory DisableBrowsing [] "../res"
@@ -56,6 +57,11 @@ blogHandler lang =
          , do nullDir
               showIndex lang
          ]
+
+formatOldLink :: Int -> Int -> String -> ServerPart Response
+formatOldLink y m id_ = 
+  flip seeOther (toResponse ()) $ 
+    concat $ intersperse' "/"  ["de", show y, show m, replace '.' '/' id_]
 
 showEntry :: BlogLang -> String -> ServerPart Response
 showEntry lang id_ = do

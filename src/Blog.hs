@@ -14,7 +14,6 @@ import           Text.Blaze.Html5 (Html, (!), a, form, input, p, toHtml, label)
 import           Text.Blaze.Html5.Attributes (action, enctype, href, name, size, type_, value)
 import qualified Text.Blaze.Html5 as H
 import qualified Text.Blaze.Html5.Attributes as A
-import           System.Locale (defaultTimeLocale)
 
 import           Locales
 
@@ -40,8 +39,13 @@ data Entry = Entry{
 blogText :: (a -> String) -> a -> Text
 blogText f = T.pack . f
 
+
+-- custom list functions
 intersperse' :: a -> [a] -> [a]
 intersperse' sep l = sep : intersperse sep l
+
+replace :: Eq a => a -> a -> [a] -> [a]
+replace x y = map (\z -> if z == x then y else z)
 
 blogTemplate :: BlogLang -> Text -> Html -> Html
 blogTemplate lang t_append body = H.docTypeHtml $ do --add body
