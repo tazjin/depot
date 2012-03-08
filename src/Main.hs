@@ -5,7 +5,8 @@
 module Main where
 
 import           Control.Applicative ((<$>), (<*>), optional, pure)
-import           Control.Monad (msum)
+import           Control.Exception (bracket)
+import           Control.Monad (msum, mzero, when, unless)
 import           Control.Monad.State (get, put)
 import           Control.Monad.Reader (ask)
 import           Data.Acid
@@ -49,16 +50,31 @@ querySessions = sessions <$> ask
 
 $(makeAcidic ''SessionState ['addSession, 'querySessions])
 
+guardSession :: AcidState SessionState -> ServerPartT IO ()
+guardSession acid = do
+    sID <- lookCookieValue "session"
+    sDate <- readCookieValue "sdate"
+    cSessions <- query' acid QuerySessions
+    cDate <- liftIO $ currentSeconds
+    when (not $ elem (sID, sDate) cSessions)
+      mzero
+    when (32400 > (cDate - sDate))
+      mzero
+
+{- Server -}
+
 tmpPolicy :: BodyPolicy
 tmpPolicy = (defaultBodyPolicy "./tmp/" 0 1000 1000)
 
 main :: IO()
 main = do
     putStrLn ("TazBlog " ++ version ++ " in Haskell starting")
-    simpleHTTP nullConf tazBlog
+    bracket (openLocalState initialSession)
+            (createCheckpointAndClose) 
+            (\acid -> simpleHTTP nullConf $ tazBlog acid)
 
-tazBlog :: ServerPart Response
-tazBlog = do
+tazBlog :: AcidState SessionState -> ServerPart Response
+tazBlog acid = do
     msum [ dir (show DE) $ blogHandler DE
          , dir (show EN) $ blogHandler EN
          , do nullDir
