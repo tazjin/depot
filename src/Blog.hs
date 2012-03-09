@@ -23,6 +23,11 @@ data Comment = Comment{
     cdate   :: Integer
 } deriving (Show, Data, Typeable)
 
+data Author = Author {
+    username :: String,
+    password :: String
+} deriving (Show, Data, Typeable)
+
 data Entry = Entry{
     _id      :: String,
     year     :: Int,
@@ -196,7 +201,7 @@ adminLogin = H.div ! A.class_ "loginBox" $ do
         H.p $ H.input ! A.type_ "text" ! A.style "font-size: 2;" 
             ! A.name "account" ! A.value "tazjin" ! A.readonly "1"
         H.p $ "Passwort"
-        H.p $ H.input ! A.type_ "password" ! A.style "font-size: 2;" ! A.name "pass"
+        H.p $ H.input ! A.type_ "password" ! A.style "font-size: 2;" ! A.name "password"
 
 -- Error pages
 showError :: BlogError -> BlogLang -> Html

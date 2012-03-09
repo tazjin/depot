@@ -9,10 +9,12 @@ import           Control.Exception (bracket)
 import           Control.Monad (msum, mzero, when, unless)
 import           Control.Monad.State (get, put)
 import           Control.Monad.Reader (ask)
+import qualified Crypto.Hash.SHA512 as SHA
 import           Data.Acid
 import           Data.Acid.Advanced
 import           Data.Acid.Local
-import           Data.ByteString.Char8 (ByteString)
+import qualified Data.ByteString.Base64 as B64 (encode)
+import           Data.ByteString.Char8 (ByteString, pack)
 import           Data.Data (Data, Typeable)
 import           Data.Monoid (mempty)
 import           Data.Text (Text)
@@ -23,20 +25,29 @@ import           Database.CouchDB
 import           Happstack.Server
 import           Network.CGI (liftIO)
 import           Text.JSON.Generic
+import           System.Environment(getEnv)
 import           System.Locale (defaultTimeLocale)
 
 import           Blog
 import           Locales
 
-{-session handling functions-}
-
 data SessionState = SessionState { sessions :: [(String, Integer)] } -- id/date
   deriving (Eq, Ord, Read, Show, Data, Typeable)
 
-$(deriveSafeCopy 0 'base ''SessionState)
-
 initialSession :: SessionState
 initialSession = SessionState []
+
+$(deriveSafeCopy 0 'base ''SessionState)
+
+
+data AccountState = AccountState { accounts :: [Account] }
+  deriving (Read, Show, Data, Typeable)
+
+data Account = Account { account :: String
+                       , password ::  ByteString
+  } deriving (Read, Show, Data, Typeable)
+
+{-session handling functions-}
 
 addSession :: (String, Integer) -> Update SessionState [(String, Integer)]
 addSession newS = do
@@ -49,6 +60,42 @@ querySessions :: Query SessionState [(String, Integer)]
 querySessions = sessions <$> ask
 
 $(makeAcidic ''SessionState ['addSession, 'querySessions])
+$(makeAcidic ''AccountState [])
+{- various functions -}
+
+hashString :: String -> ByteString
+hashString = B64.encode .  SHA.hash . pack
+
+{- Server -}
+
+tmpPolicy :: BodyPolicy
+tmpPolicy = (defaultBodyPolicy "./tmp/" 0 1000 1000)
+
+main :: IO()
+main = do
+    putStrLn ("TazBlog " ++ version ++ " in Haskell starting")
+    tbDir <- getEnv "TAZBLOG"
+    bracket (openLocalStateFrom (tbDir ++ "/State/SessionState") initialAccounts)
+            (createCheckpointAndClose)
+            (\sessionAcid -> bracket (openLocalStateFrom (tbDir ++ "/State/AccountState") )
+                              (createCheckpointAndClose)
+                              (\accountAcid -> simpleHTTP nullConf $ 
+                                tazBlog sessionAcid accountAcid))
+
+
+
+              
+
+initialAccounts :: AccountState
+initialAccounts = []
+
+askAccount :: IO Account
+askAccount = do
+  putStrLn "Enter name for the account:"
+  n <- getLine
+  putStrLn "Enter password for the account:"
+  p <- getLine
+  return $ Account n $ hashString p
 
 guardSession :: AcidState SessionState -> ServerPartT IO ()
 guardSession acid = do
@@ -60,18 +107,6 @@ guardSession acid = do
       mzero
     when (32400 > (cDate - sDate))
       mzero
-
-{- Server -}
-
-tmpPolicy :: BodyPolicy
-tmpPolicy = (defaultBodyPolicy "./tmp/" 0 1000 1000)
-
-main :: IO()
-main = do
-    putStrLn ("TazBlog " ++ version ++ " in Haskell starting")
-    bracket (openLocalState initialSession)
-            (createCheckpointAndClose) 
-            (\acid -> simpleHTTP nullConf $ tazBlog acid)
 
 tazBlog :: AcidState SessionState -> ServerPart Response
 tazBlog acid = do
@@ -85,9 +120,10 @@ tazBlog acid = do
          , path $ \(year :: Int) -> path $ \(month :: Int) -> path $ \(id_ :: String) -> formatOldLink year month id_
          , dir "res" $ serveDirectory DisableBrowsing [] "../res"
          , dir "notice" $ ok $ toResponse showSiteNotice
-         , do adminSession <- lookCookieValue "session"
-              ok $ toResponse ("Eingeloggt" :: String)
+         , do dir "admin" $ guardSession acid
+              adminHandler
          , dir "admin" $ ok $ toResponse $ adminTemplate adminLogin "Login"
+         , dir "dologin" $ processLogin acid
          , serveDirectory DisableBrowsing [] "../res"
          ]
 
@@ -102,6 +138,9 @@ blogHandler lang =
          , do nullDir
               showIndex lang
          ]
+
+adminHandler :: ServerPart Response
+adminHandler = undefined
 
 formatOldLink :: Int -> Int -> String -> ServerPart Response
 formatOldLink y m id_ = 
@@ -162,6 +201,14 @@ addComment id_ = do
   liftIO $ putStrLn $ show rev
   seeOther ("/" ++ id_) (toResponse())
 
+processLogin :: AcidState SessionState -> ServerPart Response
+processLogin acid = do
+    decodeBody tmpPolicy
+    account <- look "account"
+    password <- look "password"
+    ok $ toResponse ("Shut up" :: String)
+
+
 -- http://tazj.in/2012/02/10.155234
 
 currentSeconds :: IO Integer
@@ -170,7 +217,8 @@ currentSeconds = do
     let s =  read (formatTime defaultTimeLocale "%s" now) :: Integer
     return s
 
--- CouchDB functions
+{- CouchDB functions -}
+
 getLatest :: BlogLang -> [(String, JSValue)] -> ServerPart [Entry]
 getLatest lang arg = do
         queryResult <- queryDB view arg
@@ -221,7 +269,7 @@ getMonthCount lang y m  = do
     view EN = "countEN"
 
 
--- CouchDB View Setup
+{- CouchDB View Setup -}
 latestDEView = "function(doc){ if(doc.lang == 'DE'){ emit([doc.year, doc.month, doc.day, doc._id], doc); } }"
 latestENView = "function(doc){ if(doc.lang == 'EN'){ emit([doc.year, doc.month, doc.day, doc._id], doc); } }"
 countDEView  = "function(doc){ if(doc.lang == 'DE'){ emit(['count', doc.year, doc.month, doc.day, doc._id], 1); } }"
@@ -236,3 +284,6 @@ countEN  = ViewMapReduce "countEN" countENView countReduce
 setupBlogViews :: IO ()
 setupBlogViews = runCouchDB' $ 
     newView "tazblog" "entries" [latestDE, latestEN, countDE, countEN]
+
+
+
