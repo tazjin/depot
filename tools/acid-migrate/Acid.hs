@@ -160,7 +160,7 @@ getPost eid =
 latestPosts :: Query Blog [Entry]
 latestPosts =
     do b@Blog{..} <- ask
-       return $ IxSet.toDescList (Proxy :: Proxy UTCTime) $ blogEntries
+       return $ IxSet.toDescList (Proxy :: Proxy EDate) $ blogEntries
 
 addSession :: Text -> User -> UTCTime -> Update Blog Session
 addSession sId u t =
@@ -199,9 +199,10 @@ instance JSON Comment where
     readJSON val = do
         obj <- jsonObject val
         scauthor <- jsonField "cauthor" obj
-        scdate <- jsonField "cdate" obj
-        sctext <- jsonField "cdate" obj
-        return $ Comment (pack scauthor) (pack sctext) (parseSeconds scdate)
+        jsscdate <- jsonField "cdate" obj :: Result JSValue
+        let rcdate = stripResult $ jsonInt jsscdate
+        sctext <- jsonField "ctext" obj
+        return $ Comment (pack scauthor) (pack sctext) (parseSeconds rcdate)
 
 instance JSON Entry where
     showJSON = undefined
@@ -213,11 +214,11 @@ instance JSON Entry where
         month <- jsonField "month" obj
         year <- jsonField "year" obj
         stext <- jsonField "text" obj
-        --comments <- jsonField "comments" obj
+        comments <- jsonField "comments" obj
         oldid <- jsonField "_id" obj
         let leTime = parseShittyTime year month day oldid
         return $ Entry (EntryId $ getUnixTime leTime) DE (pack sauthor) (pack $ stitle \\ "\n") (pack stext) (Text.empty) 
-                        leTime [] []
+                        leTime [] comments
 
 
 getUnixTime :: UTCTime -> Integer
@@ -268,3 +269,9 @@ convertEntries acid = do
     forceHack !x = do
         xy <- pasteToDB acid x
         return $ show xy
+
+testThis :: IO ()
+testThis = do
+  acid <- openLocalState initialBlogState
+  allE <- query' acid LatestPosts
+  putStrLn $ show allE
