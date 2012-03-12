@@ -30,7 +30,7 @@ import qualified Data.Text  as Text
 
 {-CouchDB imports-}
 
-import Database.CouchDB
+import Database.CouchDB hiding (runCouchDB')
 import Database.CouchDB.JSON
 import Text.JSON
 import Data.List (intersperse)
@@ -187,6 +187,10 @@ $(makeAcidic ''Blog
 	])
 
 -- CouchDB database functions
+
+runCouchDB' :: CouchMonad a -> IO a
+runCouchDB' = runCouchDB "hackbox.local" 5984
+
 instance JSON Comment where
 	showJSON = undefined
 	readJSON val = do
@@ -207,7 +211,7 @@ instance JSON Entry where
 		year <- jsonField "year" obj
 		stext <- jsonField "text" obj
 		comments <- jsonField "comments" obj
-		oldid <- jsonField "id_" obj
+		oldid <- jsonField "_id" obj
 		let leTime = parseShittyTime year month day oldid
 		return $ Entry (EntryId $ getUnixTime leTime) DE (pack sauthor) (pack stitle) (pack stext) (Text.empty) 
 						leTime [] comments
@@ -255,4 +259,5 @@ main = do
 convertEntries acid = do
 	entries <- parseOldEntries
 	let x = map (pasteToDB acid) entries
-	putStrLn "Conversion successful"
+	let titles = map (title) entries
+	putStrLn $ show titles
