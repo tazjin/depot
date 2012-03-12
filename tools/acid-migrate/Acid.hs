@@ -261,10 +261,10 @@ main = do
 
 convertEntries acid = do
     entries <- parseOldEntries
-    let x = map (pasteToDB acid) entries
-    let y = map forceHack x
-    putStrLn $ show entries
+    let r =  map forceHack entries
+    rs <- sequence r
+    putStrLn $ show rs
   where
     forceHack !x = do
-        xy <- x
-        return x
+        xy <- pasteToDB acid x
+        return $ show xy
