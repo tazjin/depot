@@ -27,13 +27,13 @@ import           System.Environment(getEnv)
 import           System.Locale (defaultTimeLocale)
 
 import           Blog
-import           BlogDB hiding (addComment)
+import           BlogDB hiding (addComment, updateEntry)
 import           Locales
 
 {- Server -}
 
 tmpPolicy :: BodyPolicy
-tmpPolicy = (defaultBodyPolicy "./tmp/" 0 1000 1000)
+tmpPolicy = (defaultBodyPolicy "./tmp/" 0 200000 1000)
 
 main :: IO()
 main = do
@@ -44,7 +44,7 @@ main = do
             (\acid -> simpleHTTP nullConf $ tazBlog acid)
 
 tazBlog :: AcidState Blog -> ServerPart Response
-tazBlog acid = do
+tazBlog acid =
     msum [ dir (show DE) $ blogHandler acid DE
          , dir (show EN) $ blogHandler acid EN
          , do nullDir
@@ -55,8 +55,8 @@ tazBlog acid = do
          , dir "res" $ serveDirectory DisableBrowsing [] "../res"
          , dir "notice" $ ok $ toResponse showSiteNotice
          , do dir "admin" $ guardSession acid
-              adminHandler
-         , dir "admin" $ ok $ toResponse $ adminTemplate adminLogin "Login"
+              adminHandler acid
+         , dir "admin" $ ok $ toResponse $ adminLogin 
          , dir "dologin" $ processLogin acid
          , serveDirectory DisableBrowsing [] "../res"
          ]
@@ -64,28 +64,12 @@ tazBlog acid = do
 blogHandler :: AcidState Blog -> BlogLang -> ServerPart Response
 blogHandler acid lang = 
     msum [ path $ \(eId :: Integer) -> showEntry acid lang $ EntryId eId
-         , do
-            decodeBody tmpPolicy
-            dir "postcomment" $ path $ 
-              \(eId :: Integer) -> addComment acid $ EntryId eId
+         , do decodeBody tmpPolicy
+              dir "postcomment" $ path $ 
+                \(eId :: Integer) -> addComment acid lang $ EntryId eId
          , do nullDir
               showIndex acid lang
          ]
-
-guardSession :: AcidState Blog -> ServerPartT IO ()
-guardSession acid = do
-    (sId :: Text) <- readCookieValue "session"
-    (Just Session{..}) <- query' acid (GetSession $ SessionID sId)
-    (uName :: Text) <- readCookieValue "sUser"
-    now <- liftIO $ getCurrentTime
-    unless (and [uName == username user, sessionTimeDiff now sdate])
-      mzero
-  where
-    sessionTimeDiff :: UTCTime -> UTCTime -> Bool
-    sessionTimeDiff now sdate = (diffUTCTime now sdate) > 43200
-
-adminHandler :: ServerPart Response
-adminHandler = undefined
 
 formatOldLink :: Int -> Int -> String -> ServerPart Response
 formatOldLink y m id_ = 
@@ -115,14 +99,79 @@ showIndex acid lang = do
     eDrop (Just i) = drop ((i-1) * 6)
     eDrop Nothing = drop 0 
 
-addComment :: AcidState Blog -> EntryId -> ServerPart Response
-addComment acid eId = do
+addComment :: AcidState Blog -> BlogLang -> EntryId -> ServerPart Response
+addComment acid lang eId = do
   now <- liftIO $ getCurrentTime >>= return
-  nComment <- Comment <$> lookText' "cname"
+  nComment <- Comment <$> pure now
+                      <*> lookText' "cname"
                       <*> lookText' "ctext"
-                      <*> pure now
   update' acid (AddComment eId nComment)
-  seeOther ("/" ++ show eId) (toResponse())
+  seeOther ("/" ++ show lang ++ "/" ++ show eId) (toResponse())
+
+{- ADMIN stuff -}
+
+adminHandler :: AcidState Blog -> ServerPart Response
+adminHandler acid = 
+  msum [ dir "postentry" $ postEntry acid
+       , dir "entrylist" $ dir (show DE) $ entryList DE
+       , dir "entrylist" $ dir (show EN) $ entryList EN
+       , dir "edit" $ path $ \(eId :: Integer) -> editEntry eId 
+       , dir "doedit" $ updateEntry 
+       , ok $ toResponse $ adminIndex ("tazjin" :: Text) --User NYI
+       ]
+
+updateEntry :: ServerPart Response
+updateEntry = undefined
+
+postEntry :: AcidState Blog -> ServerPart Response
+postEntry acid = do
+    liftIO $ putStrLn "postEntry called"
+    --decodeBody tmpPolicy
+    now <- liftIO $ getCurrentTime
+    let eId = timeToId now
+    lang <- lookText' "lang"
+    nEntry <- Entry <$> pure eId
+                    <*> getLang lang
+                    <*> lookText' "author"
+                    <*> lookText' "title"
+                    <*> lookText' "btext"
+                    <*> lookText' "mtext"
+                    <*> pure now
+                    <*> pure [] -- NYI
+                    <*> pure []
+    update' acid (InsertEntry nEntry)
+    seeOther ("/" ++ (T.unpack lang) ++ "/" ++ show eId) (toResponse())
+  where
+    timeToId :: UTCTime -> EntryId
+    timeToId t = EntryId . read $ formatTime defaultTimeLocale "%s" t
+    getLang :: Text -> ServerPart BlogLang
+    getLang "de" = return DE
+    getLang "en" = return EN
+
+
+entryList :: BlogLang -> ServerPart Response
+entryList lang = undefined
+
+editEntry :: Integer -> ServerPart Response
+editEntry i = undefined
+  where
+    eId = EntryId i
+
+guardSession :: AcidState Blog -> ServerPartT IO ()
+guardSession acid = do
+    (sId :: Text) <- readCookieValue "session"
+    (uName :: Text) <- readCookieValue "sUser"
+    now <- liftIO $ getCurrentTime
+    mS <- query' acid (GetSession $ SessionID sId)
+    case mS of
+      Nothing -> mzero
+      (Just Session{..}) -> unless (and [ uName == username user
+                                        , sessionTimeDiff now sdate])
+                                    mzero
+  where
+    sessionTimeDiff :: UTCTime -> UTCTime -> Bool
+    sessionTimeDiff now sdate = (diffUTCTime now sdate) < 43200
+
 
 processLogin :: AcidState Blog -> ServerPart Response
 processLogin acid = do
@@ -132,7 +181,7 @@ processLogin acid = do
     login <- query' acid (CheckUser (Username account) password)
     if' login
       (createSession account)
-      (ok $ toResponse $ adminTemplate adminLogin "Login failed")
+      (ok $ toResponse $ adminLogin)
   where
     createSession account = do
       now <- liftIO getCurrentTime

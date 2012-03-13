@@ -40,10 +40,10 @@ instance Show BlogLang where
 
 $(deriveSafeCopy 0 'base ''BlogLang)
 
-data Comment = Comment { 
+data Comment = Comment {
+    cdate   :: UTCTime,
     cauthor :: Text,
-    ctext   :: Text,
-    cdate   :: UTCTime
+    ctext   :: Text
 } deriving (Eq, Ord, Show, Data, Typeable)
 
 $(deriveSafeCopy 0 'base ''Comment)
@@ -221,11 +221,18 @@ interactiveUserAdd = do
   putStrLn "Password:"
   pw <- getLine
   update' acid (AddUser (pack un) pw)
-  createCheckpointAndClose acid
+  closeAcidState acid
 
 flushSessions :: IO ()
 flushSessions = do
   tbDir <- getEnv "TAZBLOG"
   acid <- openLocalStateFrom (tbDir ++ "/BlogState") initialBlogState
   update' acid (ClearSessions)
-  createCheckpointAndClose acid
+  closeAcidState acid
+
+archiveState :: IO ()
+archiveState = do
+    tbDir <- getEnv "TAZBLOG"
+    acid <- openLocalStateFrom (tbDir ++ "/BlogState") initialBlogState
+    createArchive acid
+    closeAcidState acid

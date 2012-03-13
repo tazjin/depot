@@ -155,8 +155,8 @@ showSiteNotice = H.docTypeHtml $ do
 
 {- Administration pages -}
 
-adminTemplate :: Html -> Text -> Html
-adminTemplate body title = H.docTypeHtml $ do
+adminTemplate :: Text -> Html -> Html
+adminTemplate title body = H.docTypeHtml $ do
     H.head $ do
         H.link ! A.rel "stylesheet" ! A.type_ "text/css" ! A.href "/res/admin.css" ! A.media "all"
         H.meta ! A.httpEquiv "content-type" ! A.content "text/html;charset=UTF-8"
@@ -165,7 +165,8 @@ adminTemplate body title = H.docTypeHtml $ do
         body
 
 adminLogin :: Html
-adminLogin = H.div ! A.class_ "loginBox" $ do
+adminLogin = adminTemplate "Login" $
+  H.div ! A.class_ "loginBox" $ do
     H.div ! A.class_ "loginBoxTop" $ "TazBlog Admin: Login"
     H.div ! A.class_ "loginBoxMiddle" $ H.form ! A.action "/dologin" ! A.method "post" $ do
         H.p $ "Account ID"
@@ -174,6 +175,26 @@ adminLogin = H.div ! A.class_ "loginBox" $ do
         H.p $ "Passwort"
         H.p $ H.input ! A.type_ "password" ! A.style "font-size: 2;" ! A.name "password"
         H.p $ H.input ! A.alt "Anmelden" ! A.type_ "image" ! A.src "/res/signin.gif"
+
+adminIndex :: Text -> Html
+adminIndex sUser = adminTemplate "Index" $
+  H.div ! A.style "float: center;" $
+    H.form ! A.action "/admin/postentry" ! A.method "POST" $ do
+      H.table $ do
+        H.tr $ do H.td $ "Titel:"
+                  H.td $ H.input ! A.type_ "text" ! A.name "title"
+        H.tr $ do H.td $ "Sprache:"
+                  H.td $ H.select ! A.name "lang" $ do
+                    H.option ! A.value "de" $ "Deutsch"
+                    H.option ! A.value "en" $ "Englisch"
+        H.tr $ do H.td ! A.style "vertical-align: top;" $ "Text:"
+                  H.td $ H.textarea ! A.name "btext" ! A.cols "100" ! A.rows "15" $ mempty
+        H.tr $ do H.td ! A.style "vertical-align: top;" $ "Mehr Text:"
+                  H.td $ H.textarea ! A.name "mtext" ! A.cols "100" ! A.rows "15" $ mempty
+      H.input ! A.type_ "hidden" ! A.name "author" ! A.value (toValue sUser)
+      H.input ! A.style "margin-left: 20px" ! A.type_ "submit" ! A.value "Absenden"
+      H.p $ do preEscapedText "<a href=/>Startseite</a> -- Entrylist: <a href=/admin/entrylist/de>DE</a>"
+               preEscapedText " & <a href=/admin/entrylist/en>EN</a> -- <a href=#>Backup</a> (NYI)"
 
 -- Error pages
 showError :: BlogError -> BlogLang -> Html

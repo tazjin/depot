@@ -54,10 +54,10 @@ instance Show BlogLang where
 
 $(deriveSafeCopy 0 'base ''BlogLang)
 
-data Comment = Comment { 
+data Comment = Comment {
+    cdate   :: UTCTime,
     cauthor :: Text,
-    ctext   :: Text,
-    cdate   :: UTCTime
+    ctext   :: Text
 } deriving (Eq, Ord, Show, Data, Typeable)
 
 $(deriveSafeCopy 0 'base ''Comment)
@@ -203,7 +203,7 @@ instance JSON Comment where
         jsscdate <- jsonField "cdate" obj :: Result JSValue
         let rcdate = stripResult $ jsonInt jsscdate
         sctext <- jsonField "ctext" obj
-        return $ Comment (pack scauthor) (pack sctext) (parseSeconds rcdate)
+        return $ Comment (parseSeconds rcdate) (pack scauthor) (pack sctext)
 
 instance JSON Entry where
     showJSON = undefined
