@@ -1,4 +1,3 @@
 * handle BlogErrors
 * fix sessions
 * add readMore link
-* add flushSessions :: IO()

@@ -168,6 +168,12 @@ getSession sId =
   do b@Blog{..} <- ask
      return $ getOne $ blogSessions @= sId
 
+clearSessions :: Update Blog [Session]
+clearSessions =
+  do b@Blog{..} <- get
+     put $ b { blogSessions = empty }
+     return []
+
 addUser :: Text -> String -> Update Blog User
 addUser un pw =
     do b@Blog{..} <- get
@@ -203,6 +209,7 @@ $(makeAcidic ''Blog
     , 'addUser
     , 'getUser
     , 'checkUser
+    , 'clearSessions
     ])
 
 interactiveUserAdd :: IO ()
@@ -214,4 +221,11 @@ interactiveUserAdd = do
   putStrLn "Password:"
   pw <- getLine
   update' acid (AddUser (pack un) pw)
+  createCheckpointAndClose acid
+
+flushSessions :: IO ()
+flushSessions = do
+  tbDir <- getEnv "TAZBLOG"
+  acid <- openLocalStateFrom (tbDir ++ "/BlogState") initialBlogState
+  update' acid (ClearSessions)
   createCheckpointAndClose acid
