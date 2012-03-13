@@ -1,0 +1,31 @@
+Name:                TazBlog
+Version:             3.0
+Synopsis:            Tazjin's Blog
+License-file:        LICENSE
+Author:              Vincent Ambo
+Maintainer:          tazjin@gmail.com
+Category:            Web blog
+Build-type:          Simple
+cabal-version:       >= 1.2
+
+
+Executable tazblog
+  hs-source-dirs: src
+  main-is: Main.hs
+
+  Build-depends:
+    base,
+    bytestring,
+    happstack-server,
+    text,
+    blaze-html,
+    crypto-api,
+    cryptohash,
+    old-locale,
+    time,
+    base64-bytestring,
+    acid-state,
+    ixset,
+    safecopy,
+    mtl,
+    transformers

@@ -7,6 +7,7 @@ module Main where
 import           Control.Applicative ((<$>), (<*>), optional, pure)
 import           Control.Exception (bracket)
 import           Control.Monad (msum, mzero, when, unless)
+import           Control.Monad.IO.Class (liftIO)
 import           Control.Monad.State (get, put)
 import           Control.Monad.Reader (ask)
 import qualified Crypto.Hash.SHA512 as SHA
@@ -22,7 +23,6 @@ import qualified Data.Text as T
 import           Data.Time
 import           Data.SafeCopy (base, deriveSafeCopy)
 import           Happstack.Server hiding (Session)
-import           Network.CGI (liftIO)
 import           System.Environment(getEnv)
 import           System.Locale (defaultTimeLocale)
 
