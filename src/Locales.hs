@@ -6,17 +6,12 @@ import           Data.Data (Data, Typeable)
 import           Data.Text (Text)
 import qualified Data.Text as T
 
+import    BlogDB (BlogLang (..))
+
 {- to add a language simply define its abbreviation and Show instance then
  - translate the appropriate strings and add CouchDB views in Server.hs -}
 
-data BlogLang = EN | DE deriving (Data, Typeable)
-
-instance Show BlogLang where
-    show EN = "en"
-    show DE = "de"
-
 data BlogError = NotFound | DBError
-
 
 version = "2.2b"
 
@@ -76,6 +71,10 @@ backText EN = "Earlier"
 nextText :: BlogLang -> Text
 nextText DE = "Später"
 nextText EN = "Later"
+
+readMore :: BlogLang -> Text
+readMore DE = "[Weiterlesen]"
+readMore EN = "[Read more]"
 
 -- contact information
 contactText :: BlogLang -> Text

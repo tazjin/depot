@@ -1,26 +1,22 @@
 {-# LANGUAGE DeriveDataTypeable, GeneralizedNewtypeDeriving, RecordWildCards, 
 TemplateHaskell, TypeFamilies, OverloadedStrings, ScopedTypeVariables, BangPatterns #-}
 
-module Main where
-import Control.Applicative  ((<$>), optional)
-import Control.Exception    (bracket)
-import Control.Monad        (msum, mzero)
-import Control.Monad.IO.Class (MonadIO)
+module BlogDB where
+
 import Control.Monad.Reader (ask)
 import Control.Monad.State  (get, put)
-import Control.Monad.Trans  (liftIO)
 import Data.Acid
 import Data.Acid.Advanced 
 import Data.Acid.Local
 import Data.ByteString      (ByteString)
 import Data.Data            (Data, Typeable)
 import Data.IxSet           (Indexable(..), IxSet(..), (@=), Proxy(..), getOne, ixFun, ixSet)
+import Data.List 			(insert)
 import Data.SafeCopy        (SafeCopy, base, deriveSafeCopy)
 import Data.Text            (Text, pack)
 import Data.Text.Lazy       (toStrict)
 import Data.Time
-import           System.Environment(getEnv)
-
+import Happstack.Server 	(ServerPart)
 
 import qualified Crypto.Hash.SHA512 as SHA (hash)
 import qualified Data.ByteString.Char8 as B
@@ -28,16 +24,6 @@ import qualified Data.ByteString.Base64 as B64 (encode)
 import qualified Data.IxSet as IxSet
 import qualified Data.Text  as Text
 
-
-{-CouchDB imports-}
-
-import Database.CouchDB hiding (runCouchDB')
-import Database.CouchDB.JSON
-import Text.JSON
-import Data.List (intersperse, (\\))
-import System.Locale (defaultTimeLocale)
-
--- data types and acid-state setup
 
 newtype EntryId = EntryId { unEntryId :: Integer }
     deriving (Eq, Ord, Data, Enum, Typeable, SafeCopy)
@@ -147,21 +133,29 @@ insertEntry e =
        put $ b { blogEntries = IxSet.insert e blogEntries }
        return e
 
+addComment :: EntryId -> Comment -> Update Blog Entry
+addComment eId c =
+	do b@Blog{..} <- get
+	   let (Just e) = getOne $ blogEntries @= eId
+	   let newEntry = e { comments = insert c $ comments e }
+	   put $ b { blogEntries = IxSet.updateIx eId newEntry blogEntries }
+	   return newEntry
+
 updateEntry :: Entry -> Update Blog Entry
 updateEntry e = 
     do b@Blog{..} <- get
        put $ b { blogEntries = IxSet.updateIx (entryId e) e blogEntries}
        return e
 
-getPost :: EntryId -> Query Blog (Maybe Entry)
-getPost eid =
+getEntry :: EntryId -> Query Blog (Maybe Entry)
+getEntry eId =
     do b@Blog{..} <- ask
-       return $ getOne $ blogEntries @= eid
+       return $ getOne $ blogEntries @= eId
 
-latestPosts :: Query Blog [Entry]
-latestPosts =
+latestEntries :: BlogLang -> Query Blog [Entry]
+latestEntries lang =
     do b@Blog{..} <- ask
-       return $ IxSet.toDescList (Proxy :: Proxy EDate) $ blogEntries
+       return $ IxSet.toDescList (Proxy :: Proxy EDate) $ blogEntries @= lang
 
 addSession :: Text -> User -> UTCTime -> Update Blog Session
 addSession sId u t =
@@ -170,6 +164,11 @@ addSession sId u t =
        put $ b { blogSessions = IxSet.insert s blogSessions}
        return s
 
+getSession :: SessionID -> Query Blog (Maybe Session)
+getSession sId =
+  do b@Blog{..} <- ask
+     return $ getOne $ blogSessions @= sId
+
 addUser :: Text -> String -> Update Blog User
 addUser un pw =
     do b@Blog{..} <- get
@@ -177,103 +176,33 @@ addUser un pw =
        put $ b { blogUsers = IxSet.insert u blogUsers}
        return u
 
+getUser :: Username -> Query Blog (Maybe User)
+getUser uN =
+  do b@Blog{..} <- ask
+     return $ getOne $ blogUsers @= uN
+
+checkUser :: Username -> String -> Query Blog (Bool)
+checkUser uN pw =
+  do b@Blog{..} <- ask
+     let user = getOne $ blogUsers @= uN
+     case user of
+       Nothing  -> return False
+       (Just u) -> return $ (password u) == hashString pw
+
 -- various functions
 hashString :: String -> ByteString
 hashString = B64.encode .  SHA.hash . B.pack
 
 $(makeAcidic ''Blog
     [ 'insertEntry
+    , 'addComment
     , 'updateEntry
-    , 'getPost
-    , 'latestPosts
+    , 'getEntry
+    , 'latestEntries
     , 'addSession
+    , 'getSession
     , 'addUser
+    , 'getUser
+    , 'checkUser
     ])
 
--- CouchDB database functions
-
-runCouchDB' :: CouchMonad a -> IO a
-runCouchDB' = runCouchDB "127.0.0.1" 5984
-
-instance JSON Comment where
-    showJSON = undefined
-    readJSON val = do
-        obj <- jsonObject val
-        scauthor <- jsonField "cauthor" obj
-        jsscdate <- jsonField "cdate" obj :: Result JSValue
-        let rcdate = stripResult $ jsonInt jsscdate
-        sctext <- jsonField "ctext" obj
-        return $ Comment (pack scauthor) (pack sctext) (parseSeconds rcdate)
-
-instance JSON Entry where
-    showJSON = undefined
-    readJSON val = do
-        obj <- jsonObject val
-        sauthor <- jsonField "author" obj
-        stitle <- jsonField "title" obj
-        day <- jsonField "day" obj
-        month <- jsonField "month" obj
-        year <- jsonField "year" obj
-        stext <- jsonField "text" obj
-        comments <- jsonField "comments" obj
-        oldid <- jsonField "_id" obj
-        let leTime = parseShittyTime year month day oldid
-        return $ Entry (EntryId $ getUnixTime leTime) DE (pack sauthor) (pack $ stitle \\ "\n") (pack stext) (Text.empty) 
-                        leTime [] comments
-
-
-getUnixTime :: UTCTime -> Integer
-getUnixTime t = read $ formatTime defaultTimeLocale "%s" t
-
-parseSeconds :: Integer -> UTCTime
-parseSeconds t = readTime defaultTimeLocale "%s" $ show t
-
-parseShittyTime :: Int -> Int -> Int -> String -> UTCTime
-parseShittyTime y m d i = readTime defaultTimeLocale "%Y %m %e  %k:%M:%S" newPartTime
-    where
-        firstPart = take 2 i
-        secondPart = take 2 $ drop 2 i
-        thirdPart = drop 4 i
-        newPartTime =  concat $ intersperse " " [show y, showMonth m, show d, " "] ++ 
-                        intersperse ":" [firstPart, secondPart, thirdPart]
-        showMonth mn  
-                | mn < 10 = "0" ++ show mn
-                | otherwise = show mn
-
-getOldEntries = runCouchDB' $ queryView (db "tazblog") (doc "entries") (doc "latestDE") []
-
-parseOldEntries :: IO [Entry]
-parseOldEntries = do
-    queryResult <- getOldEntries
-    let entries = map (stripResult . readJSON . snd) queryResult
-    return entries
-
-stripResult :: Result a -> a
-stripResult (Ok z) = z
-stripResult (Error s) = error $ "JSON error: " ++ s
-
-pasteToDB :: AcidState Blog -> Entry -> IO (EventResult InsertEntry)
-pasteToDB acid !e = update' acid (InsertEntry e)
-
-main :: IO()
-main = do
-    tbDir <- getEnv "TAZBLOG"
-    bracket (openLocalStateFrom (tbDir ++ "/BlogState") initialBlogState)
-            (createCheckpointAndClose)
-            (\acid -> convertEntries acid)
-
-convertEntries acid = do
-    entries <- parseOldEntries
-    let r =  map forceHack entries
-    rs <- sequence r
-    putStrLn $ show rs
-  where
-    forceHack !x = do
-        xy <- pasteToDB acid x
-        return $ show xy
-
-testThis :: IO ()
-testThis = do
-  acid <- openLocalState initialBlogState
-  allE <- query' acid LatestPosts
-  putStrLn $ show allE

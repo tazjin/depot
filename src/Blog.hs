@@ -1,4 +1,4 @@
-{-# LANGUAGE OverloadedStrings, ScopedTypeVariables, DeriveDataTypeable #-}
+{-# LANGUAGE OverloadedStrings, ScopedTypeVariables, DeriveDataTypeable, RecordWildCards #-}
 
 module Blog where
 
@@ -16,34 +16,7 @@ import qualified Text.Blaze.Html5 as H
 import qualified Text.Blaze.Html5.Attributes as A
 
 import           Locales
-
-data Comment = Comment{
-    cauthor :: String,
-    ctext   :: String,
-    cdate   :: Integer
-} deriving (Show, Data, Typeable)
-
-data Author = Author {
-    username :: String,
-    password :: String
-} deriving (Show, Data, Typeable)
-
-data Entry = Entry{
-    _id      :: String,
-    year     :: Int,
-    month    :: Int,
-    day      :: Int,
-    lang     :: BlogLang,
-    title    :: String,
-    author   :: String,
-    text     :: String,
-    mtext    :: String,
-    comments :: [Comment]
-} deriving (Show, Data, Typeable)
-
-blogText :: (a -> String) -> a -> Text
-blogText f = T.pack . f
-
+import           BlogDB
 
 -- custom list functions
 intersperse' :: a -> [a] -> [a]
@@ -99,29 +72,29 @@ renderEntries showAll entries topText footerLinks =
         showEntry :: Entry -> Html
         showEntry e = H.li $ do 
             entryLink e
-            preEscapedText $ T.concat [" ", blogText text e, "<br>&nbsp;</br>"]
+            preEscapedText $ T.concat [" ", btext e, "<br>&nbsp;</br>"]
         entryLink e = H.a ! A.href (toValue $ concat $ intersperse' "/" $ linkElems e) $
                         toHtml ("[" ++ show(length $ comments e) ++ "]")
-        linkElems e = [show(lang e), show(year e), show(month e), show(day e), _id e]
+        linkElems e = [show(lang e), show $ entryId e]
         getFooterLinks (Just h) = h
         getFooterLinks Nothing = mempty
 
 renderEntry :: Entry -> Html
-renderEntry entry = H.div ! A.class_ "innerBox" $ do
-    H.div ! A.class_ "innerBoxTop" $ toHtml $ title entry
+renderEntry (Entry{..}) = H.div ! A.class_ "innerBox" $ do
+    H.div ! A.class_ "innerBoxTop" $ toHtml $ title
     H.div ! A.class_ "innerBoxMiddle" $ do
         H.article $ H.ul $ H.li $ do
-            preEscapedText $ blogText text entry
-            preEscapedText $ blogText mtext entry
+            preEscapedText $ btext
+            preEscapedText $ mtext
         H.div ! A.class_ "innerBoxComments" $ do
-            H.div ! A.class_ "cHead" $ toHtml $ cHead (lang entry) -- ! A.style "font-size:large;font-weight:bold;"
-            H.ul $ renderComments (comments entry) (lang entry)
-            renderCommentBox (lang entry) (_id entry)
+            H.div ! A.class_ "cHead" $ toHtml $ cHead lang -- ! A.style "font-size:large;font-weight:bold;"
+            H.ul $ renderComments comments lang
+            renderCommentBox lang entryId
 
-renderCommentBox :: BlogLang -> String -> Html
+renderCommentBox :: BlogLang -> EntryId -> Html
 renderCommentBox cLang cId = do
     H.div ! A.class_ "cHead" $ toHtml $ cwHead cLang
-    H.form ! A.method "POST" ! A.action (toValue $ "/" ++ (show cLang) ++  "/postcomment/" ++ cId) $ do
+    H.form ! A.method "POST" ! A.action (toValue $ "/" ++ (show cLang) ++  "/postcomment/" ++ show cId) $ do
         H.p $ H.label $ do
             H.span $ "Name:" --toHtml ("Name:" :: String)
             H.input ! A.name "cname"
@@ -135,16 +108,11 @@ renderComments [] lang = H.li $ toHtml $ noComments lang
 renderComments comments lang = sequence_ $ map showComment comments
     where
         showComment :: Comment -> Html
-        showComment c = H.li $ do
-            H.a ! A.name (toValue $ cdate c) ! A.href (toValue $ "#" ++ (show $ cdate c)) ! A.class_ "cl" $
-               H.i $ toHtml $ (cauthor c ++ ": ")
-            preEscapedText $ blogText ctext c
-            H.p ! A.class_ "tt" $ toHtml (timeString $ cdate c)
-        getTime :: Integer -> Maybe UTCTime
-        getTime t = parseTime defaultTimeLocale "%s" (show t)
-        showTime lang (Just t) = formatTime defaultTimeLocale (cTimeFormat lang) t
-        showTime _ Nothing = "[???]" -- this can not happen??
-        timeString = (showTime lang) . getTime
+        showComment (Comment{..}) = H.li $ do
+            H.i $ toHtml $ T.append cauthor ": "
+            preEscapedText $ ctext
+            H.p ! A.class_ "tt" $ toHtml $ timeString cdate
+        timeString t = formatTime defaultTimeLocale (cTimeFormat lang) t
 
 showLinks :: Maybe Int -> BlogLang -> Html
 showLinks (Just i) lang
@@ -161,7 +129,7 @@ showFooter l v = H.div ! A.class_ "rightbox" ! A.style "text-align:right;" $ do
     toHtml ("Proudly made with " :: Text)
     H.a ! A.href "http://haskell.org" $ "Haskell"
     toHtml (", " :: Text)
-    H.a ! A.href "http://couchdb.apache.org/" $ "CouchDB"
+    H.a ! A.href "http://hackage.haskell.org/package/acid-state-0.6.3" $ "Acid-State"
     toHtml (" and without PHP, Java, Perl, MySQL and Python." :: Text)
     H.br
     H.a ! A.href (toValue repoURL) $ toHtml $ T.append "Version " v
