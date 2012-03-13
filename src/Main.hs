@@ -14,7 +14,7 @@ import           Data.Acid
 import           Data.Acid.Advanced
 import           Data.Acid.Local
 import qualified Data.ByteString.Base64 as B64 (encode)
-import           Data.ByteString.Char8 (ByteString, pack)
+import           Data.ByteString.Char8 (ByteString, pack, unpack)
 import           Data.Data (Data, Typeable)
 import           Data.Monoid (mempty)
 import           Data.Text (Text)
@@ -50,7 +50,7 @@ tazBlog acid = do
          , do nullDir
               showIndex acid DE
          , do dir " " $ nullDir
-              seeOther ("https://plus.google.com/115916629925754851590" :: String) (toResponse ())
+              seeOther ("https://plus.google.com/115916629925754851590" :: Text) (toResponse ())
          , path $ \(year :: Int) -> path $ \(month :: Int) -> path $ \(id_ :: String) -> formatOldLink year month id_
          , dir "res" $ serveDirectory DisableBrowsing [] "../res"
          , dir "notice" $ ok $ toResponse showSiteNotice
@@ -131,7 +131,16 @@ processLogin acid = do
     password <- look "password"
     login <- query' acid (CheckUser (Username account) password)
     if' login
-      (addSessionCookie account)
-      (ok $ toResponse $ ("Fail?" :: Text))
+      (createSession account)
+      (ok $ toResponse $ adminTemplate adminLogin "Login failed")
   where
-    addSessionCookie = undefined
+    createSession account = do
+      now <- liftIO getCurrentTime
+      let sId = hashString $ show now
+      addCookie (MaxAge 43200) (mkCookie "session" $ unpack sId)
+      addCookie (MaxAge 43200) (mkCookie "sUser" $ T.unpack account)
+      (Just user) <- query' acid (GetUser $ Username account)
+      let nSession = Session (T.pack $ unpack sId) user now
+      update' acid (AddSession nSession)
+      seeOther ("/admin?do=login" :: Text) (toResponse())
+

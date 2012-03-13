@@ -117,12 +117,15 @@ renderComments comments lang = sequence_ $ map showComment comments
 showLinks :: Maybe Int -> BlogLang -> Html
 showLinks (Just i) lang
     | ( i > 1) = H.div ! A.class_ "centerbox" $ do
-        H.a ! A.href (toValue $ "/?page=" ++ show (i+1)) $ toHtml $ backText lang
+        H.a ! A.href (toValue $ "/" ++ show lang ++ "/?page=" ++ show (i+1)) $ 
+                                toHtml $ backText lang
         toHtml (" -- " :: Text)
-        H.a ! A.href (toValue $ "/?page=" ++ show (i-1)) $ toHtml $ nextText lang
+        H.a ! A.href (toValue $ "/" ++ show lang ++ "/?page=" ++ show (i-1)) $
+                                toHtml $ nextText lang
     | ( i <= 1 ) = showLinks Nothing lang 
 showLinks Nothing lang = H.div ! A.class_ "centerbox" $
-    H.a ! A.href "/?page=2" $ toHtml $  backText lang
+    H.a ! A.href (toValue $ "/" ++ show lang ++ "/?page=2") $ 
+                                toHtml $  backText lang
 
 showFooter :: BlogLang -> Text -> Html
 showFooter l v = H.div ! A.class_ "rightbox" ! A.style "text-align:right;" $ do
@@ -164,12 +167,13 @@ adminTemplate body title = H.docTypeHtml $ do
 adminLogin :: Html
 adminLogin = H.div ! A.class_ "loginBox" $ do
     H.div ! A.class_ "loginBoxTop" $ "TazBlog Admin: Login"
-    H.div ! A.class_ "loginBoxMiddle" $ H.form ! A.action "/login" ! A.method "post" $ do
+    H.div ! A.class_ "loginBoxMiddle" $ H.form ! A.action "/dologin" ! A.method "post" $ do
         H.p $ "Account ID"
         H.p $ H.input ! A.type_ "text" ! A.style "font-size: 2;" 
             ! A.name "account" ! A.value "tazjin" ! A.readonly "1"
         H.p $ "Passwort"
         H.p $ H.input ! A.type_ "password" ! A.style "font-size: 2;" ! A.name "password"
+        H.p $ H.input ! A.alt "Anmelden" ! A.type_ "image" ! A.src "/res/signin.gif"
 
 -- Error pages
 showError :: BlogError -> BlogLang -> Html

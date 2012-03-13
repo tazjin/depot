@@ -16,7 +16,7 @@ import Data.SafeCopy        (SafeCopy, base, deriveSafeCopy)
 import Data.Text            (Text, pack)
 import Data.Text.Lazy       (toStrict)
 import Data.Time
-import Happstack.Server 	(ServerPart)
+import System.Environment(getEnv)
 
 import qualified Crypto.Hash.SHA512 as SHA (hash)
 import qualified Data.ByteString.Char8 as B
@@ -157,12 +157,11 @@ latestEntries lang =
     do b@Blog{..} <- ask
        return $ IxSet.toDescList (Proxy :: Proxy EDate) $ blogEntries @= lang
 
-addSession :: Text -> User -> UTCTime -> Update Blog Session
-addSession sId u t =
+addSession :: Session -> Update Blog Session
+addSession nSession =
     do b@Blog{..} <- get
-       let s = Session sId u t
-       put $ b { blogSessions = IxSet.insert s blogSessions}
-       return s
+       put $ b { blogSessions = IxSet.insert nSession blogSessions}
+       return nSession
 
 getSession :: SessionID -> Query Blog (Maybe Session)
 getSession sId =
@@ -206,3 +205,13 @@ $(makeAcidic ''Blog
     , 'checkUser
     ])
 
+interactiveUserAdd :: IO ()
+interactiveUserAdd = do
+  tbDir <- getEnv "TAZBLOG"
+  acid <- openLocalStateFrom (tbDir ++ "/BlogState") initialBlogState
+  putStrLn "Username:"
+  un <- getLine
+  putStrLn "Password:"
+  pw <- getLine
+  update' acid (AddUser (pack un) pw)
+  createCheckpointAndClose acid
