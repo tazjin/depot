@@ -110,7 +110,7 @@ renderComments comments lang = sequence_ $ map showComment comments
         showComment :: Comment -> Html
         showComment (Comment{..}) = H.li $ do
             H.i $ toHtml $ T.append cauthor ": "
-            preEscapedText $ ctext
+            toHtml ctext
             H.p ! A.class_ "tt" $ toHtml $ timeString cdate
         timeString t = formatTime defaultTimeLocale (cTimeFormat lang) t
 
