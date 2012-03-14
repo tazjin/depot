@@ -85,7 +85,7 @@ renderEntry (Entry{..}) = H.div ! A.class_ "innerBox" $ do
     H.div ! A.class_ "innerBoxMiddle" $ do
         H.article $ H.ul $ H.li $ do
             preEscapedText $ btext
-            preEscapedText $ mtext
+            H.p $ preEscapedText $ mtext
         H.div ! A.class_ "innerBoxComments" $ do
             H.div ! A.class_ "cHead" $ toHtml $ cHead lang -- ! A.style "font-size:large;font-weight:bold;"
             H.ul $ renderComments comments lang

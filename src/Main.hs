@@ -54,12 +54,28 @@ tazBlog acid =
          , path $ \(year :: Int) -> path $ \(month :: Int) -> path $ \(id_ :: String) -> formatOldLink year month id_
          , dir "res" $ serveDirectory DisableBrowsing [] "../res"
          , dir "notice" $ ok $ toResponse showSiteNotice
-         , do dir "admin" $ guardSession acid
-              adminHandler acid
+         , do dirs "admin/postentry" $ nullDir
+              guardSession acid
+              postEntry acid
+         , do dir "admin" $ nullDir
+              guardSession acid
+              ok $ toResponse $ adminIndex ("tazjin" :: Text)
          , dir "admin" $ ok $ toResponse $ adminLogin 
          , dir "dologin" $ processLogin acid
          , serveDirectory DisableBrowsing [] "../res"
          ]
+
+{-
+adminHandler :: AcidState Blog -> ServerPart Response
+adminHandler acid = 
+  msum [ dir "postentry" $ postEntry acid
+       , dir "entrylist" $ dir (show DE) $ entryList DE
+       , dir "entrylist" $ dir (show EN) $ entryList EN
+       , dir "edit" $ path $ \(eId :: Integer) -> editEntry eId 
+       , dir "doedit" $ updateEntry 
+       , ok $ toResponse $ adminIndex ("tazjin" :: Text) --User NYI
+       ]
+-}
 
 blogHandler :: AcidState Blog -> BlogLang -> ServerPart Response
 blogHandler acid lang = 
@@ -110,23 +126,13 @@ addComment acid lang eId = do
 
 {- ADMIN stuff -}
 
-adminHandler :: AcidState Blog -> ServerPart Response
-adminHandler acid = 
-  msum [ dir "postentry" $ postEntry acid
-       , dir "entrylist" $ dir (show DE) $ entryList DE
-       , dir "entrylist" $ dir (show EN) $ entryList EN
-       , dir "edit" $ path $ \(eId :: Integer) -> editEntry eId 
-       , dir "doedit" $ updateEntry 
-       , ok $ toResponse $ adminIndex ("tazjin" :: Text) --User NYI
-       ]
 
 updateEntry :: ServerPart Response
 updateEntry = undefined
 
 postEntry :: AcidState Blog -> ServerPart Response
 postEntry acid = do
-    liftIO $ putStrLn "postEntry called"
-    --decodeBody tmpPolicy
+    decodeBody tmpPolicy
     now <- liftIO $ getCurrentTime
     let eId = timeToId now
     lang <- lookText' "lang"
