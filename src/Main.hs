@@ -120,9 +120,17 @@ addComment acid lang eId = do
   nCtext <- lookText' "ctext"
   nComment <- Comment <$> pure now
                       <*> lookText' "cname"
-                      <*> pure (entryEscape nCtext)
+                      <*> pure (commentEscape nCtext)
   update' acid (AddComment eId nComment)
   seeOther ("/" ++ show lang ++ "/" ++ show eId) (toResponse())
+
+commentEscape :: Text -> Text
+commentEscape = newlineEscape . ltEscape . gtEscape . ampEscape
+    where
+        newlineEscape = T.replace "\n" "<br>"
+        ampEscape = T.replace "&" "&amp;"
+        ltEscape = T.replace "<" "&lt;"
+        gtEscape = T.replace ">" "&gt;"
 
 {- ADMIN stuff -} 
 
