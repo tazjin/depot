@@ -41,7 +41,7 @@ main = do
     tbDir <- getEnv "TAZBLOG"
     bracket (openLocalStateFrom (tbDir ++ "/BlogState") initialBlogState)
             (createCheckpointAndClose)
-            (\acid -> simpleHTTP nullConf $ tazBlog acid)
+            (\acid -> simpleHTTP nullConf {port = 80} $ tazBlog acid)
 
 tazBlog :: AcidState Blog -> ServerPart Response
 tazBlog acid =
