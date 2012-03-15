@@ -13,7 +13,7 @@ import    BlogDB (BlogLang (..))
 
 data BlogError = NotFound | DBError
 
-version = "2.2b"
+version = "3.0"
 
 allLang = [EN, DE]
 
@@ -73,8 +73,8 @@ nextText DE = "Später"
 nextText EN = "Later"
 
 readMore :: BlogLang -> Text
-readMore DE = "[Weiterlesen]"
-readMore EN = "[Read more]"
+readMore DE = "Weiterlesen"
+readMore EN = "Read more"
 
 -- contact information
 contactText :: BlogLang -> Text

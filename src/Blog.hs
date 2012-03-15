@@ -2,6 +2,7 @@
 
 module Blog where
 
+import           Control.Monad (when, unless)
 import           Data.Data (Data, Typeable)
 import           Data.List (intersperse)
 import           Data.Monoid (mempty)
@@ -71,10 +72,15 @@ renderEntries showAll entries topText footerLinks =
     where
         showEntry :: Entry -> Html
         showEntry e = H.li $ do 
-            entryLink e
-            preEscapedText $ T.concat [" ", btext e, "<br>&nbsp;</br>"]
-        entryLink e = H.a ! A.href (toValue $ concat $ intersperse' "/" $ linkElems e) $
-                        toHtml ("[" ++ show(length $ comments e) ++ "]")
+            entryLink e $ T.pack $ show(length $ comments e)
+            preEscapedText $ T.append " " $ btext e
+            when ( mtext e /= T.empty ) $
+                H.p $ entryLink e $ readMore $ lang e
+            unless ( mtext e /= T.empty ) $
+                preEscapedText "<br>&nbsp;</br>"
+        entryLink :: Entry -> Text -> Html
+        entryLink e s = H.a ! A.href (toValue $ concat $ intersperse' "/" $ linkElems e) $
+                        toHtml (T.concat ["[", s, "]"])
         linkElems e = [show(lang e), show $ entryId e]
         getFooterLinks (Just h) = h
         getFooterLinks Nothing = mempty
