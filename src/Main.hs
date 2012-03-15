@@ -117,9 +117,10 @@ showIndex acid lang = do
 addComment :: AcidState Blog -> BlogLang -> EntryId -> ServerPart Response
 addComment acid lang eId = do
   now <- liftIO $ getCurrentTime >>= return
+  nCtext <- lookText' "ctext"
   nComment <- Comment <$> pure now
                       <*> lookText' "cname"
-                      <*> lookText' "ctext"
+                      <*> pure (entryEscape nCtext)
   update' acid (AddComment eId nComment)
   seeOther ("/" ++ show lang ++ "/" ++ show eId) (toResponse())
 
