@@ -193,6 +193,39 @@ adminIndex sUser = adminTemplate "Index" $
                   H.td $ H.textarea ! A.name "mtext" ! A.cols "100" ! A.rows "15" $ mempty
       H.input ! A.type_ "hidden" ! A.name "author" ! A.value (toValue sUser)
       H.input ! A.style "margin-left: 20px" ! A.type_ "submit" ! A.value "Absenden"
+      adminFooter
+
+adminFooter :: Html
+adminFooter =  H.p $ do 
+    preEscapedText "<a href=/>Startseite</a> -- Entrylist: <a href=/admin/entrylist/de>DE</a>"
+    preEscapedText " & <a href=/admin/entrylist/en>EN</a> -- <a href=#>Backup</a> (NYI)"
+
+adminEntryList :: [Entry] -> Html
+adminEntryList entries = adminTemplate "Entrylist" $
+  H.div ! A.style "float: center;" $ do
+    H.table $ do
+        sequence_ $ map showEntryItem entries
+    adminFooter
+  where
+    showEntryItem :: Entry -> Html
+    showEntryItem (Entry{..}) = H.tr $ do
+        H.td $ H.a ! A.href (toValue $ "/admin/edit/" ++ show entryId) $ toHtml title
+        H.td $ toHtml $ formatTime defaultTimeLocale "[On %D at %H:%M]" edate
+
+
+editPage :: Entry -> Html
+editPage (Entry{..}) = adminTemplate "Index" $
+  H.div ! A.style "float: center;" $
+    H.form ! A.action "/admin/updateentry" ! A.method "POST" $ do
+      H.table $ do
+        H.tr $ do H.td $ "Titel:"
+                  H.td $ H.input ! A.type_ "text" ! A.name "title" ! A.value (toValue title)
+        H.tr $ do H.td ! A.style "vertical-align: top;" $ "Text:"
+                  H.td $ H.textarea ! A.name "btext" ! A.cols "100" ! A.rows "15" $ toHtml btext
+        H.tr $ do H.td ! A.style "vertical-align: top;" $ "Mehr Text:"
+                  H.td $ H.textarea ! A.name "mtext" ! A.cols "100" ! A.rows "15" $ toHtml mtext
+      H.input ! A.type_ "hidden" ! A.name "eid" ! A.value (toValue $ unEntryId entryId)
+      H.input ! A.style "margin-left: 20px" ! A.type_ "submit" ! A.value "Absenden"
       H.p $ do preEscapedText "<a href=/>Startseite</a> -- Entrylist: <a href=/admin/entrylist/de>DE</a>"
                preEscapedText " & <a href=/admin/entrylist/en>EN</a> -- <a href=#>Backup</a> (NYI)"
 

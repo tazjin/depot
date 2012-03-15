@@ -54,9 +54,20 @@ tazBlog acid =
          , path $ \(year :: Int) -> path $ \(month :: Int) -> path $ \(id_ :: String) -> formatOldLink year month id_
          , dir "res" $ serveDirectory DisableBrowsing [] "../res"
          , dir "notice" $ ok $ toResponse showSiteNotice
+         {- :Admin handlers -}
          , do dirs "admin/postentry" $ nullDir
               guardSession acid
               postEntry acid
+         , do dirs "admin/entrylist" $ dir (show DE) $ nullDir
+              guardSession acid
+              entryList acid DE
+         , do dirs "admin/entrylist" $ dir (show EN) $ nullDir
+              guardSession acid
+              entryList acid EN
+         , do guardSession acid
+              dirs "admin/edit" $ path $ \(eId :: Integer) -> editEntry acid eId
+         , do dirs "admin/updateentry" $ nullDir
+              updateEntry acid
          , do dir "admin" $ nullDir
               guardSession acid
               ok $ toResponse $ adminIndex ("tazjin" :: Text)
@@ -64,18 +75,6 @@ tazBlog acid =
          , dir "dologin" $ processLogin acid
          , serveDirectory DisableBrowsing [] "../res"
          ]
-
-{-
-adminHandler :: AcidState Blog -> ServerPart Response
-adminHandler acid = 
-  msum [ dir "postentry" $ postEntry acid
-       , dir "entrylist" $ dir (show DE) $ entryList DE
-       , dir "entrylist" $ dir (show EN) $ entryList EN
-       , dir "edit" $ path $ \(eId :: Integer) -> editEntry eId 
-       , dir "doedit" $ updateEntry 
-       , ok $ toResponse $ adminIndex ("tazjin" :: Text) --User NYI
-       ]
--}
 
 blogHandler :: AcidState Blog -> BlogLang -> ServerPart Response
 blogHandler acid lang = 
@@ -124,44 +123,64 @@ addComment acid lang eId = do
   update' acid (AddComment eId nComment)
   seeOther ("/" ++ show lang ++ "/" ++ show eId) (toResponse())
 
-{- ADMIN stuff -}
-
-
-updateEntry :: ServerPart Response
-updateEntry = undefined
+{- ADMIN stuff -} 
 
 postEntry :: AcidState Blog -> ServerPart Response
 postEntry acid = do
     decodeBody tmpPolicy
     now <- liftIO $ getCurrentTime
     let eId = timeToId now
-    lang <- lookText' "lang"
+    lang <- look "lang"
+    nBtext <- lookText' "btext"
+    nMtext <- lookText' "mtext"
     nEntry <- Entry <$> pure eId
                     <*> getLang lang
                     <*> lookText' "author"
                     <*> lookText' "title"
-                    <*> lookText' "btext"
-                    <*> lookText' "mtext"
+                    <*> pure (entryEscape nBtext)
+                    <*> pure (entryEscape nMtext)
                     <*> pure now
                     <*> pure [] -- NYI
                     <*> pure []
     update' acid (InsertEntry nEntry)
-    seeOther ("/" ++ (T.unpack lang) ++ "/" ++ show eId) (toResponse())
+    seeOther ("/" ++ lang ++ "/" ++ show eId) (toResponse())
   where
     timeToId :: UTCTime -> EntryId
     timeToId t = EntryId . read $ formatTime defaultTimeLocale "%s" t
-    getLang :: Text -> ServerPart BlogLang
+    getLang :: String -> ServerPart BlogLang
     getLang "de" = return DE
     getLang "en" = return EN
 
+entryEscape :: Text -> Text
+entryEscape = T.replace "\n" "<br>"
 
-entryList :: BlogLang -> ServerPart Response
-entryList lang = undefined
+entryList :: AcidState Blog -> BlogLang -> ServerPart Response
+entryList acid lang = do
+    entries <- query' acid (LatestEntries lang)
+    ok $ toResponse $ adminEntryList entries
 
-editEntry :: Integer -> ServerPart Response
-editEntry i = undefined
+editEntry :: AcidState Blog -> Integer -> ServerPart Response
+editEntry acid i = do
+    (Just entry) <- query' acid (GetEntry eId)
+    ok $ toResponse $ editPage entry
   where
     eId = EntryId i
+
+updateEntry :: AcidState Blog -> ServerPart Response
+updateEntry acid = do
+    decodeBody tmpPolicy
+    (eId :: Integer) <- lookRead "eid"
+    (Just entry) <- query' acid (GetEntry $ EntryId eId)
+    nTitle <- lookText' "title"
+    nBtext <- lookText' "btext"
+    nMtext <- lookText' "mtext"
+    let nEntry = entry { title = nTitle
+                        , btext = entryEscape nBtext
+                        , mtext = entryEscape nMtext}
+    update' acid (UpdateEntry nEntry)
+    seeOther (concat $ intersperse' "/" [show $ lang entry, show eId])
+             (toResponse ())
+
 
 guardSession :: AcidState Blog -> ServerPartT IO ()
 guardSession acid = do
