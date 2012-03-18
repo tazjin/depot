@@ -237,9 +237,9 @@ editPage (Entry{..}) = adminTemplate "Index" $
 
 -- Error pages
 showError :: BlogError -> BlogLang -> Html
-showError NotFound l = blogTemplate l (T.append ": " $ notFound l) $ 
+showError NotFound l = blogTemplate l (T.append ": " $ notFoundTitle l) $ 
   H.div ! A.class_ "innerBox" $ do
-    H.div ! A.class_ "innerBoxTop" $ toHtml $ notFound l
+    H.div ! A.class_ "innerBoxTop" $ toHtml $ notFoundTitle l
     H.div ! A.class_ "innerBoxMiddle" $ do
         H.p ! A.class_ "notFoundFace" $ toHtml (":'(" :: Text)
         H.p ! A.class_ "notFoundText" $ toHtml $ notFoundText l

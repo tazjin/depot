@@ -74,7 +74,7 @@ tazBlog acid =
          , dir "admin" $ ok $ toResponse $ adminLogin 
          , dir "dologin" $ processLogin acid
          , serveDirectory DisableBrowsing [] "../res"
-         , ok $ toResponse $ showError NotFound DE
+         , notFound $ toResponse $ showError NotFound DE
          ]
 
 blogHandler :: AcidState Blog -> BlogLang -> ServerPart Response
@@ -85,7 +85,7 @@ blogHandler acid lang =
                 \(eId :: Integer) -> addComment acid lang $ EntryId eId
          , do nullDir
               showIndex acid lang
-         , ok $ toResponse $ showError NotFound lang
+         , notFound $ toResponse $ showError NotFound lang
          ]
 
 formatOldLink :: Int -> Int -> String -> ServerPart Response
@@ -96,11 +96,11 @@ formatOldLink y m id_ =
 showEntry :: AcidState Blog -> BlogLang -> EntryId -> ServerPart Response
 showEntry acid lang eId = do
     entry <- query' acid (GetEntry eId)
-    ok $ tryEntry entry lang
+    tryEntry entry lang
 
-tryEntry :: Maybe Entry -> BlogLang -> Response
-tryEntry Nothing lang = toResponse $ showError NotFound lang
-tryEntry (Just entry) _ = toResponse $ blogTemplate eLang eTitle $ renderEntry entry
+tryEntry :: Maybe Entry -> BlogLang -> ServerPart Response
+tryEntry Nothing lang = notFound $ toResponse $ showError NotFound lang
+tryEntry (Just entry) _ = ok $ toResponse $ blogTemplate eLang eTitle $ renderEntry entry
     where
         eTitle = T.append ": " (title entry)
         eLang = lang entry

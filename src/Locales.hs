@@ -116,9 +116,9 @@ cSend DE = "Absenden"
 cSend EN = "Submit"
 
 -- errors
-notFound :: BlogLang -> Text
-notFound DE = "Nicht gefunden"
-notFound EN = "Not found"
+notFoundTitle :: BlogLang -> Text
+notFoundTitle DE = "Nicht gefunden"
+notFoundTitle EN = "Not found"
 
 notFoundText :: BlogLang -> Text
 notFoundText DE = "Das gewünschte Objekt wurde leider nicht gefunden."
