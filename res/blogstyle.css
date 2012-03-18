@@ -11,6 +11,7 @@
 body {
 	padding-top: 20px;
 	font-family: 'PT Sans', sans-serif;
+	min-height: 850px;
 	background-image: linear-gradient(bottom, rgb(245,245,245) 66%, rgb(239,239,239) 83%);
 	background-image: -o-linear-gradient(bottom, rgb(245,245,245) 66%, rgb(239,239,239) 83%);
 	background-image: -moz-linear-gradient(bottom, rgb(245,245,245) 66%, rgb(239,239,239) 83%);
