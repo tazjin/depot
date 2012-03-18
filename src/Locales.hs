@@ -115,6 +115,15 @@ cSend :: BlogLang -> Text
 cSend DE = "Absenden"
 cSend EN = "Submit"
 
+-- errors
+notFound :: BlogLang -> Text
+notFound DE = "Nicht gefunden"
+notFound EN = "Not found"
+
+notFoundText :: BlogLang -> Text
+notFoundText DE = "Das gewünschte Objekt wurde leider nicht gefunden."
+notFoundText EN = "The requested object could unfortunately not be found."
+
 -- right side text (this is inserted AS IS. Escape HTML!)
 rightText :: BlogLang -> Text
 rightText DE = "English version <a href=\"/en\" style=\"color: black;\">available here</a>."

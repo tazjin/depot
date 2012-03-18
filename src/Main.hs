@@ -74,6 +74,7 @@ tazBlog acid =
          , dir "admin" $ ok $ toResponse $ adminLogin 
          , dir "dologin" $ processLogin acid
          , serveDirectory DisableBrowsing [] "../res"
+         , ok $ toResponse $ showError NotFound DE
          ]
 
 blogHandler :: AcidState Blog -> BlogLang -> ServerPart Response
@@ -84,6 +85,7 @@ blogHandler acid lang =
                 \(eId :: Integer) -> addComment acid lang $ EntryId eId
          , do nullDir
               showIndex acid lang
+         , ok $ toResponse $ showError NotFound lang
          ]
 
 formatOldLink :: Int -> Int -> String -> ServerPart Response

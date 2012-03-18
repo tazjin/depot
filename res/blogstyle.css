@@ -118,6 +118,16 @@ body {
 	padding-left: 20px
 }
 
+.notFoundFace {
+	text-align: center;
+	font-size: 100px;
+}
+
+.notFoundText {
+	text-align: center;
+	font-size: 24px;
+	font-weight: bold;
+}
 
 label span {
     width: 6%;
