@@ -161,7 +161,10 @@ postEntry acid = do
     getLang "en" = return EN
 
 entryEscape :: Text -> Text
-entryEscape = T.replace "\n" "<br>"
+entryEscape = newlineEscape . newlineRNEscape
+  where
+    newlineEscape = T.replace "\n" "<br>"
+    newlineRNEscape = T.replace "\r\n" "<br>"
 
 entryList :: AcidState Blog -> BlogLang -> ServerPart Response
 entryList acid lang = do
