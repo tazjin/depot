@@ -13,7 +13,7 @@ import    BlogDB (BlogLang (..))
 
 data BlogError = NotFound | DBError
 
-version = "3.0"
+version = "3.1"
 
 allLang = [EN, DE]
 
@@ -76,6 +76,10 @@ readMore :: BlogLang -> Text
 readMore DE = "Weiterlesen"
 readMore EN = "Read more"
 
+eTimeFormat :: BlogLang -> String
+eTimeFormat DE = "Geschrieben am %d.%m.%y von "
+eTimeFormat EN = "Written on %D by "
+
 -- contact information
 contactText :: BlogLang -> Text
 contactText DE = "Wer mich kontaktieren will: "
@@ -115,6 +119,10 @@ cSend :: BlogLang -> Text
 cSend DE = "Absenden"
 cSend EN = "Submit"
 
+cTextPlaceholder :: BlogLang -> Text
+cTextPlaceholder DE = "Kommentartext hier eingeben :]"
+cTextPlaceholder EN = "Enter your comment here :]"
+
 -- errors
 notFoundTitle :: BlogLang -> Text
 notFoundTitle DE = "Nicht gefunden"
@@ -126,8 +134,8 @@ notFoundText EN = "The requested object could unfortunately not be found."
 
 -- right side text (this is inserted AS IS. Escape HTML!)
 rightText :: BlogLang -> Text
-rightText DE = "English version <a href=\"/en\" style=\"color: black;\">available here</a>."
-rightText EN = "Deutsche Version <a href=\"/de\" style=\"color: black;\">hier verf&uuml;gbar</a>."
+rightText DE = "English version <a href=\"/en\" class=\"link\">available here</a>."
+rightText EN = "Deutsche Version <a href=\"/de\" class=\"link\">hier verf&uuml;gbar</a>."
 
 -- static information
 repoURL   :: Text = "https://bitbucket.org/tazjin/tazblog-haskell"

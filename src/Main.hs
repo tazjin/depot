@@ -146,7 +146,7 @@ postEntry acid = do
     nMtext <- lookText' "mtext"
     nEntry <- Entry <$> pure eId
                     <*> getLang lang
-                    <*> lookText' "author"
+                    <*> readCookieValue "sUser"
                     <*> lookText' "title"
                     <*> pure (entryEscape nBtext)
                     <*> pure (entryEscape nMtext)

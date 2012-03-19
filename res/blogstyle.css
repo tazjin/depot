@@ -8,51 +8,118 @@
   src: local('PT Sans'), local('PTSans-Regular'), url('http://themes.googleusercontent.com/static/fonts/ptsans/v2/7YGmE4Ls5b94ct65u07hVQLUuEpTyoUstqEm5AMlJo4.woff') format('woff');
 }
 
+html, body{
+	margin: 0;
+	padding: 0;
+}
+
 body {
-	padding-top: 20px;
+	padding-top: 10px;
 	font-family: 'PT Sans', sans-serif;
 	min-height: 850px;
-	background-image: linear-gradient(bottom, rgb(245,245,245) 66%, rgb(239,239,239) 83%);
-	background-image: -o-linear-gradient(bottom, rgb(245,245,245) 66%, rgb(239,239,239) 83%);
-	background-image: -moz-linear-gradient(bottom, rgb(245,245,245) 66%, rgb(239,239,239) 83%);
-	background-image: -webkit-linear-gradient(bottom, rgb(245,245,245) 66%, rgb(239,239,239) 83%);
-	background-image: -ms-linear-gradient(bottom, rgb(245,245,245) 66%, rgb(239,239,239) 83%);
-	background-image: -webkit-gradient(
-		linear,
-		left bottom,
-		left top,
-		color-stop(0.66, rgb(245,245,245)),
-		color-stop(0.83, rgb(239,239,239))
-	);
+	background-color: #4A525A;
+	color: #EEE;
 }
 
-.mainshell {
-	width: 98%;
-	margin: auto;
+a {
+	color: black;
 }
 
-.gradBox {
-	width: 98%;
-	margin: auto;
+input, textarea, select {
+   border: 1px solid #555;
+   padding: 0.5em;
+   font-size: 15px;
+   line-height: 1.2em;
+   width: 550px;
+   background: #F9F9F9;
+   -webkit-border-radius: 0.5em;
+ }
+
+/* site sections */
+.header {
+	z-index: 4;
+	padding-left: 20px;
+	padding-bottom: 70px;
+	padding-top:  30px;
+	position: relative;
+	box-shadow: 0 6px 5px 1px #848F9A;
 }
 
-.myclear {
-	clear: both;
-	height: 20px;
+.link {
+	color: #EEE;
 }
 
+.middle {
+	position: relative;
+	z-index: 2;
+	display: block;
+	width: 100%;
+	padding-top: 40px;
+	background-color: #EEE;
+	color: black;
+}
+
+.footer {
+	z-index: 4;
+	position: relative;
+	background-color: #4A525A;
+	margin-top: 30px;
+	padding-top: 20px;
+	box-shadow: 0 -6px 5px 1px #848F9A;
+	color: #EEE;
+}
+
+/* header elements */ 
+
+.btitle {
+	text-decoration:none;
+	color: #EEE;
+	font-size:x-large;
+	font-weight:bold;
+	margin-top: 15px;
+	margin-bottom: 10px;
+}
+
+.contacts {
+	float: left;
+}
+
+.righttext {
+	float:right;
+	padding-right: 20px;
+}
+
+.rightbox {
+	text-align:right;
+	padding-right: 14px;
+}
+
+/* middle elements */
+.innerTitle {
+	margin-left: 10px;
+	font-weight: bold;
+}
+
+.innerBoxComments{
+	margin-left: 10px;
+}
+
+.innerContainer {
+	padding-right: 20px;
+
+}
+
+/* common elements */
 .centerbox {
 	text-align:center;
     min-height: 45px;
 }
 
-.rightbox {
-	text-align:right;
-}
 
-.innerBox {
-	width: 100%;
-	margin-top: 20px;
+/* style elements */
+
+.cInput {
+	margin-left: 15px;
 }
 
 .tt { 
@@ -69,56 +136,6 @@ body {
     font-weight:bold;
 }
 
-.innerBoxTop {
-	height: 28px;
-	color: #000000;
-	font-weight: bold;
-	font-size: 16px;
-	padding-left: 20px;
-	padding-top: 11px;
-	border: 1px solid #b6b6b6;
-	border-top-left-radius: 6px;
-	border-top-right-radius: 6px;
-	-moz-border-radius-topleft: 6px;
-	-moz-border-radius-topright: 6px;
-	-webkit-border-top-left-radius: 6px;
-	-webkit-border-top-right-radius: 6px;	
-	border-bottom: 1px solid #dcdcdc;
-	background-image: linear-gradient(bottom, rgb(246,246,246) 31%, rgb(234,234,234) 83%);
-	background-image: -o-linear-gradient(bottom, rgb(246,246,246) 31%, rgb(234,234,234) 83%);
-	background-image: -moz-linear-gradient(bottom, rgb(246,246,246) 31%, rgb(234,234,234) 83%);
-	background-image: -webkit-linear-gradient(bottom, rgb(246,246,246) 31%, rgb(234,234,234) 83%);
-	background-image: -ms-linear-gradient(bottom, rgb(246,246,246) 31%, rgb(234,234,234) 83%);
-	
-	background-image: -webkit-gradient(
-		linear,
-		left bottom,
-		left top,
-		color-stop(0.31, rgb(246,246,246)),
-		color-stop(0.83, rgb(234,234,234))
-	);
-}
-
-.innerBoxMiddle {
-	border: 1px solid #b6b6b6;
-	border-bottom-left-radius: 6px;
-	border-bottom-right-radius: 6px;
-	-moz-border-radius-bottomleft: 6px;
-	-moz-border-radius-bottomright: 6px;
-	-webkit-border-bottom-left-radius: 6px;
-	-webkit-border-bottom-right-radius: 6px;
-	border-top: 0px hidden;
-	background-color: #FFFFFF;
-	min-height: 500px;
-	height: auto;
-	padding-top: 21px;
-	padding-right: 2px;
-}
-
-.innerBoxComments {
-	padding-left: 20px
-}
-
 .notFoundFace {
 	text-align: center;
 	font-size: 100px;
@@ -128,13 +145,4 @@ body {
 	text-align: center;
 	font-size: 24px;
 	font-weight: bold;
-}
-
-label span {
-    width: 6%;
-    float: left;
-}
-
-label input {
-    display: block;
 }

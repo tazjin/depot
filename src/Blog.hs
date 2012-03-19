@@ -43,45 +43,43 @@ blogTemplate lang t_append body = H.docTypeHtml $ do --add body
     H.head $ do
         H.title $ (toHtml $ blogTitle lang t_append)
         H.link ! A.rel "alternate" ! A.type_ "application/rss+xml" ! A.title "RSS-Feed" ! A.href "/rss"
-        H.link ! A.rel "stylesheet" ! A.type_ "text/css" ! A.href "/res/blogstyle.css" ! A.media "all"
+        H.link ! A.rel "stylesheet" ! A.type_ "text/css" ! A.href "/res/blog.css" ! A.media "all"
         H.meta ! A.httpEquiv "content-type" ! A.content "text/html;charset=UTF-8"
         --H.style ! A.type_ "text/css" ! A.title "iOS iMessage" ! A.media "screen and (max-device-width: 1024px)" $ "#cosx{display:none;}"
         preEscapedText analytics
     H.body $ do
-        H.div ! A.class_ "mainshell" $ H.div ! A.class_ "gradBox" $ do
-            H.div ! A.class_ "header" $ do
-                H.a ! A.href (toValue $ "/" ++ show lang) ! 
-                    A.style "text-decoration:none;color:black;font-size:x-large;font-weight:bold;" $
-                        toHtml $ blogTitle lang ""
-                H.p ! A.style "clear: both;" $ do
-                    H.span ! A.style "float: left;" ! A.id "cosx" $ H.b $ contactInfo iMessage
-                   -- H.span ! A.id "cios" ! A.style "display:none;" $ H.b $ contactInfo "sms:tazjin@me.com"
-                    H.span ! A.style "float:right;" $ preEscapedText $ rightText lang
-            H.div ! A.class_ "myclear" $ mempty
+        H.div ! A.class_ "header" $ do
+            H.a ! A.class_ "btitle" ! A.href (toValue $ "/" ++ show lang) $ 
+                toHtml $ blogTitle lang ""
+            H.p ! A.style "clear: both;" $ do
+                H.span ! A.class_ "contacts" ! A.id "cosx" $ H.b $ contactInfo iMessage
+                -- H.span ! A.id "cios" ! A.style "display:none;" $ H.b $ contactInfo "sms:tazjin@me.com"
+                H.span ! A.class_ "righttext" $ preEscapedText $ rightText lang
+        H.div ! A.class_ "middle" $ do
             body
-            H.div ! A.class_ "myclear" $ mempty
-            showFooter lang $ T.pack version
-        H.div ! A.class_ "centerbox" $
-            H.img ! A.src "http://getpunchd.com/img/june/idiots.png" ! A.alt ""
+            H.div ! A.class_ "footer" $ do
+                showFooter lang $ T.pack version
+                H.div ! A.class_ "centerbox" $
+                    H.span ! A.style "font-size: 17px; font-family: Helvetica;" $ "ಠ_ಠ"
+                    --H.img ! A.src "http://cl.ly/F9m4/idiots.png" ! A.alt ""
     where
         contactInfo (imu :: Text) = do
             toHtml $ contactText lang
-            H.a ! A.href (toValue mailTo) $ "Mail"
+            H.a ! A.class_ "link" ! A.href (toValue mailTo) $ "Mail"
             ", "
-            H.a ! A.href (toValue twitter) ! A.target "_blank" $ "Twitter"
+            H.a ! A.class_ "link" ! A.href (toValue twitter) ! A.target "_blank" $ "Twitter"
             toHtml $ orText lang
-            H.a ! A.href (toValue imu) ! A.target "_blank" $ "iMessage"
+            H.a ! A.class_ "link" ! A.href (toValue imu) ! A.target "_blank" $ "iMessage"
             "."
 
 renderEntries :: Bool -> [Entry] -> Text -> Maybe Html -> Html
-renderEntries showAll entries topText footerLinks = 
-    H.div ! A.class_ "innerBox" $ do
-        H.div ! A.class_ "innerBoxTop" $ toHtml topText
-        H.div ! A.class_ "innerBoxMiddle" $ do
-            H.ul $ if' showAll
-                (sequence_ $ map showEntry entries)
-                (sequence_ . take 6 $ map showEntry entries)
-            getFooterLinks footerLinks
+renderEntries showAll entries topText footerLinks = do
+    H.span ! A.class_ "innerTitle" $ toHtml topText
+    H.div ! A.class_ "innerContainer" $ do
+        H.ul $ if' showAll
+            (sequence_ $ map showEntry entries)
+            (sequence_ . take 6 $ map showEntry entries)
+        getFooterLinks footerLinks
     where
         showEntry :: Entry -> Html
         showEntry e = H.li $ do 
@@ -99,9 +97,10 @@ renderEntries showAll entries topText footerLinks =
         getFooterLinks Nothing = mempty
 
 renderEntry :: Entry -> Html
-renderEntry (Entry{..}) = H.div ! A.class_ "innerBox" $ do
-    H.div ! A.class_ "innerBoxTop" $ toHtml $ title
-    H.div ! A.class_ "innerBoxMiddle" $ do
+renderEntry (Entry{..}) = do
+    H.span ! A.class_ "innerTitle" $ toHtml $ title
+    H.span ! A.class_ "righttext" $ H.i $ toHtml $ woText
+    H.div ! A.class_ "innerContainer" $ do
         H.article $ H.ul $ H.li $ do
             preEscapedText $ btext
             H.p $ preEscapedText $ mtext
@@ -109,18 +108,17 @@ renderEntry (Entry{..}) = H.div ! A.class_ "innerBox" $ do
             H.div ! A.class_ "cHead" $ toHtml $ cHead lang -- ! A.style "font-size:large;font-weight:bold;"
             H.ul $ renderComments comments lang
             renderCommentBox lang entryId
+  where
+    woText = flip T.append author $ T.pack $ (formatTime defaultTimeLocale (eTimeFormat lang) edate) 
 
 renderCommentBox :: BlogLang -> EntryId -> Html
 renderCommentBox cLang cId = do
     H.div ! A.class_ "cHead" $ toHtml $ cwHead cLang
     H.form ! A.method "POST" ! A.action (toValue $ "/" ++ (show cLang) ++  "/postcomment/" ++ show cId) $ do
-        H.p $ H.label $ do
-            H.span $ "Name:" --toHtml ("Name:" :: String)
-            H.input ! A.name "cname"
-        H.p $ H.label $ do
-            H.span $ toHtml $ cSingle cLang -- toHtml (cSingle lang)
-            H.textarea ! A.name "ctext" ! A.cols "50" ! A.rows "13" $ mempty
-        H.p $ H.input ! A.type_ "submit" ! A.value (toValue $ cSend cLang)
+        H.p $ H.input ! A.name "cname" ! A.placeholder "Name" ! A.class_ "cInput"
+        H.p $ H.label $ H.textarea ! A.name "ctext" ! A.cols "50" ! A.rows "13" ! A.class_ "cInput" !
+                        A.placeholder (toValue $ cTextPlaceholder cLang) $ mempty
+        H.p $ H.input ! A.class_ "cInput" ! A.style "width: 120px;" ! A.type_ "submit" ! A.value (toValue $ cSend cLang)
 
 renderComments :: [Comment] -> BlogLang -> Html
 renderComments [] lang = H.li $ toHtml $ noComments lang
@@ -149,14 +147,14 @@ showLinks Nothing lang = H.div ! A.class_ "centerbox" $
 showFooter :: BlogLang -> Text -> Html
 showFooter l v = H.div ! A.class_ "rightbox" ! A.style "text-align:right;" $ do
     toHtml ("Proudly made with " :: Text)
-    H.a ! A.href "http://haskell.org" $ "Haskell"
+    H.a ! A.class_ "link" ! A.href "http://haskell.org" $ "Haskell"
     toHtml (", " :: Text)
-    H.a ! A.href "http://hackage.haskell.org/package/acid-state-0.6.3" $ "Acid-State"
+    H.a ! A.class_ "link" ! A.href "http://hackage.haskell.org/package/acid-state-0.6.3" $ "Acid-State"
     toHtml (" and without PHP, Java, Perl, MySQL and Python." :: Text)
     H.br
-    H.a ! A.href (toValue repoURL) $ toHtml $ T.append "Version " v
+    H.a ! A.class_ "link" ! A.href (toValue repoURL) $ toHtml $ T.append "Version " v
     preEscapedText "&nbsp;"
-    H.a ! A.href "/notice" $ toHtml $ noticeText l
+    H.a ! A.class_ "link" ! A.href "/notice" $ toHtml $ noticeText l
 
 showSiteNotice :: Html
 showSiteNotice = H.docTypeHtml $ do
@@ -190,7 +188,7 @@ adminLogin = adminTemplate "Login" $
     H.div ! A.class_ "loginBoxMiddle" $ H.form ! A.action "/dologin" ! A.method "post" $ do
         H.p $ "Account ID"
         H.p $ H.input ! A.type_ "text" ! A.style "font-size: 2;" 
-            ! A.name "account" ! A.value "tazjin" ! A.readonly "1"
+            ! A.name "account" -- ! A.value "tazjin" ! A.readonly "1"
         H.p $ "Passwort"
         H.p $ H.input ! A.type_ "password" ! A.style "font-size: 2;" ! A.name "password"
         H.p $ H.input ! A.alt "Anmelden" ! A.type_ "image" ! A.src "/res/signin.gif"
@@ -250,9 +248,8 @@ editPage (Entry{..}) = adminTemplate "Index" $
 
 -- Error pages
 showError :: BlogError -> BlogLang -> Html
-showError NotFound l = blogTemplate l (T.append ": " $ notFoundTitle l) $ 
-  H.div ! A.class_ "innerBox" $ do
-    H.div ! A.class_ "innerBoxTop" $ toHtml $ notFoundTitle l
-    H.div ! A.class_ "innerBoxMiddle" $ do
-        H.p ! A.class_ "notFoundFace" $ toHtml (":'(" :: Text)
-        H.p ! A.class_ "notFoundText" $ toHtml $ notFoundText l
+showError NotFound l = blogTemplate l (T.append ": " $ notFoundTitle l) $ do
+  H.span ! A.class_ "innerTitle" $ toHtml $ notFoundTitle l
+  H.div ! A.class_ "innerContainer" $ do
+    H.p ! A.class_ "notFoundFace" $ toHtml (":'(" :: Text)
+    H.p ! A.class_ "notFoundText" $ toHtml $ notFoundText l
