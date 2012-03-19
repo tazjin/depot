@@ -26,6 +26,18 @@ intersperse' sep l = sep : intersperse sep l
 replace :: Eq a => a -> a -> [a] -> [a]
 replace x y = map (\z -> if z == x then y else z)
 
+analytics :: Text
+analytics = T.pack $ unlines ["<script type=\"text/javascript\">"
+                             ,"  var _gaq = _gaq || [];"
+                             ,"  _gaq.push(['_setAccount', 'UA-26042394-1']);"
+                             ,"  _gaq.push(['_trackPageview']);"
+                             ,"  (function() {"
+                             ,"    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;"
+                             ,"    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';"
+                             ,"    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);"
+                             ,"  })();"
+                             ,"</script>"]
+
 blogTemplate :: BlogLang -> Text -> Html -> Html
 blogTemplate lang t_append body = H.docTypeHtml $ do --add body
     H.head $ do
@@ -34,6 +46,7 @@ blogTemplate lang t_append body = H.docTypeHtml $ do --add body
         H.link ! A.rel "stylesheet" ! A.type_ "text/css" ! A.href "/res/blogstyle.css" ! A.media "all"
         H.meta ! A.httpEquiv "content-type" ! A.content "text/html;charset=UTF-8"
         --H.style ! A.type_ "text/css" ! A.title "iOS iMessage" ! A.media "screen and (max-device-width: 1024px)" $ "#cosx{display:none;}"
+        preEscapedText analytics
     H.body $ do
         H.div ! A.class_ "mainshell" $ H.div ! A.class_ "gradBox" $ do
             H.div ! A.class_ "header" $ do
