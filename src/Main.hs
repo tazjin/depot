@@ -23,6 +23,7 @@ import qualified Data.Text as T
 import           Data.Time
 import           Data.SafeCopy (base, deriveSafeCopy)
 import           Happstack.Server hiding (Session)
+import           Happstack.Server.Compression
 import           System.Environment(getEnv)
 import           System.Locale (defaultTimeLocale)
 
@@ -44,7 +45,8 @@ main = do
             (\acid -> simpleHTTP nullConf {port = 80} $ tazBlog acid)
 
 tazBlog :: AcidState Blog -> ServerPart Response
-tazBlog acid =
+tazBlog acid = do
+    compr <- compressedResponseFilter
     msum [ dir (show DE) $ blogHandler acid DE
          , dir (show EN) $ blogHandler acid EN
          , do nullDir
