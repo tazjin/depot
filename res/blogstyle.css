@@ -82,6 +82,7 @@ input, textarea, select {
 
 .contacts {
 	float: left;
+	font-weight: bolder;
 }
 
 .righttext {

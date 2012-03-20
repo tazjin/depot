@@ -52,7 +52,7 @@ blogTemplate lang t_append body = H.docTypeHtml $ do --add body
             H.a ! A.class_ "btitle" ! A.href (toValue $ "/" ++ show lang) $ 
                 toHtml $ blogTitle lang ""
             H.p ! A.style "clear: both;" $ do
-                H.span ! A.class_ "contacts" ! A.id "cosx" $ H.b $ contactInfo iMessage
+                H.span ! A.class_ "contacts" ! A.id "cosx" $ contactInfo iMessage
                 -- H.span ! A.id "cios" ! A.style "display:none;" $ H.b $ contactInfo "sms:tazjin@me.com"
                 H.span ! A.class_ "righttext" $ preEscapedText $ rightText lang
         H.div ! A.class_ "middle" $ do
