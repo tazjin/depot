@@ -43,7 +43,7 @@ blogTemplate lang t_append body = H.docTypeHtml $ do --add body
     H.head $ do
         H.title $ (toHtml $ blogTitle lang t_append)
         H.link ! A.rel "alternate" ! A.type_ "application/rss+xml" ! A.title "RSS-Feed" ! A.href "/rss"
-        H.link ! A.rel "stylesheet" ! A.type_ "text/css" ! A.href "/res/blog.css" ! A.media "all"
+        H.link ! A.rel "stylesheet" ! A.type_ "text/css" ! A.href "/static/blogv31.css" ! A.media "all"
         H.meta ! A.httpEquiv "content-type" ! A.content "text/html;charset=UTF-8"
         --H.style ! A.type_ "text/css" ! A.title "iOS iMessage" ! A.media "screen and (max-device-width: 1024px)" $ "#cosx{display:none;}"
         preEscapedText analytics
@@ -175,7 +175,7 @@ showSiteNotice = H.docTypeHtml $ do
 adminTemplate :: Text -> Html -> Html
 adminTemplate title body = H.docTypeHtml $ do
     H.head $ do
-        H.link ! A.rel "stylesheet" ! A.type_ "text/css" ! A.href "/res/admin.css" ! A.media "all"
+        H.link ! A.rel "stylesheet" ! A.type_ "text/css" ! A.href "/static/admin.css" ! A.media "all"
         H.meta ! A.httpEquiv "content-type" ! A.content "text/html;charset=UTF-8"
         H.title $ toHtml $ T.append "TazBlog Admin: " title
     H.body
@@ -191,7 +191,7 @@ adminLogin = adminTemplate "Login" $
             ! A.name "account" -- ! A.value "tazjin" ! A.readonly "1"
         H.p $ "Passwort"
         H.p $ H.input ! A.type_ "password" ! A.style "font-size: 2;" ! A.name "password"
-        H.p $ H.input ! A.alt "Anmelden" ! A.type_ "image" ! A.src "/res/signin.gif"
+        H.p $ H.input ! A.alt "Anmelden" ! A.type_ "image" ! A.src "/static/signin.gif"
 
 adminIndex :: Text -> Html
 adminIndex sUser = adminTemplate "Index" $

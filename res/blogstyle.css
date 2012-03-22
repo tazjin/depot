@@ -14,10 +14,8 @@ html, body{
 }
 
 body {
-	padding-top: 10px;
 	font-family: 'PT Sans', sans-serif;
 	min-height: 850px;
-	background-color: #4A525A;
 	color: #EEE;
 }
 
@@ -37,12 +35,13 @@ input, textarea, select {
 
 /* site sections */
 .header {
+	background: url(/static/ios-linen.jpg);
 	z-index: 4;
 	padding-left: 20px;
 	padding-bottom: 70px;
 	padding-top:  30px;
 	position: relative;
-	box-shadow: 0 6px 5px 1px #848F9A;
+	box-shadow: 0 6px 5px 1px #343537;
 }
 
 .link {
@@ -60,12 +59,13 @@ input, textarea, select {
 }
 
 .footer {
+	background: url(/static/ios-linen.jpg);
 	z-index: 4;
 	position: relative;
 	background-color: #4A525A;
 	margin-top: 30px;
 	padding-top: 20px;
-	box-shadow: 0 -6px 5px 1px #848F9A;
+	box-shadow: 0 -6px 5px 1px #343537;
 	color: #EEE;
 }
 

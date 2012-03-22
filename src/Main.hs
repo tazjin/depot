@@ -75,6 +75,9 @@ tazBlog acid = do
               ok $ toResponse $ adminIndex ("tazjin" :: Text)
          , dir "admin" $ ok $ toResponse $ adminLogin 
          , dir "dologin" $ processLogin acid
+         , do setHeaderM "cache-control" "max-age=630720000"
+              setHeaderM "expires" "Tue, 20 Jan 2037 04:20:42 GMT"
+              dir "static" $ serveDirectory DisableBrowsing [] "../res"
          , serveDirectory DisableBrowsing [] "../res"
          , notFound $ toResponse $ showError NotFound DE
          ]
