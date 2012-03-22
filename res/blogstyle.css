@@ -35,7 +35,7 @@ input, textarea, select {
 
 /* site sections */
 .header {
-	background: url(/static/ios-linen.jpg);
+	background: url(/static/hbg.jpg);
 	z-index: 4;
 	padding-left: 20px;
 	padding-bottom: 70px;
@@ -54,12 +54,12 @@ input, textarea, select {
 	display: block;
 	width: 100%;
 	padding-top: 40px;
-	background-color: #EEE;
+	background: url(/static/bg.gif);
 	color: black;
 }
 
 .footer {
-	background: url(/static/ios-linen.jpg);
+	background: url(/static/hbg.jpg);
 	z-index: 4;
 	position: relative;
 	background-color: #4A525A;

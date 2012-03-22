@@ -43,7 +43,7 @@ blogTemplate lang t_append body = H.docTypeHtml $ do --add body
     H.head $ do
         H.title $ (toHtml $ blogTitle lang t_append)
         H.link ! A.rel "alternate" ! A.type_ "application/rss+xml" ! A.title "RSS-Feed" ! A.href "/rss"
-        H.link ! A.rel "stylesheet" ! A.type_ "text/css" ! A.href "/static/blogv31.css" ! A.media "all"
+        H.link ! A.rel "stylesheet" ! A.type_ "text/css" ! A.href "/static/blogv311.css" ! A.media "all"
         H.meta ! A.httpEquiv "content-type" ! A.content "text/html;charset=UTF-8"
         --H.style ! A.type_ "text/css" ! A.title "iOS iMessage" ! A.media "screen and (max-device-width: 1024px)" $ "#cosx{display:none;}"
         preEscapedText analytics
@@ -88,7 +88,7 @@ renderEntries showAll entries topText footerLinks = do
             when ( mtext e /= T.empty ) $
                 H.p $ entryLink e $ readMore $ lang e
             unless ( mtext e /= T.empty ) $
-                preEscapedText "<br>&nbsp;</br>"
+                preEscapedText "<br>&nbsp;"
         entryLink :: Entry -> Text -> Html
         entryLink e s = H.a ! A.href (toValue $ concat $ intersperse' "/" $ linkElems e) $
                         toHtml (T.concat ["[", s, "]"])
