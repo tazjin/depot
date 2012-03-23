@@ -30,6 +30,7 @@ import           System.Locale (defaultTimeLocale)
 import           Blog
 import           BlogDB hiding (addComment, updateEntry)
 import           Locales
+import           RSS
 
 {- Server -}
 
@@ -47,12 +48,10 @@ main = do
 tazBlog :: AcidState Blog -> ServerPart Response
 tazBlog acid = do
     compr <- compressedResponseFilter
-    msum [ dir (show DE) $ blogHandler acid DE
-         , dir (show EN) $ blogHandler acid EN
-         , do nullDir
-              showIndex acid DE
-         , do dir " " $ nullDir
-              seeOther ("https://plus.google.com/115916629925754851590" :: Text) (toResponse ())
+    msum [ path $ \(lang :: BlogLang) -> blogHandler acid lang
+         , nullDir >> showIndex acid DE
+         , dir " " $ nullDir >>
+            seeOther ("https://plus.google.com/115916629925754851590" :: Text) (toResponse ())
          , path $ \(year :: Int) -> path $ \(month :: Int) -> path $ \(id_ :: String) -> formatOldLink year month id_
          , dir "res" $ serveDirectory DisableBrowsing [] "../res"
          , dir "notice" $ ok $ toResponse showSiteNotice
@@ -68,8 +67,7 @@ tazBlog acid = do
               entryList acid EN
          , do guardSession acid
               dirs "admin/edit" $ path $ \(eId :: Integer) -> editEntry acid eId
-         , do dirs "admin/updateentry" $ nullDir
-              updateEntry acid
+         , dirs "admin/updateentry" $ nullDir >> updateEntry acid
          , do dir "admin" $ nullDir
               guardSession acid
               ok $ toResponse $ adminIndex ("tazjin" :: Text)
@@ -88,8 +86,8 @@ blogHandler acid lang =
          , do decodeBody tmpPolicy
               dir "postcomment" $ path $ 
                 \(eId :: Integer) -> addComment acid lang $ EntryId eId
-         , do nullDir
-              showIndex acid lang
+         , nullDir >> showIndex acid lang
+         , dir "rss" $ nullDir >> showRSS acid lang
          , notFound $ toResponse $ showError NotFound lang
          ]
 
@@ -120,6 +118,13 @@ showIndex acid lang = do
     eDrop :: Maybe Int -> [a] -> [a]
     eDrop (Just i) = drop ((i-1) * 6)
     eDrop Nothing = drop 0 
+
+showRSS :: AcidState Blog -> BlogLang -> ServerPart Response
+showRSS acid lang = do
+    entries <- query' acid (LatestEntries lang)
+    feed <- liftIO $ renderFeed lang $ take 6 entries
+    setHeaderM "content-type" "text/xml"
+    ok $ toResponse feed
 
 addComment :: AcidState Blog -> BlogLang -> EntryId -> ServerPart Response
 addComment acid lang eId = do

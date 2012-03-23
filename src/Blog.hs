@@ -42,7 +42,7 @@ blogTemplate :: BlogLang -> Text -> Html -> Html
 blogTemplate lang t_append body = H.docTypeHtml $ do --add body
     H.head $ do
         H.title $ (toHtml $ blogTitle lang t_append)
-        H.link ! A.rel "alternate" ! A.type_ "application/rss+xml" ! A.title "RSS-Feed" ! A.href "/rss"
+        H.link ! A.rel "alternate" ! A.type_ "application/rss+xml" ! A.title "RSS-Feed" ! A.href (toValue feedURL)
         H.link ! A.rel "stylesheet" ! A.type_ "text/css" ! A.href "/static/blogv312.css" ! A.media "all"
         --H.link ! A.rel "stylesheet" ! A.type_ "text/css" ! A.href "/res/blogstyle.css" ! A.media "all"
         H.meta ! A.httpEquiv "content-type" ! A.content "text/html;charset=UTF-8"
@@ -72,6 +72,7 @@ blogTemplate lang t_append body = H.docTypeHtml $ do --add body
             toHtml $ orText lang
             H.a ! A.class_ "link" ! A.href (toValue imu) ! A.target "_blank" $ "iMessage"
             "."
+        feedURL = "/" ++ show lang ++ "/rss"
 
 renderEntries :: Bool -> [Entry] -> Text -> Maybe Html -> Html
 renderEntries showAll entries topText footerLinks = do

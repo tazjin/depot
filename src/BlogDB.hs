@@ -9,14 +9,16 @@ import Data.Acid
 import Data.Acid.Advanced 
 import Data.Acid.Local
 import Data.ByteString      (ByteString)
+import Data.Char            (toLower)
 import Data.Data            (Data, Typeable)
 import Data.IxSet           (Indexable(..), IxSet(..), (@=), Proxy(..), getOne, ixFun, ixSet)
-import Data.List 			(insert)
+import Data.List 			      (insert)
 import Data.SafeCopy        (SafeCopy, base, deriveSafeCopy)
 import Data.Text            (Text, pack)
 import Data.Text.Lazy       (toStrict)
 import Data.Time
-import System.Environment(getEnv)
+import Happstack.Server     (FromReqURI(..))
+import System.Environment   (getEnv)
 
 import qualified Crypto.Hash.SHA512 as SHA (hash)
 import qualified Data.ByteString.Char8 as B
@@ -37,6 +39,13 @@ data BlogLang = EN | DE
 instance Show BlogLang where
     show DE = "de"
     show EN = "en"
+
+instance FromReqURI BlogLang where
+  fromReqURI sub = 
+    case map toLower sub of
+      "de" -> Just DE
+      "en" -> Just EN
+      _    -> Nothing
 
 $(deriveSafeCopy 0 'base ''BlogLang)
 

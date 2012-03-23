@@ -3,8 +3,11 @@
 module Locales where
 
 import           Data.Data (Data, Typeable)
+import           Data.Maybe (fromMaybe)
 import           Data.Text (Text)
 import qualified Data.Text as T
+import           Network.URI
+
 
 import    BlogDB (BlogLang (..))
 
@@ -122,6 +125,18 @@ cSend EN = "Submit"
 cTextPlaceholder :: BlogLang -> Text
 cTextPlaceholder DE = "Kommentartext hier eingeben :]"
 cTextPlaceholder EN = "Enter your comment here :]"
+
+-- RSS Strings
+rssTitle :: BlogLang -> String
+rssTitle DE = "Tazjins Blog"
+rssTitle EN = "Tazjin's Blog"
+
+rssDesc :: BlogLang -> String
+rssDesc DE = "Feed zu Tazjins Blog"
+rssDesc EN = "Feed for Tazjin's Blog"
+
+rssLink :: BlogLang -> URI
+rssLink l = fromMaybe nullURI $ parseURI ("http://tazj.in/" ++ show l)
 
 -- errors
 notFoundTitle :: BlogLang -> Text
