@@ -1,12 +1,7 @@
 @charset "UTF-8";
 /* CSS Document */
-
-@font-face {
-  font-family: 'PT Sans';
-  font-style: normal;
-  font-weight: normal;
-  src: local('PT Sans'), local('PTSans-Regular'), url('http://themes.googleusercontent.com/static/fonts/ptsans/v2/7YGmE4Ls5b94ct65u07hVQLUuEpTyoUstqEm5AMlJo4.woff') format('woff');
-}
+@import url(http://fonts.googleapis.com/css?family=Droid+Sans+Mono);
+@import url(http://fonts.googleapis.com/css?family=PT+Sans);
 
 html, body{
 	margin: 0;
@@ -147,3 +142,73 @@ input, textarea, select {
 	font-size: 24px;
 	font-weight: bold;
 }
+
+/* HsColour style */
+
+.code
+{ 
+  box-shadow: 3px 3px 5px 1px #888; 
+  border-radius: 10px;
+  padding: 0.75em;
+
+  font-size: 11pt;
+  width: 60em;
+  color: white;
+  line-height: 1.2em;
+  font-family: 'Droid Sans Mono', sans-serif;
+  background: black;
+  background-image:url('/static/cbg.jpg');
+  background-repeat: no-repeat;
+ }
+
+.code pre
+{
+   font-family: 'Droid Sans Mono', sans-serif; 
+}
+
+kbd
+{
+   font-family: 'Droid Sans Mono', sans-serif; 
+    color: #333;
+    font-size: 0.8em;
+}
+
+.wide
+{
+    width: 90em;
+}
+
+
+code
+{ 
+  line-height: 1.5em;
+  border: 1px;
+ }
+
+.source-code
+{ 
+  font-size: 0.75em;
+  color: #666;
+ }
+
+.warning
+{ 
+  color: red;
+ }
+
+
+.hs-keyglyph { color: DarkGoldenrod;  }
+.hs-layout   { color: white;}
+.hs-keyword  { color: skyblue; }
+.hs-comment, .hs-comment a { color: cadetblue;}
+.hs-str      { color: Darkorange; }
+.hs-chr      { color: RosyBrown;}
+.hs-conid    { color: GreenYellow; }
+.hs-varid    { color: white; }
+.hs-num      { color: white; }
+.hs-varop    { color: DarkGoldenrod; }
+.hs-conop    { color: DarkGoldenrod; }
+.hs-sel      { color: FireBrick; }
+.hs-cpp      { color: yellow; }
+.hs-definition { color: gold; }
+
