@@ -9,3 +9,5 @@ music
 *.sublime*
 *.8
 *.geany
+*.orig
+BlogState/
