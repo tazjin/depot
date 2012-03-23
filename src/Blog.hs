@@ -78,8 +78,8 @@ renderEntries showAll entries topText footerLinks = do
     H.span ! A.class_ "innerTitle" $ toHtml topText
     H.div ! A.class_ "innerContainer" $ do
         H.ul $ if' showAll
-            (sequence_ $ map showEntry entries)
-            (sequence_ . take 6 $ map showEntry entries)
+            (mapM_ showEntry entries)
+            (mapM_ showEntry $ take 6 entries)
         getFooterLinks footerLinks
     where
         showEntry :: Entry -> Html
@@ -123,7 +123,7 @@ renderCommentBox cLang cId = do
 
 renderComments :: [Comment] -> BlogLang -> Html
 renderComments [] lang = H.li $ toHtml $ noComments lang
-renderComments comments lang = sequence_ $ map showComment comments
+renderComments comments lang = mapM_ showComment comments
     where
         showComment :: Comment -> Html
         showComment (Comment{..}) = H.li $ do
@@ -222,7 +222,7 @@ adminEntryList :: [Entry] -> Html
 adminEntryList entries = adminTemplate "Entrylist" $
   H.div ! A.style "float: center;" $ do
     H.table $ do
-        sequence_ $ map showEntryItem entries
+        mapM_ showEntryItem entries
     adminFooter
   where
     showEntryItem :: Entry -> Html
