@@ -95,6 +95,7 @@ blogHandler acid lang =
                 \(eId :: Integer) -> addComment acid lang $ EntryId eId
          , nullDir >> showIndex acid lang
          , dir "rss" $ nullDir >> showRSS acid lang
+         , dir "rss.xml" $ nullDir >> showRSS acid lang
          , notFound $ toResponse $ showError NotFound lang
          ]
 

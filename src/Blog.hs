@@ -72,7 +72,7 @@ blogTemplate lang t_append body = H.docTypeHtml $ do --add body
             toHtml $ orText lang
             H.a ! A.class_ "link" ! A.href (toValue imu) ! A.target "_blank" $ "iMessage"
             "."
-        feedURL = "/" ++ show lang ++ "/rss"
+        feedURL = "/" ++ show lang ++ "/rss.xml"
 
 renderEntries :: Bool -> [Entry] -> Text -> Maybe Html -> Html
 renderEntries showAll entries topText footerLinks = do
