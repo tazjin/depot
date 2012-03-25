@@ -28,4 +28,7 @@ Executable tazblog
     ixset,
     safecopy,
     mtl,
-    transformers
+    transformers,
+    network,
+    options,
+    rss
