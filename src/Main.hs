@@ -24,7 +24,7 @@ import           Data.Time
 import           Data.SafeCopy (base, deriveSafeCopy)
 import           Happstack.Server hiding (Session)
 import           Happstack.Server.Compression
-import           System.Environment(getEnv)
+import           Options
 import           System.Locale (defaultTimeLocale)
 
 import           Blog
@@ -34,16 +34,23 @@ import           RSS
 
 {- Server -}
 
+defineOptions "MainOptions" $ do
+  stringOption "optState" "statedir" "../"
+    "Directory in which the /BlogState dir is located.\
+    \ The default is ../ (if run from src/)"
+  intOption "optPort" "port" 8000
+    "The port to run the web server on. Default is 8000"
+
 tmpPolicy :: BodyPolicy
 tmpPolicy = (defaultBodyPolicy "./tmp/" 0 200000 1000)
 
 main :: IO()
 main = do
     putStrLn ("TazBlog " ++ version ++ " in Haskell starting")
-    tbDir <- getEnv "TAZBLOG"
-    bracket (openLocalStateFrom (tbDir ++ "/BlogState") initialBlogState)
-            (createCheckpointAndClose)
-            (\acid -> simpleHTTP nullConf {port = 80} $ tazBlog acid)
+    runCommand $ \opts args ->
+      bracket (openLocalStateFrom (optState opts ++ "BlogState") initialBlogState)
+              (createCheckpointAndClose)
+              (\acid -> simpleHTTP nullConf {port = optPort opts} $ tazBlog acid)
 
 tazBlog :: AcidState Blog -> ServerPart Response
 tazBlog acid = do
