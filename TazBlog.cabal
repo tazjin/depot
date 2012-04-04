@@ -1,5 +1,5 @@
 Name:                TazBlog
-Version:             3.3
+Version:             3.3.1
 Synopsis:            Tazjin's Blog
 License-file:        LICENSE
 Author:              Vincent Ambo
@@ -32,5 +32,5 @@ Executable tazblog
     network,
     options,
     rss,
-    recaptcha.
+    recaptcha,
     xhtml
