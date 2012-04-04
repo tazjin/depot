@@ -17,6 +17,7 @@ import           Data.Acid.Local
 import qualified Data.ByteString.Base64 as B64 (encode)
 import           Data.ByteString.Char8 (ByteString, pack, unpack)
 import           Data.Data (Data, Typeable)
+import           Data.Maybe (fromJust)
 import           Data.Monoid (mempty)
 import           Data.Text (Text)
 import qualified Data.Text as T
@@ -29,7 +30,7 @@ import           Options
 import           System.Locale (defaultTimeLocale)
 
 import           Blog
-import           BlogDB hiding (addComment, updateEntry)
+import           BlogDB hiding (addComment, updateEntry, deleteComment)
 import           Locales
 import           RSS
 
@@ -77,7 +78,11 @@ tazBlog acid captchakey = do
               entryList acid EN
          , do guardSession acid
               dirs "admin/edit" $ path $ \(eId :: Integer) -> editEntry acid eId
-         , dirs "admin/updateentry" $ nullDir >> updateEntry acid
+         , do guardSession acid
+              dirs "admin/updateentry" $ nullDir >> updateEntry acid
+         , do guardSession acid
+              dirs "admin/cdelete" $ path $ \(eId :: Integer) -> path $ \(cId :: String) ->
+                deleteComment acid (EntryId eId) cId
          , do dir "admin" $ nullDir
               guardSession acid
               ok $ toResponse $ adminIndex ("tazjin" :: Text)
@@ -223,6 +228,12 @@ updateEntry acid = do
     seeOther (concat $ intersperse' "/" [show $ lang entry, show eId])
              (toResponse ())
 
+deleteComment :: AcidState Blog -> EntryId -> String -> ServerPart Response
+deleteComment acid eId cId = do
+    nEntry <- update' acid (DeleteComment eId cDate)
+    ok $ toResponse $ commentDeleted eId
+  where
+    (cDate :: UTCTime) = fromJust $ parseTime defaultTimeLocale "%s%Q" cId
 
 guardSession :: AcidState Blog -> ServerPartT IO ()
 guardSession acid = do

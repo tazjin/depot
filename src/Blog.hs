@@ -266,8 +266,25 @@ editPage (Entry{..}) = adminTemplate "Index" $
                   H.td $ H.textarea ! A.name "mtext" ! A.cols "100" ! A.rows "15" $ toHtml mtext
       H.input ! A.type_ "hidden" ! A.name "eid" ! A.value (toValue $ unEntryId entryId)
       H.input ! A.style "margin-left: 20px" ! A.type_ "submit" ! A.value "Absenden"
+      H.div ! A.class_ "editComments" $ editComments comments entryId
       H.p $ do preEscapedText "<a href=/>Startseite</a> -- Entrylist: <a href=/admin/entrylist/de>DE</a>"
                preEscapedText " & <a href=/admin/entrylist/en>EN</a> -- <a href=#>Backup</a> (NYI)"
+
+editComments :: [Comment] -> EntryId -> Html
+editComments clist eId = H.table $ mapM_ editComment clist
+    where
+        editComment (Comment{..}) = H.tr $ do H.td $ toHtml cauthor
+                                              H.td $ toHtml $ formatTime defaultTimeLocale "%c" cdate
+                                              H.td $ cDeleteLink cdate
+        cDeleteLink cdate = H.a ! A.href (toValue $ "/admin/cdelete/" ++ show eId 
+                                         ++ formatTime defaultTimeLocale "/%s%Q" cdate) $ "Löschen"
+
+commentDeleted :: EntryId -> Html
+commentDeleted eId = adminTemplate "Kommentar gelöscht" $ do
+    H.div $ "Der Kommentar wurde gelöscht."
+    H.br
+    H.a ! A.href (toValue $ "/de/" ++ show eId) $ "Eintrag ansehen | "
+    H.a ! A.href (toValue $ "/admin/edit/" ++ show eId) $ "Eintrag bearbeiten"
 
 -- Error pages
 showError :: BlogError -> BlogLang -> Html

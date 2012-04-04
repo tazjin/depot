@@ -150,6 +150,14 @@ addComment eId c =
 	   put $ b { blogEntries = IxSet.updateIx eId newEntry blogEntries }
 	   return newEntry
 
+deleteComment :: EntryId -> UTCTime -> Update Blog Entry
+deleteComment eId cDate =
+   do b@Blog{..} <- get
+      let (Just e) = getOne $ blogEntries @= eId
+      let newEntry = e {comments = filter (\c -> cdate c /= cDate) (comments e)}
+      put $ b { blogEntries = IxSet.updateIx eId newEntry blogEntries }
+      return newEntry
+
 updateEntry :: Entry -> Update Blog Entry
 updateEntry e = 
     do b@Blog{..} <- get
@@ -210,6 +218,7 @@ hashString = B64.encode .  SHA.hash . B.pack
 $(makeAcidic ''Blog
     [ 'insertEntry
     , 'addComment
+    , 'deleteComment
     , 'updateEntry
     , 'getEntry
     , 'latestEntries
