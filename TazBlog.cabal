@@ -31,4 +31,5 @@ Executable tazblog
     transformers,
     network,
     options,
-    rss
+    rss,
+    recaptcha
