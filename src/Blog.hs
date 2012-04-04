@@ -9,12 +9,14 @@ import           Data.Monoid (mempty)
 import           Data.Text (Text)
 import qualified Data.Text as T
 import           Data.Time
+import           Network.Captcha.ReCaptcha
 import           System.Locale (defaultTimeLocale)
-import           Text.Blaze (toValue, preEscapedText)
+import           Text.Blaze (toValue, preEscapedText, preEscapedString)
 import           Text.Blaze.Html5 (Html, (!), a, form, input, p, toHtml, label)
 import           Text.Blaze.Html5.Attributes (action, enctype, href, name, size, type_, value)
 import qualified Text.Blaze.Html5 as H
 import qualified Text.Blaze.Html5.Attributes as A
+import           Text.XHtml.Strict (showHtmlFragment)
 
 import           Locales
 import           BlogDB
@@ -25,6 +27,21 @@ intersperse' sep l = sep : intersperse sep l
 
 replace :: Eq a => a -> a -> [a] -> [a]
 replace x y = map (\z -> if z == x then y else z)
+
+-- javascript and others
+
+captcha :: Html
+captcha = H.div ! A.class_ "cCaptcha" $
+          do H.script ! A.src "http://api.recaptcha.net/challenge?k=6LfQXccSAAAAAIjKm26XlFnBMAgvaKlOAjVWEEnM" ! A.type_ "text/javascript" $ ""
+             H.noscript $ H.iframe ! A.src "http://api.recaptcha.net/noscript?k=6LfQXccSAAAAAIjKm26XlFnBMAgvaKlOAjVWEEnM" ! A.height "300" !
+                               A.width "500" ! A.seamless "" $ do
+                                    H.br
+                                    H.textarea ! A.name "recaptcha_challenge_field" ! A.rows "3" ! A.cols "40" $ ""
+                                    H.input ! A.type_ "hidden" ! A.name "recaptcha_response_field" ! A.value "manual_challenge"
+
+captchaOptions :: BlogLang ->  Html
+captchaOptions lang = H.script ! A.type_ "text/javascript" $ toHtml $ 
+                        T.concat ["var RecaptchaOptions = { theme: 'clean', lang: '", showLangText lang, "'};"]
 
 analytics :: Text
 analytics = T.pack $ unlines ["<script type=\"text/javascript\">"
@@ -38,12 +55,14 @@ analytics = T.pack $ unlines ["<script type=\"text/javascript\">"
                              ,"  })();"
                              ,"</script>"]
 
+-- blog HTML
+
 blogTemplate :: BlogLang -> Text -> Html -> Html
 blogTemplate lang t_append body = H.docTypeHtml $ do --add body
     H.head $ do
         H.title $ (toHtml $ blogTitle lang t_append)
         H.link ! A.rel "alternate" ! A.type_ "application/rss+xml" ! A.title "RSS-Feed" ! A.href (toValue feedURL)
-        H.link ! A.rel "stylesheet" ! A.type_ "text/css" ! A.href "/static/blogv312.css" ! A.media "all"
+        H.link ! A.rel "stylesheet" ! A.type_ "text/css" ! A.href "/static/blogv33.css" ! A.media "all"
         --H.link ! A.rel "stylesheet" ! A.type_ "text/css" ! A.href "/res/blogstyle.css" ! A.media "all"
         H.meta ! A.httpEquiv "content-type" ! A.content "text/html;charset=UTF-8"
         --H.style ! A.type_ "text/css" ! A.title "iOS iMessage" ! A.media "screen and (max-device-width: 1024px)" $ "#cosx{display:none;}"
@@ -116,10 +135,12 @@ renderEntry (Entry{..}) = do
 renderCommentBox :: BlogLang -> EntryId -> Html
 renderCommentBox cLang cId = do
     H.div ! A.class_ "cHead" $ toHtml $ cwHead cLang
+    captchaOptions cLang
     H.form ! A.method "POST" ! A.action (toValue $ "/" ++ (show cLang) ++  "/postcomment/" ++ show cId) $ do
         H.p $ H.input ! A.name "cname" ! A.placeholder "Name" ! A.class_ "cInput"
         H.p $ H.label $ H.textarea ! A.name "ctext" ! A.cols "50" ! A.rows "13" ! A.class_ "cInput" !
                         A.placeholder (toValue $ cTextPlaceholder cLang) $ mempty
+        H.p $ H.label $ captcha
         H.p $ H.input ! A.class_ "cInput" ! A.style "width: 120px;" ! A.type_ "submit" ! A.value (toValue $ cSend cLang)
 
 renderComments :: [Comment] -> BlogLang -> Html

@@ -118,6 +118,15 @@ input, textarea, select {
 	margin-left: 15px;
 }
 
+.cCaptcha {
+	padding: 5px;
+	border: 1px solid #555;
+    -webkit-border-radius: 0.5em;
+    margin-left: 15px;
+    width: 555px;
+    background: #F9F9F9;
+}
+
 .tt { 
 	font-family: "courier new",courier,monospace; 
 	font-size: 13px;

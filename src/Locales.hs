@@ -16,7 +16,7 @@ import    BlogDB (BlogLang (..))
 
 data BlogError = NotFound | DBError
 
-version = "3.2"
+version = "3.3"
 
 allLang = [EN, DE]
 
@@ -27,6 +27,10 @@ if' False _ y = y
 blogTitle :: BlogLang -> Text -> Text
 blogTitle DE s = T.concat ["Tazjins Blog", s]
 blogTitle EN s = T.concat ["Tazjin's Blog", s]
+
+showLangText :: BlogLang -> Text
+showLangText EN = "en"
+showLangText DE = "de"
 
 -- index site headline
 topText DE = "Aktuelle Einträge"
