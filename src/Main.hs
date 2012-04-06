@@ -181,8 +181,8 @@ postEntry acid = do
                     <*> getLang lang
                     <*> readCookieValue "sUser"
                     <*> lookText' "title"
-                    <*> pure (entryEscape nBtext)
-                    <*> pure (entryEscape nMtext)
+                    <*> pure nBtext
+                    <*> pure nMtext
                     <*> pure now
                     <*> pure [] -- NYI
                     <*> pure []
@@ -194,12 +194,6 @@ postEntry acid = do
     getLang :: String -> ServerPart BlogLang
     getLang "de" = return DE
     getLang "en" = return EN
-
-entryEscape :: Text -> Text
-entryEscape = newlineEscape . newlineRNEscape
-  where
-    newlineEscape = T.replace "\n" "<br>"
-    newlineRNEscape = T.replace "\r\n" "<br>"
 
 entryList :: AcidState Blog -> BlogLang -> ServerPart Response
 entryList acid lang = do
@@ -213,7 +207,7 @@ editEntry acid i = do
   where
     eId = EntryId i
 
-updateEntry :: AcidState Blog -> ServerPart Response
+updateEntry :: AcidState Blog -> ServerPart Response -- TODO: Clean this up
 updateEntry acid = do
     decodeBody tmpPolicy
     (eId :: Integer) <- lookRead "eid"
@@ -222,8 +216,8 @@ updateEntry acid = do
     nBtext <- lookText' "btext"
     nMtext <- lookText' "mtext"
     let nEntry = entry { title = nTitle
-                        , btext = entryEscape nBtext
-                        , mtext = entryEscape nMtext}
+                        , btext = nBtext
+                        , mtext = nMtext}
     update' acid (UpdateEntry nEntry)
     seeOther (concat $ intersperse' "/" [show $ lang entry, show eId])
              (toResponse ())
