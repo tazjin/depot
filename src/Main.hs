@@ -149,7 +149,9 @@ addComment acid lang captchakey eId = do
   nComment <- Comment <$> pure now
                       <*> lookText' "cname"
                       <*> pure (commentEscape nCtext)
-  -- captcha verification
+  update' acid (AddComment eId nComment) 
+                >> seeOther ("/" ++ show lang ++ "/" ++ show eId) (toResponse())
+  {- -- captcha verification
   challenge <- look "recaptcha_challenge_field"
   response <- look "recaptcha_response_field"
   (userIp, _) <- askRq >>= return . rqPeer
@@ -157,7 +159,7 @@ addComment acid lang captchakey eId = do
   case validation of 
     Right _ -> update' acid (AddComment eId nComment) 
                 >> seeOther ("/" ++ show lang ++ "/" ++ show eId) (toResponse())
-    Left _ -> (liftIO $ putStrLn "Captcha failed") >> seeOther ("/" ++ show lang ++ "/" ++ show eId) (toResponse())
+    Left _ -> (liftIO $ putStrLn "Captcha failed") >> seeOther ("/" ++ show lang ++ "/" ++ show eId) (toResponse()) -}
 
 commentEscape :: Text -> Text
 commentEscape = newlineEscape . ltEscape . gtEscape . ampEscape

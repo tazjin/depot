@@ -140,7 +140,7 @@ renderCommentBox cLang cId = do
         H.p $ H.input ! A.name "cname" ! A.placeholder "Name" ! A.class_ "cInput"
         H.p $ H.label $ H.textarea ! A.name "ctext" ! A.cols "50" ! A.rows "13" ! A.class_ "cInput" !
                         A.placeholder (toValue $ cTextPlaceholder cLang) $ mempty
-        H.p $ H.label $ captcha
+        -- H.p $ H.label $ captcha
         H.p $ H.input ! A.class_ "cInput" ! A.style "width: 120px;" ! A.type_ "submit" ! A.value (toValue $ cSend cLang)
 
 renderComments :: [Comment] -> BlogLang -> Html
