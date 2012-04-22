@@ -97,7 +97,7 @@ renderEntries :: Bool -> [Entry] -> Text -> Maybe Html -> Html
 renderEntries showAll entries topText footerLinks = do
     H.span ! A.class_ "innerTitle" $ toHtml topText
     H.div ! A.class_ "innerContainer" $ do
-        H.ul ! A.style "max-width: 1000px;" $ if' showAll
+        H.ul ! A.style "max-width: 57em;" $ if' showAll
             (mapM_ showEntry entries)
             (mapM_ showEntry $ take 6 entries)
         getFooterLinks footerLinks
@@ -122,12 +122,12 @@ renderEntry (Entry{..}) = do
     H.span ! A.class_ "innerTitle" $ toHtml $ title
     H.span ! A.class_ "righttext" $ H.i $ toHtml $ woText
     H.div ! A.class_ "innerContainer" $ do
-        H.article $ H.ul ! A.style "max-width: 1000px;" $ H.li $ do
+        H.article $ H.ul ! A.style "max-width: 57em;" $ H.li $ do
             preEscapedText $ btext
             H.p $ preEscapedText $ mtext
         H.div ! A.class_ "innerBoxComments" $ do
             H.div ! A.class_ "cHead" $ toHtml $ cHead lang -- ! A.style "font-size:large;font-weight:bold;"
-            H.ul ! A.style "max-width: 1000px;" $ renderComments comments lang
+            H.ul ! A.style "max-width: 57em;" $ renderComments comments lang
             renderCommentBox lang entryId
   where
     woText = flip T.append author $ T.pack $ (formatTime defaultTimeLocale (eTimeFormat lang) edate) 
