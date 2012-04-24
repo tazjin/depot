@@ -12,6 +12,7 @@ cabal-version:       >= 1.2
 Executable tazblog
   hs-source-dirs: src
   main-is: Main.hs
+  ghc-options: -O2
 
   Build-depends:
     base,
