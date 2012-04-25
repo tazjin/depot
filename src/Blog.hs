@@ -1,4 +1,4 @@
-{-# LANGUAGE OverloadedStrings, ScopedTypeVariables, DeriveDataTypeable, QuasiQuotes, RecordWildCards #-}
+{-# LANGUAGE OverloadedStrings, ScopedTypeVariables, DeriveDataTypeable, TemplateHaskell, QuasiQuotes, RecordWildCards #-}
 
 module Blog where
 
@@ -10,7 +10,9 @@ import Data.Text (Text, append, pack, empty)
 import Data.Time
 import Network.Captcha.ReCaptcha
 import System.Locale (defaultTimeLocale)
+import Text.Blaze (preEscapedText)
 import Text.Hamlet
+import Text.Lucius 
 import Locales
 import BlogDB
 
@@ -28,39 +30,28 @@ show' = pack . show
 
 data BlogURL = BlogURL
 
--- javascript and others
-analytics :: Text
-analytics = T.pack $ unlines ["<script type=\"text/javascript\">"
-                             ,"  var _gaq = _gaq || [];"
-                             ,"  _gaq.push(['_setAccount', 'UA-26042394-1']);"
-                             ,"  _gaq.push(['_trackPageview']);"
-                             ,"  (function() {"
-                             ,"    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;"
-                             ,"    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';"
-                             ,"    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);"
-                             ,"  })();"
-                             ,"</script>"]
-
+-- blog CSS (admin is still static)
+stylesheetSource = $(luciusFile "../res/blogstyle.lucius")
+blogStyle = renderCssUrl undefined stylesheetSource 
 -- blog HTML
 blogTemplate :: BlogLang -> Text -> Html -> Html
 blogTemplate lang t_append body = [shamlet|
 $doctype 5
  <head>
   <title>#{blogTitle lang t_append}
-  <link rel="stylesheet" type="text/css" href="/static/blogv33.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/static/blogv34.css" media="all">
   <link rel="alternate" type="application/rss+xml" title="RSS-Feed" href=#{rssUrl}>
   <meta http-equiv="content-type" content="text/html;charset=UTF-8">
-  #{analytics}
  <body>
   <div class="header">
-  <a class="btitle" href=#{append "/" (show' lang)}>#{blogTitle lang empty}
-  <p style="clear: both;">
-   <span class="contacts" id="cosx">#{contactInfo iMessage}
-   <span class="righttext">#{rightText lang}
+   <a class="btitle" href=#{append "/" (show' lang)}>#{blogTitle lang empty}
+   <p style="clear: both;">
+    <span class="contacts" id="cosx">^{contactInfo iMessage}
+    <span class="righttext">^{preEscapedText $ rightText lang}
   <div class="middle">
-   #{body}
+   ^{body}
    <div class="footer">
-    #{showFooter lang $ pack version}
+    ^{showFooter lang $ pack version}
     <div class="centerbox">
      <span style="font-size:17px;font-family:Helvetica;">ಠ_ಠ
 |]
@@ -98,13 +89,13 @@ renderEntries showAll entries topText footerLinks = [shamlet|
   $forall entry <- elist
    <li>
     <a href=#{linkElems entry}>#{linkText $ length $ comments entry}
-    #{append " " $ btext entry}
+    ^{preEscapedText $ append " " $ btext entry}
     $if ((/=) (mtext entry) empty)
      <p><a href=#{linkElems entry}>#{readMore $ lang entry}
     $else
      <br>&nbsp;
  $maybe links <- footerLinks
-  #{links}
+  ^{links}
 |]
   where
    elist = if' showAll entries (take 6 entries)
@@ -119,7 +110,7 @@ showLinks (Just i) lang = [shamlet|
    / -- #
    <a href=#{nLink $ pred i}>#{nextText lang}
  $elseif ((<=) i 1)
-  #{showLinks Nothing lang}
+  ^{showLinks Nothing lang}
 |]
   where
    nLink page = T.concat ["/", show' lang, "/?page=", show' page]
@@ -133,17 +124,18 @@ showLinks Nothing lang = [shamlet|
 renderEntry :: Entry -> Html
 renderEntry Entry{..} = [shamlet|
 <span class="innerTitle">#{title}
-<span class="righttext"><i>#{woText}
+<span class="righttext">
+ <i>#{woText}
 <div class="innerContainer">
  <article>
   <ul style="max-width:57em;">
    <li>
-    #{btext}
-    <p>#{mtext}
+    ^{preEscapedText $ btext}
+    <p>^{preEscapedText $ mtext}
  <div class="innerBoxComments">
   <div class="cHead">#{cHead lang}
   <ul style="max-width:57em;">#{renderComments comments lang}
-  #{renderCommentBox lang entryId}
+  ^{renderCommentBox lang entryId}
 |]
   where
    woText = flip T.append author $ T.pack $ (formatTime defaultTimeLocale (eTimeFormat lang) edate)
@@ -154,7 +146,7 @@ renderComments comments lang = [shamlet|
 $forall comment <- comments
  <li>
   <i>#{append (cauthor comment) ": "}
-  #{ctext comment}
+  ^{preEscapedText $ ctext comment}
   <p class="tt">#{timeString $ cdate comment}
 |]
   where
@@ -204,7 +196,7 @@ $doctype 5
  <meta http-equiv="content-type" content="text/html;charset=UTF-8">
  <title>#{append "TazBlog Admin: " title}
 <body>
- #{body}
+ ^{body}
 |]
 
 adminLogin :: Html
@@ -241,7 +233,7 @@ adminIndex sUser = adminTemplate "Index" $ [shamlet|
     <td><textarea name="mtext" cols="100" rows="15">
   <input type="hidden" name="author" value=#{sUser}>
   <input style="margin-left:20px;" type="submit" value="Absenden">
- #{adminFooter}
+ ^{adminFooter}
 |]
 
 adminFooter :: Html
@@ -285,7 +277,7 @@ editPage (Entry{..}) = adminTemplate "Index" $ [shamlet|
   <input type="hidden" name="eid" value=#{unEntryId entryId}>
   <input type="submit" style="margin-left:20px;" value="Absenden">
   <div class="editComments">#{editComments comments entryId}
-  <p>#{adminFooter}
+  <p>^{adminFooter}
 |]
 
 editComments :: [Comment] -> EntryId -> Html
