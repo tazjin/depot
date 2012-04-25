@@ -74,7 +74,7 @@ showFooter l v = [shamlet|
  <a class="link" href="http://haskell.org">Haskell
  , #
  <a class="link" href="http://hackage.haskell.org/package/acid-state-0.6.3">Acid-State
- / and without PHP, Java, Perl, MySQL and Python.
+ \ and without PHP, Java, Perl, MySQL and Python.
  <p>
   <a class="link" href=#{repoURL}>#{append "Version " v}
   &nbsp;
@@ -107,7 +107,7 @@ showLinks (Just i) lang = [shamlet|
  $if ((>) i 1)
   <div class="centerbox">
    <a href=#{nLink $ succ i}>#{backText lang}
-   / -- #
+   \ -- #
    <a href=#{nLink $ pred i}>#{nextText lang}
  $elseif ((<=) i 1)
   ^{showLinks Nothing lang}
@@ -227,10 +227,13 @@ adminIndex sUser = adminTemplate "Index" $ [shamlet|
      <option value="en">Englisch
    <tr>
     <thead><td>Text:
-    <td><textarea name="btext" cols="100" rows="15">
+    <td>
+     <textarea name="btext" cols="100" rows="15">
    <tr>
-    <thead><td style="vertical-align:top;">Mehr Text:
-    <td><textarea name="mtext" cols="100" rows="15">
+    <thead>
+     <td style="vertical-align:top;">Mehr Text:
+    <td>
+     <textarea name="mtext" cols="100" rows="15">
   <input type="hidden" name="author" value=#{sUser}>
   <input style="margin-left:20px;" type="submit" value="Absenden">
  ^{adminFooter}
@@ -239,13 +242,13 @@ adminIndex sUser = adminTemplate "Index" $ [shamlet|
 adminFooter :: Html
 adminFooter = [shamlet|
 <a href="/">Startseite
-/ -- Entrylist: #
+\ -- Entrylist: #
 <a href="/admin/entrylist/de">DE
-/ & #
+\ & #
 <a href="/admin/entrylist/en">EN
-/ -- #
+\ -- #
 <a href="#">Backup
-/ (NYI)
+\ (NYI)
 |]
 
 adminEntryList :: [Entry] -> Html
@@ -254,7 +257,7 @@ adminEntryList entries = adminTemplate "EntryList" $ [shamlet|
  <table>
   $forall entry <- entries
    <tr>
-    <td><a href=#{append "/admin/edit" (show' $ entryId entry)}>#{title entry}
+    <td><a href=#{append "/admin/edit/" (show' $ entryId entry)}>#{title entry}
     <td>#{formatPostDate $ edate entry}
 |]
  where
@@ -267,13 +270,16 @@ editPage (Entry{..}) = adminTemplate "Index" $ [shamlet|
   <table>
    <tr>
     <td>Titel:
-    <td><input type="text" name="title" value=#{title}>
+    <td>
+     <input type="text" name="title" value=#{title}>
    <tr>
     <td style="vertical-align:top;">Text:
-    <td><textarea name="btext" cols="100" rows="15">#{btext}
+    <td>
+     <textarea name="btext" cols="100" rows="15">#{btext}
    <tr>
     <td style="vertical-align:top;">Mehr Text:
-    <td><textarea name="mtext" cols="100" rows="15">#{mtext}
+    <td>
+     <textarea name="mtext" cols="100" rows="15">#{mtext}
   <input type="hidden" name="eid" value=#{unEntryId entryId}>
   <input type="submit" style="margin-left:20px;" value="Absenden">
   <div class="editComments">#{editComments comments entryId}
