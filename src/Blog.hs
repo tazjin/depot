@@ -63,7 +63,7 @@ $doctype 5
 , #
 <a class="link" href=#{twitter} target="_blank">Twitter
 #{orText lang}
-<a class="link" href=#{imu} target="_blank">iMessage
+<a class="link" href=#{imu}>iMessage
 .
 |]
 
