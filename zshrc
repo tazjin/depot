@@ -23,6 +23,7 @@ setopt no_hup no_clobber print_exit_value
 setopt extendedglob glob_dots
 setopt correct
 setopt completealiases
+setopt prompt_subst
 
 case $TERM in
     rxvt|*term)
@@ -32,10 +33,12 @@ case $TERM in
 esac
 
 autoload -U colors && colors
-PS1="%{%B$fg[blue]%}%n%{$reset_color%B%}@%{%b$fg[magenta]%}%1~ %{$reset_color%}%# "
-### PIERRE: # PS1="%{%B$fg[green]%}%n%{$reset_color%B%}@%{$fg[blue]%}%m %{%b$fg[magenta]%}%1~ %{$reset_color%}%# "
+#vincent: PS1="%{%B$fg[blue]%}%n%{$reset_color%B%}@%{%b$fg[magenta]%}%1~ %{$reset_color%}\$(vcprompt -f '%b:%r ')%# "
 
-#RPS1="%M:%d"
+#PS1="%n@%1~ \$(vcprompt -f '%b:%r ') %# "
+PS1="%{$fg[green]%}%n%{$fg[cyan]%}@%{$fg[magenta]%}%1~ %{$fg[yellow]%}\$(vcprompt -f '%b:%r ')%{$fg[cyan]%}%# %{$reset_color%}"
+RPS1="%{$fg[cyan]%}%B[%M:%d]%b%{$reset_color%}"
+
 
 alias ls="ls -liFG"
 
