@@ -90,7 +90,8 @@ tazBlog acid captchakey = do
          , dir "dologin" $ processLogin acid
          , do dirs "static/blogv34.css" $ nullDir
               setHeaderM "content-type" "text/css"
-              neverExpires
+              setHeaderM "cache-control" "max-age=630720000"
+              setHeaderM "expires" "Tue, 20 Jan 2037 04:20:42 GMT"
               ok $ toResponse $ blogStyle
          , do setHeaderM "cache-control" "max-age=630720000"
               setHeaderM "expires" "Tue, 20 Jan 2037 04:20:42 GMT"

@@ -31,7 +31,7 @@ show' = pack . show
 data BlogURL = BlogURL
 
 -- blog CSS (admin is still static)
-stylesheetSource = $(luciusFile "../res/blogstyle.lucius")
+stylesheetSource = $(luciusFile "res/blogstyle.lucius")
 blogStyle = renderCssUrl undefined stylesheetSource 
 -- blog HTML
 blogTemplate :: BlogLang -> Text -> Html -> Html
@@ -164,7 +164,7 @@ renderCommentBox cLang cId = [shamlet|
  <p><input class="cInput" style="width:120px;" type="submit" value=#{cSend cLang}>
 |]
   where
-   aLink = T.concat ["/", show' cLang, "/postcomment", show' cId]
+   aLink = T.concat ["/", show' cLang, "/postcomment/", show' cId]
 
 showSiteNotice :: Html
 showSiteNotice = [shamlet|
