@@ -20,6 +20,7 @@ Executable tazblog
     happstack-server,
     text,
     blaze-html,
+    blaze-markup,
     crypto-api,
     cryptohash,
     old-locale,

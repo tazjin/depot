@@ -10,7 +10,7 @@ import Data.Text (Text, append, pack, empty)
 import Data.Time
 import Network.Captcha.ReCaptcha
 import System.Locale (defaultTimeLocale)
-import Text.Blaze (preEscapedText)
+import Text.Blaze.Html (preEscapedToHtml)
 import Text.Hamlet
 import Text.Lucius 
 import Locales
@@ -47,7 +47,7 @@ $doctype 5
    <a class="btitle" href=#{append "/" (show' lang)}>#{blogTitle lang empty}
    <p style="clear: both;">
     <span class="contacts" id="cosx">^{contactInfo iMessage}
-    <span class="righttext">^{preEscapedText $ rightText lang}
+    <span class="righttext">^{preEscapedToHtml $ rightText lang}
   <div class="middle">
    ^{body}
    <div class="footer">
@@ -89,7 +89,7 @@ renderEntries showAll entries topText footerLinks = [shamlet|
   $forall entry <- elist
    <li>
     <a href=#{linkElems entry}>#{linkText $ length $ comments entry}
-    ^{preEscapedText $ append " " $ btext entry}
+    ^{preEscapedToHtml $ append " " $ btext entry}
     $if ((/=) (mtext entry) empty)
      <p><a href=#{linkElems entry}>#{readMore $ lang entry}
     $else
@@ -130,8 +130,8 @@ renderEntry Entry{..} = [shamlet|
  <article>
   <ul style="max-width:57em;">
    <li>
-    ^{preEscapedText $ btext}
-    <p>^{preEscapedText $ mtext}
+    ^{preEscapedToHtml $ btext}
+    <p>^{preEscapedToHtml $ mtext}
  <div class="innerBoxComments">
   <div class="cHead">#{cHead lang}
   <ul style="max-width:57em;">#{renderComments comments lang}
@@ -146,7 +146,7 @@ renderComments comments lang = [shamlet|
 $forall comment <- comments
  <li>
   <i>#{append (cauthor comment) ": "}
-  ^{preEscapedText $ ctext comment}
+  ^{preEscapedToHtml $ ctext comment}
   <p class="tt">#{timeString $ cdate comment}
 |]
   where
@@ -172,17 +172,14 @@ $doctype 5
 <head>
  <title>Impressum
 <body>
- <h2>
-  Impressum und #
-  <a alt="Verantwortlich im Sinne des Presserechtes">ViSdP
- <i>[German law demands this]
+ <h2>Impressum
  <br>
  <p>
   Vincent Ambo
   <br>
-  Benfleetstr. 8
+  Gyllenborgsgatan 8, LGH 1306
   <br>
-  50858 Köln
+  11243 Stockholm
   <p><a href="/" style="color:black;">Back
 |]
 
@@ -298,7 +295,7 @@ editComments comments eId = [shamlet|
 |]
  where
   cPostTime = formatTime defaultTimeLocale "%c"
-  cDeleteLink cd = concat ["/admin/cdelete", show eId, formatTime defaultTimeLocale "/%s%Q" cd]
+  cDeleteLink cd = concat ["/admin/cdelete/", show eId, formatTime defaultTimeLocale "/%s%Q" cd]
 
 commentDeleted :: EntryId -> Html
 commentDeleted eId = adminTemplate "Kommentar gelöscht" $ [shamlet|
