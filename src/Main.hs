@@ -60,7 +60,7 @@ tazBlog :: AcidState Blog -> String -> ServerPart Response
 tazBlog acid captchakey = do
     compr <- compressedResponseFilter
     msum [ path $ \(lang :: BlogLang) -> blogHandler acid lang captchakey
-         , nullDir >> showIndex acid DE
+         , nullDir >> showIndex acid EN
          , dir " " $ nullDir >>
             seeOther ("https://plus.google.com/115916629925754851590" :: Text) (toResponse ())
          , path $ \(year :: Int) -> path $ \(month :: Int) -> path $ \(id_ :: String) -> formatOldLink year month id_
