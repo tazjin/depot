@@ -36,4 +36,5 @@ Executable tazblog
     rss,
     recaptcha,
     hamlet,
-    shakespeare-css
+    shakespeare-css,
+    markdown

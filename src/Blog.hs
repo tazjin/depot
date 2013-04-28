@@ -5,14 +5,17 @@ module Blog where
 import Control.Monad (when, unless)
 import Data.Data (Data, Typeable)
 import Data.List (intersperse)
+import Data.Maybe (fromJust)
 import Data.Monoid (mempty)
 import Data.Text (Text, append, pack, empty)
+import Data.Text.Lazy (fromStrict)
 import Data.Time
 import Network.Captcha.ReCaptcha
 import System.Locale (defaultTimeLocale)
 import Text.Blaze.Html (preEscapedToHtml)
 import Text.Hamlet
-import Text.Lucius 
+import Text.Lucius
+import Text.Markdown
 import Locales
 import BlogDB
 
@@ -28,11 +31,16 @@ replace x y = map (\z -> if z == x then y else z)
 show' :: Show a => a -> Text
 show' = pack . show
 
+-- |After this time all entries are Markdown
+markdownCutoff :: UTCTime
+markdownCutoff = fromJust $ parseTime defaultTimeLocale "%s" "1367149834"
+
 data BlogURL = BlogURL
 
 -- blog CSS (admin is still static)
 stylesheetSource = $(luciusFile "res/blogstyle.lucius")
 blogStyle = renderCssUrl undefined stylesheetSource 
+
 -- blog HTML
 blogTemplate :: BlogLang -> Text -> Html -> Html
 blogTemplate lang t_append body = [shamlet|
@@ -78,6 +86,12 @@ showFooter l v = [shamlet|
   <a class="link" href="/notice">#{noticeText l}
 |]
 
+isEntryMarkdown :: Entry -> Bool
+isEntryMarkdown e = edate e > markdownCutoff
+
+renderEntryMarkdown :: Text -> Html
+renderEntryMarkdown = markdown def {msXssProtect = False} . fromStrict
+
 renderEntries :: Bool -> [Entry] -> Text -> Maybe Html -> Html
 renderEntries showAll entries topText footerLinks = [shamlet|
 <span class="innerTitle">#{topText}
@@ -85,8 +99,13 @@ renderEntries showAll entries topText footerLinks = [shamlet|
  <ul style="max-width:57em;">
   $forall entry <- elist
    <li>
-    <a href=#{linkElems entry}>#{linkText $ length $ comments entry}
-    ^{preEscapedToHtml $ append " " $ btext entry}
+    $if (isEntryMarkdown entry)
+      <a href=#{linkElems entry}>#{linkText $ length $ comments entry}
+      <b>#{title entry}
+      ^{renderEntryMarkdown $ append " " $ btext entry}
+    $else
+      <a href=#{linkElems entry}>#{linkText $ length $ comments entry}
+      ^{preEscapedToHtml $ append " " $ btext entry}
     $if ((/=) (mtext entry) empty)
      <p><a href=#{linkElems entry}>#{readMore $ lang entry}
     $else
@@ -119,7 +138,7 @@ showLinks Nothing lang = [shamlet|
    nLink = T.concat ["/", show' lang, "/?page=2"]
 
 renderEntry :: Entry -> Html
-renderEntry Entry{..} = [shamlet|
+renderEntry e@Entry{..} = [shamlet|
 <span class="innerTitle">#{title}
 <span class="righttext">
  <i>#{woText}
@@ -127,8 +146,12 @@ renderEntry Entry{..} = [shamlet|
  <article>
   <ul style="max-width:57em;">
    <li>
-    ^{preEscapedToHtml $ btext}
-    <p>^{preEscapedToHtml $ mtext}
+    $if (isEntryMarkdown e)
+      ^{renderEntryMarkdown btext}
+      <p>^{renderEntryMarkdown $ mtext}
+    $else
+      ^{preEscapedToHtml $ btext}
+      <p>^{preEscapedToHtml $ mtext}
  <div class="innerBoxComments">
   <div class="cHead">#{cHead lang}
   <ul style="max-width:57em;">#{renderComments comments lang}
