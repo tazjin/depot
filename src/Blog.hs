@@ -152,15 +152,35 @@ $forall comment <- comments
   where
    timeString = formatTime defaultTimeLocale (cTimeFormat lang)
 
+captcha :: Html
+captcha = [shamlet|
+<div class="cCaptcha">
+  <script src="http://api.recaptcha.net/challenge?k=6LfQXccSAAAAAIjKm26XlFnBMAgvaKlOAjVWEEnM" type="text/javascript">
+  <noscript>
+    <iframe src="http://api.recaptcha.net/noscript?k=6LfQXccSAAAAAIjKm26XlFnBMAgvaKlOAjVWEEnM" height="300" width="500" seamless>
+      <br>
+      <textarea name="recaptcha_challenge_field" rows="3" cols="40">
+      <input type="hidden" name="recaptcha_response_field" value="manual_challenge">
+|]
+
+captchaOptions :: BlogLang ->  Html
+captchaOptions lang = [shamlet|<script type="text/javascript">^{preEscapedToHtml options}|]
+  where
+    options = T.concat ["var RecaptchaOptions = { theme: 'clean', lang: '", showLangText lang, "'};"]
+
 
 renderCommentBox :: BlogLang -> EntryId -> Html
 renderCommentBox cLang cId = [shamlet|
 <div class="cHead">#{cwHead cLang}
+^{captchaOptions cLang}
 <form method="POST" action=#{aLink}>
  <p><input name="cname" placeholder="Name" class="cInput">
  <p>
   <label>
    <textarea name="ctext" cols="50" rows="13" class="cInput" placeholder=#{cTextPlaceholder cLang}>
+ <p>
+  <label>
+   ^{captcha}
  <p><input class="cInput" style="width:120px;" type="submit" value=#{cSend cLang}>
 |]
   where
