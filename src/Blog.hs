@@ -42,21 +42,13 @@ markdownCutoff = fromJust $ parseTime defaultTimeLocale "%s" "1367149834"
 
 
 -- blog CSS (admin is still static)
-stylesheetSource = $(luciusFile "res/blogstyle.lucius")
+stylesheetSource = $(luciusFile "../res/blogbs.lucius")
 blogStyle = renderCssUrl undefined stylesheetSource
 
--- blog HTML
-blogTemplate :: BlogLang -> Text -> Html -> Html
-blogTemplate lang t_append body = [shamlet|
-$doctype 5
- <head>
-  <title>#{blogTitle lang t_append}
-  <link rel="stylesheet" type="text/css" href="/static/blogv34.css" media="all">
-  <link rel="alternate" type="application/rss+xml" title="RSS-Feed" href=#{rssUrl}>
-  <meta http-equiv="content-type" content="text/html;charset=UTF-8">
- <body>
+--   <link rel="stylesheet" type="text/css" href="/static/blogv34.css" media="all">
+
+{- 
   <div class="header">
-   <a class="btitle" href=#{append "/" (show' lang)}>#{blogTitle lang empty}
    <p style="clear: both;">
     <span class="contacts" id="cosx">^{contactInfo}
     <span class="righttext">^{preEscapedToHtml $ rightText lang}
@@ -66,6 +58,36 @@ $doctype 5
     ^{showFooter lang $ pack version}
     <div class="centerbox">
      <span style="font-size:17px;font-family:Helvetica;">ಠ_ಠ
+-}
+
+-- blog HTML
+blogTemplate :: BlogLang -> Text -> Html -> Html
+blogTemplate lang t_append body = [shamlet|
+$doctype 5
+  <head>
+    <title>#{blogTitle lang t_append}
+    <link rel="stylesheet" type="text/css" href="/static/bootstrap.css" media="all">
+    <link rel="stylesheet" type="text/css" href="/static/blogv300.css" media="all">
+    <link rel="alternate" type="application/rss+xml" title="RSS-Feed" href=#{rssUrl}>
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8">
+  <body>
+    <div .container .header>
+      <div .row>
+        <div .span12 .blogtitle>
+          <a class="btitle" href=#{append "/" (show' lang)}>#{blogTitle lang empty}
+      <div .row>
+        <br>
+        <div .span6>
+          <span .contacts #cosx>^{contactInfo}
+        <div .span6>
+          <span .righttext>^{preEscapedToHtml $ rightText lang}
+    <div .container>
+      ^{body}
+    <div .container>
+      <footer>
+        ^{showFooter lang $ pack version}
+        <div class="centerbox">
+         <span style="font-size:17px;font-family:Helvetica;">ಠ_ಠ
 |]
  where
   rssUrl = T.concat ["/", show' lang, "/rss.xml"]
@@ -98,23 +120,32 @@ renderEntryMarkdown = markdown def {msXssProtect = False} . fromStrict
 
 renderEntries :: Bool -> [Entry] -> Text -> Maybe Html -> Html
 renderEntries showAll entries topText footerLinks = [shamlet|
-<span class="innerTitle">#{topText}
-<div class="innerContainer">
- <ul style="max-width:57em;">
-  $forall entry <- elist
-   <li>
-    $if (isEntryMarkdown entry)
-      <a href=#{linkElems entry}>#{linkText $ length $ comments entry}
-      <b>#{title entry}
-      ^{renderEntryMarkdown $ append " " $ btext entry}
-    $else
-      <a href=#{linkElems entry}>#{linkText $ length $ comments entry}
-      ^{preEscapedToHtml $ append " " $ btext entry}
-    $if ((/=) (mtext entry) empty)
-     <p><a href=#{linkElems entry}>#{readMore $ lang entry}
-    $else
-     <br>&nbsp;
- $maybe links <- footerLinks
+<div .row>
+  <div .span12>
+    <p>
+      <span class="innerTitle">#{topText}
+$forall entry <- elist
+  <div .row >
+    <div .span2>
+      <a #bar href=#{linkElems entry}>
+        <b>#{title entry}
+        <br>
+        <i>#{pack $ formatTime defaultTimeLocale "%Y-%M-%d" $ edate entry}
+        <br>
+        #{linkText $ length $ comments entry}
+        #{cHead $ lang entry}
+    <div .span10>
+      $if (isEntryMarkdown entry)
+        ^{renderEntryMarkdown $ append " " $ btext entry}
+      $else
+        ^{preEscapedToHtml $ append " " $ btext entry}
+      $if ((/=) (mtext entry) empty)
+        <p>
+          <a #foo href=#{linkElems entry}>#{readMore $ lang entry}
+      $else
+        <br>&nbsp;
+  <hr>
+$maybe links <- footerLinks
   ^{links}
 |]
   where
@@ -157,7 +188,7 @@ renderEntry e@Entry{..} = [shamlet|
       ^{preEscapedToHtml $ btext}
       <p>^{preEscapedToHtml $ mtext}
  <div class="innerBoxComments">
-  <div class="cHead">#{cHead lang}
+  <div class="cHead">#{cHead lang}:
   <ul style="max-width:57em;">#{renderComments comments lang}
   ^{renderCommentBox lang entryId}
 |]

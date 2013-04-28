@@ -109,8 +109,8 @@ noComments DE = " Keine Kommentare"
 noComments EN = " No comments yet"
 
 cHead :: BlogLang -> Text
-cHead DE = "Kommentare:"
-cHead EN = "Comments:"
+cHead DE = "Kommentare"
+cHead EN = "Comments"
 
 cwHead :: BlogLang -> Text
 cwHead DE = "Kommentieren:"
