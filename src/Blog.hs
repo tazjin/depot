@@ -40,7 +40,6 @@ show' = pack . show
 markdownCutoff :: UTCTime
 markdownCutoff = fromJust $ parseTime defaultTimeLocale "%s" "1367149834"
 
-data BlogURL = BlogURL
 
 -- blog CSS (admin is still static)
 stylesheetSource = $(luciusFile "res/blogstyle.lucius")
