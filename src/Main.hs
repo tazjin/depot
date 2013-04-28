@@ -12,7 +12,7 @@ module Main where
 
 import           Control.Applicative          (optional, pure, (<$>), (<*>))
 import           Control.Exception            (bracket)
-import           Control.Monad                (msum, mzero, unless, when)
+import           Control.Monad                (liftM, msum, mzero, unless, when)
 import           Control.Monad.IO.Class       (liftIO)
 import           Control.Monad.Reader         (ask)
 import           Control.Monad.State          (get, put)
@@ -53,14 +53,14 @@ defineOptions "MainOptions" $ do
     "The port to run the web server on. Default is 8000"
 
 tmpPolicy :: BodyPolicy
-tmpPolicy = (defaultBodyPolicy "./tmp/" 0 200000 1000)
+tmpPolicy = defaultBodyPolicy "./tmp/" 0 200000 1000
 
 main :: IO()
 main = do
     putStrLn ("TazBlog " ++ version ++ " in Haskell starting")
     runCommand $ \opts args ->
       bracket (openLocalStateFrom (optState opts ++ "BlogState") initialBlogState)
-              (createCheckpointAndClose)
+              createCheckpointAndClose
               (\acid -> simpleHTTP nullConf {port = optPort opts} $ tazBlog acid $ optCaptcha opts)
 
 tazBlog :: AcidState Blog -> String -> ServerPart Response
@@ -74,13 +74,13 @@ tazBlog acid captchakey = do
          , dir "res" $ serveDirectory DisableBrowsing [] "../res"
          , dir "notice" $ ok $ toResponse showSiteNotice
          {- :Admin handlers -}
-         , do dirs "admin/postentry" $ nullDir
+         , do dirs "admin/postentry" nullDir
               guardSession acid
               postEntry acid
-         , do dirs "admin/entrylist" $ dir (show DE) $ nullDir
+         , do dirs "admin/entrylist" $ dir (show DE) nullDir
               guardSession acid
               entryList acid DE
-         , do dirs "admin/entrylist" $ dir (show EN) $ nullDir
+         , do dirs "admin/entrylist" $ dir (show EN) nullDir
               guardSession acid
               entryList acid EN
          , do guardSession acid
@@ -90,16 +90,16 @@ tazBlog acid captchakey = do
          , do guardSession acid
               dirs "admin/cdelete" $ path $ \(eId :: Integer) -> path $ \(cId :: String) ->
                 deleteComment acid (EntryId eId) cId
-         , do dir "admin" $ nullDir
+         , do dir "admin" nullDir
               guardSession acid
               ok $ toResponse $ adminIndex ("tazjin" :: Text)
-         , dir "admin" $ ok $ toResponse $ adminLogin
+         , dir "admin" $ ok $ toResponse adminLogin
          , dir "dologin" $ processLogin acid
-         , do dirs "static/blogv34.css" $ nullDir
+         , do dirs "static/blogv34.css" nullDir
               setHeaderM "content-type" "text/css"
               setHeaderM "cache-control" "max-age=630720000"
               setHeaderM "expires" "Tue, 20 Jan 2037 04:20:42 GMT"
-              ok $ toResponse $ blogStyle
+              ok $ toResponse blogStyle
          , do setHeaderM "cache-control" "max-age=630720000"
               setHeaderM "expires" "Tue, 20 Jan 2037 04:20:42 GMT"
               dir "static" $ serveDirectory DisableBrowsing [] "../res"
@@ -156,7 +156,7 @@ showRSS acid lang = do
 
 addComment :: AcidState Blog -> BlogLang -> String -> EntryId -> ServerPart Response
 addComment acid lang captchakey eId = do
-  now <- liftIO $ getCurrentTime >>= return
+  now <- liftIO getCurrentTime
   nCtext <- lookText' "ctext"
   nComment <- Comment <$> pure now
                       <*> lookText' "cname"
@@ -164,12 +164,12 @@ addComment acid lang captchakey eId = do
   -- captcha verification
   challenge <- look "recaptcha_challenge_field"
   response <- look "recaptcha_response_field"
-  (userIp, _) <- askRq >>= return . rqPeer
+  (userIp, _) <- liftM rqPeer askRq -- FIXME askRq >>= return . rqPeer
   validation <- liftIO $ validateCaptcha captchakey userIp challenge response
   case validation of
     Right _ -> update' acid (AddComment eId nComment)
                 >> seeOther ("/" ++ show lang ++ "/" ++ show eId) (toResponse())
-    Left _ -> (liftIO $ putStrLn "Captcha failed") >> seeOther ("/" ++ show lang ++ "/" ++ show eId) (toResponse())
+    Left _ -> liftIO (putStrLn "Captcha failed") >> seeOther ("/" ++ show lang ++ "/" ++ show eId) (toResponse())
 
 commentEscape :: Text -> Text
 commentEscape = newlineEscape . ltEscape . gtEscape . ampEscape
@@ -184,7 +184,7 @@ commentEscape = newlineEscape . ltEscape . gtEscape . ampEscape
 postEntry :: AcidState Blog -> ServerPart Response
 postEntry acid = do
     decodeBody tmpPolicy
-    now <- liftIO $ getCurrentTime
+    now <- liftIO getCurrentTime
     let eId = timeToId now
     lang <- look "lang"
     nBtext <- lookText' "btext"
@@ -245,16 +245,15 @@ guardSession :: AcidState Blog -> ServerPartT IO ()
 guardSession acid = do
     (sId :: Text) <- readCookieValue "session"
     (uName :: Text) <- readCookieValue "sUser"
-    now <- liftIO $ getCurrentTime
+    now <- liftIO getCurrentTime
     mS <- query' acid (GetSession $ SessionID sId)
     case mS of
       Nothing -> mzero
-      (Just Session{..}) -> unless (and [ uName == username user
-                                        , sessionTimeDiff now sdate])
-                                    mzero
+      (Just Session{..}) -> unless ((uName == username user) && sessionTimeDiff now sdate)
+                                   mzero
   where
     sessionTimeDiff :: UTCTime -> UTCTime -> Bool
-    sessionTimeDiff now sdate = (diffUTCTime now sdate) < 43200
+    sessionTimeDiff now sdate = diffUTCTime now sdate < 43200
 
 
 processLogin :: AcidState Blog -> ServerPart Response
@@ -263,9 +262,9 @@ processLogin acid = do
     account <- lookText' "account"
     password <- look "password"
     login <- query' acid (CheckUser (Username account) password)
-    if' login
-      (createSession account)
-      (ok $ toResponse $ adminLogin)
+    if login
+      then createSession account
+      else ok $ toResponse adminLogin
   where
     createSession account = do
       now <- liftIO getCurrentTime

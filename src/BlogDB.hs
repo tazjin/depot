@@ -97,7 +97,7 @@ instance Indexable Entry where
                   , ixFun $ \e -> [ MText $ mtext e]
                   , ixFun $ \e -> [ EDate $ edate e]
                   , ixFun $ \e -> map Tag (tags e)
-                  , ixFun $ comments
+                  , ixFun comments
                   ]
 
 data User = User {
@@ -209,13 +209,13 @@ getUser uN =
   do b@Blog{..} <- ask
      return $ getOne $ blogUsers @= uN
 
-checkUser :: Username -> String -> Query Blog (Bool)
+checkUser :: Username -> String -> Query Blog Bool
 checkUser uN pw =
   do b@Blog{..} <- ask
      let user = getOne $ blogUsers @= uN
      case user of
        Nothing  -> return False
-       (Just u) -> return $ (password u) == hashString pw
+       (Just u) -> return $ password u == hashString pw
 
 -- various functions
 hashString :: String -> ByteString
@@ -251,7 +251,7 @@ flushSessions :: IO ()
 flushSessions = do
   tbDir <- getEnv "TAZBLOG"
   acid <- openLocalStateFrom (tbDir ++ "/BlogState") initialBlogState
-  update' acid (ClearSessions)
+  update' acid ClearSessions
   closeAcidState acid
 
 archiveState :: IO ()

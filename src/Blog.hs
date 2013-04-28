@@ -163,7 +163,7 @@ renderEntry e@Entry{..} = [shamlet|
   ^{renderCommentBox lang entryId}
 |]
   where
-   woText = flip T.append author $ T.pack $ (formatTime defaultTimeLocale (eTimeFormat lang) edate)
+   woText = flip T.append author $ T.pack $ formatTime defaultTimeLocale (eTimeFormat lang) edate
 
 renderComments :: [Comment] -> BlogLang -> Html
 renderComments [] lang = [shamlet|<li>#{noComments lang}|]
