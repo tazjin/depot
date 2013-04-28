@@ -46,7 +46,7 @@ $doctype 5
   <div class="header">
    <a class="btitle" href=#{append "/" (show' lang)}>#{blogTitle lang empty}
    <p style="clear: both;">
-    <span class="contacts" id="cosx">^{contactInfo iMessage}
+    <span class="contacts" id="cosx">^{contactInfo}
     <span class="righttext">^{preEscapedToHtml $ rightText lang}
   <div class="middle">
    ^{body}
@@ -57,14 +57,11 @@ $doctype 5
 |]
  where
   rssUrl = T.concat ["/", show' lang, "/rss.xml"]
-  contactInfo imu = [shamlet|
+  contactInfo = [shamlet|
 #{contactText lang}
 <a class="link" href=#{mailTo}>Mail
-, #
-<a class="link" href=#{twitter} target="_blank">Twitter
 #{orText lang}
-<a class="link" href=#{imu}>iMessage
-.
+<a class="link" href=#{twitter} target="_blank">Twitter
 |]
 
 showFooter :: BlogLang -> Text -> Html
