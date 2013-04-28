@@ -1,25 +1,30 @@
-{-# LANGUAGE OverloadedStrings, ScopedTypeVariables, DeriveDataTypeable, TemplateHaskell, QuasiQuotes, RecordWildCards #-}
+{-# LANGUAGE DeriveDataTypeable  #-}
+{-# LANGUAGE OverloadedStrings   #-}
+{-# LANGUAGE QuasiQuotes         #-}
+{-# LANGUAGE RecordWildCards     #-}
+{-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE TemplateHaskell     #-}
 
 module Blog where
 
-import Control.Monad (when, unless)
-import Data.Data (Data, Typeable)
-import Data.List (intersperse)
-import Data.Maybe (fromJust)
-import Data.Monoid (mempty)
-import Data.Text (Text, append, pack, empty)
-import Data.Text.Lazy (fromStrict)
-import Data.Time
-import Network.Captcha.ReCaptcha
-import System.Locale (defaultTimeLocale)
-import Text.Blaze.Html (preEscapedToHtml)
-import Text.Hamlet
-import Text.Lucius
-import Text.Markdown
-import Locales
-import BlogDB
+import           BlogDB
+import           Control.Monad             (unless, when)
+import           Data.Data                 (Data, Typeable)
+import           Data.List                 (intersperse)
+import           Data.Maybe                (fromJust)
+import           Data.Monoid               (mempty)
+import           Data.Text                 (Text, append, empty, pack)
+import           Data.Text.Lazy            (fromStrict)
+import           Data.Time
+import           Locales
+import           Network.Captcha.ReCaptcha
+import           System.Locale             (defaultTimeLocale)
+import           Text.Blaze.Html           (preEscapedToHtml)
+import           Text.Hamlet
+import           Text.Lucius
+import           Text.Markdown
 
-import qualified Data.Text as T
+import qualified Data.Text                 as T
 
 -- custom list functions
 intersperse' :: a -> [a] -> [a]
@@ -39,7 +44,7 @@ data BlogURL = BlogURL
 
 -- blog CSS (admin is still static)
 stylesheetSource = $(luciusFile "res/blogstyle.lucius")
-blogStyle = renderCssUrl undefined stylesheetSource 
+blogStyle = renderCssUrl undefined stylesheetSource
 
 -- blog HTML
 blogTemplate :: BlogLang -> Text -> Html -> Html

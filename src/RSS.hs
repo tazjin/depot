@@ -2,15 +2,15 @@
 
 module RSS (renderFeed) where
 
-import qualified Data.Text as T
+import qualified Data.Text   as T
 
-import Data.Maybe (fromMaybe)
-import Data.Time (getCurrentTime, UTCTime)
-import Network.URI
-import Text.RSS
+import           Data.Maybe  (fromMaybe)
+import           Data.Time   (UTCTime, getCurrentTime)
+import           Network.URI
+import           Text.RSS
 
-import Locales
-import BlogDB hiding (Title)
+import           BlogDB      hiding (Title)
+import           Locales
 
 createChannel :: BlogLang -> UTCTime -> [ChannelElem]
 createChannel l  now = [ Language $ show l
@@ -23,7 +23,7 @@ createRSS :: BlogLang -> UTCTime -> [Item] -> RSS
 createRSS l t i = RSS (rssTitle l) (rssLink l) (rssDesc l) (createChannel l t) i
 
 createItem :: Entry -> Item
-createItem Entry{..} = [ Title $ T.unpack title 
+createItem Entry{..} = [ Title $ T.unpack title
                        , Link $ makeLink lang entryId
                        , Description $ T.unpack btext
                        , PubDate edate]

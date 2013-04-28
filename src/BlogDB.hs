@@ -1,30 +1,36 @@
-{-# LANGUAGE DeriveDataTypeable, GeneralizedNewtypeDeriving, RecordWildCards, 
-TemplateHaskell, TypeFamilies, OverloadedStrings, ScopedTypeVariables, BangPatterns #-}
+{-# LANGUAGE DeriveDataTypeable         #-}
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE OverloadedStrings          #-}
+{-# LANGUAGE RecordWildCards            #-}
+{-# LANGUAGE ScopedTypeVariables        #-}
+{-# LANGUAGE TemplateHaskell            #-}
+{-# LANGUAGE TypeFamilies               #-}
 
 module BlogDB where
 
-import Control.Monad.Reader (ask)
-import Control.Monad.State  (get, put)
-import Data.Acid
-import Data.Acid.Advanced 
-import Data.Acid.Local
-import Data.ByteString      (ByteString)
-import Data.Char            (toLower)
-import Data.Data            (Data, Typeable)
-import Data.IxSet           (Indexable(..), IxSet(..), (@=), Proxy(..), getOne, ixFun, ixSet)
-import Data.List 			      (insert)
-import Data.SafeCopy        (SafeCopy, base, deriveSafeCopy)
-import Data.Text            (Text, pack)
-import Data.Text.Lazy       (toStrict)
-import Data.Time
-import Happstack.Server     (FromReqURI(..))
-import System.Environment   (getEnv)
+import           Control.Monad.Reader   (ask)
+import           Control.Monad.State    (get, put)
+import           Data.Acid
+import           Data.Acid.Advanced
+import           Data.Acid.Local
+import           Data.ByteString        (ByteString)
+import           Data.Char              (toLower)
+import           Data.Data              (Data, Typeable)
+import           Data.IxSet             (Indexable (..), IxSet (..), Proxy (..),
+                                         getOne, ixFun, ixSet, (@=))
+import           Data.List              (insert)
+import           Data.SafeCopy          (SafeCopy, base, deriveSafeCopy)
+import           Data.Text              (Text, pack)
+import           Data.Text.Lazy         (toStrict)
+import           Data.Time
+import           Happstack.Server       (FromReqURI (..))
+import           System.Environment     (getEnv)
 
-import qualified Crypto.Hash.SHA512 as SHA (hash)
-import qualified Data.ByteString.Char8 as B
+import qualified Crypto.Hash.SHA512     as SHA (hash)
 import qualified Data.ByteString.Base64 as B64 (encode)
-import qualified Data.IxSet as IxSet
-import qualified Data.Text  as Text
+import qualified Data.ByteString.Char8  as B
+import qualified Data.IxSet             as IxSet
+import qualified Data.Text              as Text
 
 
 newtype EntryId = EntryId { unEntryId :: Integer }
@@ -33,7 +39,7 @@ newtype EntryId = EntryId { unEntryId :: Integer }
 instance Show EntryId where
   show = show . unEntryId
 
-data BlogLang = EN | DE 
+data BlogLang = EN | DE
     deriving (Eq, Ord, Data, Typeable)
 
 instance Show BlogLang where
@@ -41,7 +47,7 @@ instance Show BlogLang where
     show EN = "en"
 
 instance FromReqURI BlogLang where
-  fromReqURI sub = 
+  fromReqURI sub =
     case map toLower sub of
       "de" -> Just DE
       "en" -> Just EN
@@ -58,14 +64,14 @@ data Comment = Comment {
 $(deriveSafeCopy 0 'base ''Comment)
 
 data Entry = Entry {
-    entryId :: EntryId,
-    lang   :: BlogLang,
-    author :: Text,
-    title  :: Text,
-    btext  :: Text, 
-    mtext  :: Text,
-    edate  :: UTCTime,
-    tags   :: [Text],
+    entryId  :: EntryId,
+    lang     :: BlogLang,
+    author   :: Text,
+    title    :: Text,
+    btext    :: Text,
+    mtext    :: Text,
+    edate    :: UTCTime,
+    tags     :: [Text],
     comments :: [Comment]
 } deriving (Eq, Ord, Show, Data, Typeable)
 
@@ -82,7 +88,7 @@ newtype SDate  = SDate UTCTime   deriving (Eq, Ord, Data, Typeable, SafeCopy)
 newtype Username = Username Text deriving (Eq, Ord, Data, Typeable, SafeCopy)
 newtype SessionID = SessionID Text deriving (Eq, Ord, Data, Typeable, SafeCopy)
 
-instance Indexable Entry where 
+instance Indexable Entry where
     empty = ixSet [ ixFun $ \e -> [ entryId e]
                   , ixFun $ (:[]) . lang
                   , ixFun $ \e -> [ Author $ author e ]
@@ -111,7 +117,7 @@ $(deriveSafeCopy 0 'base ''Session)
 
 instance Indexable User where
     empty = ixSet [ ixFun $ \u -> [Username $ username u]
-                  , ixFun $ (:[]) . password 
+                  , ixFun $ (:[]) . password
                   ]
 
 instance Indexable Session where
@@ -128,8 +134,8 @@ data Blog = Blog {
 
 $(deriveSafeCopy 0 'base ''Blog)
 
-initialBlogState :: Blog 
-initialBlogState = 
+initialBlogState :: Blog
+initialBlogState =
     Blog { blogSessions = empty
          , blogUsers = empty
          , blogEntries = empty }
@@ -137,7 +143,7 @@ initialBlogState =
 -- acid-state database functions (purity is necessary!)
 
 insertEntry :: Entry -> Update Blog Entry
-insertEntry e = 
+insertEntry e =
     do b@Blog{..} <- get
        put $ b { blogEntries = IxSet.insert e blogEntries }
        return e
@@ -159,7 +165,7 @@ deleteComment eId cDate =
       return newEntry
 
 updateEntry :: Entry -> Update Blog Entry
-updateEntry e = 
+updateEntry e =
     do b@Blog{..} <- get
        put $ b { blogEntries = IxSet.updateIx (entryId e) e blogEntries}
        return e

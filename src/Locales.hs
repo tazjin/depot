@@ -1,15 +1,17 @@
-{-# LANGUAGE ScopedTypeVariables, DeriveDataTypeable, OverloadedStrings #-}
+{-# LANGUAGE DeriveDataTypeable  #-}
+{-# LANGUAGE OverloadedStrings   #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 
 module Locales where
 
-import           Data.Data (Data, Typeable)
-import           Data.Maybe (fromMaybe)
-import           Data.Text (Text)
-import qualified Data.Text as T
+import           Data.Data   (Data, Typeable)
+import           Data.Maybe  (fromMaybe)
+import           Data.Text   (Text)
+import qualified Data.Text   as T
 import           Network.URI
 
 
-import    BlogDB (BlogLang (..))
+import           BlogDB      (BlogLang (..))
 
 {- to add a language simply define its abbreviation and Show instance then
  - translate the appropriate strings and add CouchDB views in Server.hs -}
@@ -40,7 +42,7 @@ getMonth :: BlogLang -> Int -> Int -> Text
 getMonth l y m = T.append (monthName l m) $ T.pack $ show y
   where
     monthName :: BlogLang -> Int -> Text
-    monthName DE m = case m of 
+    monthName DE m = case m of
                     1 -> "Januar "
                     2 -> "Februar "
                     3 -> "März "
@@ -116,7 +118,7 @@ cwHead EN = "Comment:"
 
 cSingle :: BlogLang -> Text
 cSingle DE = "Kommentar:" --input label
-cSingle EN = "Comment:" 
+cSingle EN = "Comment:"
 
 cTimeFormat :: BlogLang -> String --formatTime expects a String
 cTimeFormat DE = "[Am %d.%m.%y um %H:%M Uhr]"

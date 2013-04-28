@@ -1,36 +1,43 @@
-{-# LANGUAGE OverloadedStrings, ScopedTypeVariables, GeneralizedNewtypeDeriving,
-    DeriveDataTypeable, FlexibleContexts, MultiParamTypeClasses, TemplateHaskell, 
-    TypeFamilies, RecordWildCards, BangPatterns #-}
+{-# LANGUAGE DeriveDataTypeable         #-}
+{-# LANGUAGE FlexibleContexts           #-}
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE MultiParamTypeClasses      #-}
+{-# LANGUAGE OverloadedStrings          #-}
+{-# LANGUAGE RecordWildCards            #-}
+{-# LANGUAGE ScopedTypeVariables        #-}
+{-# LANGUAGE TemplateHaskell            #-}
+{-# LANGUAGE TypeFamilies               #-}
 
 module Main where
 
-import           Control.Applicative ((<$>), (<*>), optional, pure)
-import           Control.Exception (bracket)
-import           Control.Monad (msum, mzero, when, unless)
-import           Control.Monad.IO.Class (liftIO)
-import           Control.Monad.State (get, put)
-import           Control.Monad.Reader (ask)
-import qualified Crypto.Hash.SHA512 as SHA
+import           Control.Applicative          (optional, pure, (<$>), (<*>))
+import           Control.Exception            (bracket)
+import           Control.Monad                (msum, mzero, unless, when)
+import           Control.Monad.IO.Class       (liftIO)
+import           Control.Monad.Reader         (ask)
+import           Control.Monad.State          (get, put)
+import qualified Crypto.Hash.SHA512           as SHA
 import           Data.Acid
 import           Data.Acid.Advanced
 import           Data.Acid.Local
-import qualified Data.ByteString.Base64 as B64 (encode)
-import           Data.ByteString.Char8 (ByteString, pack, unpack)
-import           Data.Data (Data, Typeable)
-import           Data.Maybe (fromJust)
-import           Data.Monoid (mempty)
-import           Data.Text (Text)
-import qualified Data.Text as T
+import qualified Data.ByteString.Base64       as B64 (encode)
+import           Data.ByteString.Char8        (ByteString, pack, unpack)
+import           Data.Data                    (Data, Typeable)
+import           Data.Maybe                   (fromJust)
+import           Data.Monoid                  (mempty)
+import           Data.SafeCopy                (base, deriveSafeCopy)
+import           Data.Text                    (Text)
+import qualified Data.Text                    as T
 import           Data.Time
-import           Data.SafeCopy (base, deriveSafeCopy)
-import           Happstack.Server hiding (Session)
+import           Happstack.Server             hiding (Session)
 import           Happstack.Server.Compression
 import           Network.Captcha.ReCaptcha
 import           Options
-import           System.Locale (defaultTimeLocale)
+import           System.Locale                (defaultTimeLocale)
 
 import           Blog
-import           BlogDB hiding (addComment, updateEntry, deleteComment)
+import           BlogDB                       hiding (addComment, deleteComment,
+                                               updateEntry)
 import           Locales
 import           RSS
 
@@ -86,7 +93,7 @@ tazBlog acid captchakey = do
          , do dir "admin" $ nullDir
               guardSession acid
               ok $ toResponse $ adminIndex ("tazjin" :: Text)
-         , dir "admin" $ ok $ toResponse $ adminLogin 
+         , dir "admin" $ ok $ toResponse $ adminLogin
          , dir "dologin" $ processLogin acid
          , do dirs "static/blogv34.css" $ nullDir
               setHeaderM "content-type" "text/css"
@@ -101,10 +108,10 @@ tazBlog acid captchakey = do
          ]
 
 blogHandler :: AcidState Blog -> BlogLang -> String -> ServerPart Response
-blogHandler acid lang captchakey = 
+blogHandler acid lang captchakey =
     msum [ path $ \(eId :: Integer) -> showEntry acid lang $ EntryId eId
          , do decodeBody tmpPolicy
-              dir "postcomment" $ path $ 
+              dir "postcomment" $ path $
                 \(eId :: Integer) -> addComment acid lang captchakey $ EntryId eId
          , nullDir >> showIndex acid lang
          , dir "rss" $ nullDir >> showRSS acid lang
@@ -113,8 +120,8 @@ blogHandler acid lang captchakey =
          ]
 
 formatOldLink :: Int -> Int -> String -> ServerPart Response
-formatOldLink y m id_ = 
-  flip seeOther (toResponse ()) $ 
+formatOldLink y m id_ =
+  flip seeOther (toResponse ()) $
     concat $ intersperse' "/"  ["de", show y, show m, replace '.' '/' id_]
 
 showEntry :: AcidState Blog -> BlogLang -> EntryId -> ServerPart Response
@@ -133,12 +140,12 @@ showIndex :: AcidState Blog -> BlogLang -> ServerPart Response
 showIndex acid lang = do
     entries <- query' acid (LatestEntries lang)
     (page :: Maybe Int) <- optional $ lookRead "page"
-    ok $ toResponse $ blogTemplate lang "" $ 
+    ok $ toResponse $ blogTemplate lang "" $
         renderEntries False (eDrop page entries) (topText lang) (Just $ showLinks page lang)
   where
     eDrop :: Maybe Int -> [a] -> [a]
     eDrop (Just i) = drop ((i-1) * 6)
-    eDrop Nothing = drop 0 
+    eDrop Nothing = drop 0
 
 showRSS :: AcidState Blog -> BlogLang -> ServerPart Response
 showRSS acid lang = do
@@ -159,8 +166,8 @@ addComment acid lang captchakey eId = do
   response <- look "recaptcha_response_field"
   (userIp, _) <- askRq >>= return . rqPeer
   validation <- liftIO $ validateCaptcha captchakey userIp challenge response
-  case validation of 
-    Right _ -> update' acid (AddComment eId nComment) 
+  case validation of
+    Right _ -> update' acid (AddComment eId nComment)
                 >> seeOther ("/" ++ show lang ++ "/" ++ show eId) (toResponse())
     Left _ -> (liftIO $ putStrLn "Captcha failed") >> seeOther ("/" ++ show lang ++ "/" ++ show eId) (toResponse())
 
@@ -172,7 +179,7 @@ commentEscape = newlineEscape . ltEscape . gtEscape . ampEscape
         ltEscape = T.replace "<" "&lt;"
         gtEscape = T.replace ">" "&gt;"
 
-{- ADMIN stuff -} 
+{- ADMIN stuff -}
 
 postEntry :: AcidState Blog -> ServerPart Response
 postEntry acid = do
