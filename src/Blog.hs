@@ -42,7 +42,7 @@ markdownCutoff = fromJust $ parseTime defaultTimeLocale "%s" "1367149834"
 
 
 -- blog CSS (admin is still static)
-stylesheetSource = $(luciusFile "../res/blog.lucius")
+stylesheetSource = $(luciusFile "res/blog.lucius")
 blogStyle = renderCssUrl undefined stylesheetSource
 
 -- blog HTML
