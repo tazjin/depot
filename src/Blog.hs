@@ -123,9 +123,10 @@ renderEntries showAll entries topText footerLinks = [shamlet|
 <div .row>
   <div .span12>
     <p>
-      <span class="innerTitle">#{topText}
+      <span class="innerTitle">
+        <b>#{topText}
 $forall entry <- elist
-  <div .row >
+  <div .row>
     <div .span2>
       <a #bar href=#{linkElems entry}>
         <b>#{title entry}
@@ -141,10 +142,9 @@ $forall entry <- elist
         ^{preEscapedToHtml $ append " " $ btext entry}
       $if ((/=) (mtext entry) empty)
         <p>
-          <a #foo href=#{linkElems entry}>#{readMore $ lang entry}
+          <a .readmore #foo href=#{linkElems entry}>#{readMore $ lang entry}
       $else
         <br>&nbsp;
-  <hr>
 $maybe links <- footerLinks
   ^{links}
 |]
@@ -174,38 +174,67 @@ showLinks Nothing lang = [shamlet|
 
 renderEntry :: Entry -> Html
 renderEntry e@Entry{..} = [shamlet|
-<span class="innerTitle">#{title}
-<span class="righttext">
- <i>#{woText}
-<div class="innerContainer">
- <article>
-  <ul style="max-width:57em;">
-   <li>
-    $if (isEntryMarkdown e)
-      ^{renderEntryMarkdown btext}
-      <p>^{renderEntryMarkdown $ mtext}
-    $else
-      ^{preEscapedToHtml $ btext}
-      <p>^{preEscapedToHtml $ mtext}
- <div class="innerBoxComments">
-  <div class="cHead">#{cHead lang}:
-  <ul style="max-width:57em;">#{renderComments comments lang}
-  ^{renderCommentBox lang entryId}
+<div .row .pusher>
+  <div .span9>
+    <span .boldify>#{title}
+  <div .span3>
+    <span .righttext><i>#{woText}</i>
+<div .row .innerContainer>
+  <div .span10>
+    <article>
+      $if (isEntryMarkdown e)
+        ^{renderEntryMarkdown btext}
+        <p>^{renderEntryMarkdown $ mtext}
+      $else
+        ^{preEscapedToHtml $ btext}
+        <p>^{preEscapedToHtml $ mtext}
+<div .row .innerBoxComments>
+  <div .span10>
+    <div .boldify>#{cHead lang}:
+#{renderComments comments lang}
+<div .row .innerBoxComments>
+  <div .span10>
+    <div .boldify>#{cwHead lang}
+^{renderCommentBox lang entryId}
 |]
   where
    woText = flip T.append author $ T.pack $ formatTime defaultTimeLocale (eTimeFormat lang) edate
 
 renderComments :: [Comment] -> BlogLang -> Html
-renderComments [] lang = [shamlet|<li>#{noComments lang}|]
+renderComments [] lang = [shamlet|
+<div .row>
+  <div .span10>#{noComments lang}
+|]
 renderComments comments lang = [shamlet|
 $forall comment <- comments
- <li>
-  <i>#{append (cauthor comment) ": "}
-  ^{preEscapedToHtml $ ctext comment}
-  <p class="tt">#{timeString $ cdate comment}
+ <div .row>
+    <div .span1 .commentname>
+      <i>#{append (cauthor comment) ": "}
+    <div .span9>
+      ^{preEscapedToHtml $ ctext comment}
+      <p .tt>#{timeString $ cdate comment}
 |]
   where
    timeString = formatTime defaultTimeLocale (cTimeFormat lang)
+
+renderCommentBox :: BlogLang -> EntryId -> Html
+renderCommentBox cLang cId = [shamlet|
+^{captchaOptions cLang}
+<div .row>
+  <div .span10>
+    <form method="POST" action=#{aLink}>
+      <fieldset>
+        <label>
+        <input .span8 name="cname" placeholder="Name" type="text">
+        <label>
+        <textarea .span8 name="ctext" cols="50" rows="13" placeholder=#{cTextPlaceholder cLang}>
+        ^{captcha}
+        <label>
+        <input .btn type="submit" value=#{cSend cLang}>
+|]
+  where
+   aLink = T.concat ["/", show' cLang, "/postcomment/", show' cId]
+
 
 captcha :: Html
 captcha = [shamlet|
@@ -222,24 +251,6 @@ captchaOptions :: BlogLang ->  Html
 captchaOptions lang = [shamlet|<script type="text/javascript">^{preEscapedToHtml options}|]
   where
     options = T.concat ["var RecaptchaOptions = { theme: 'clean', lang: '", showLangText lang, "'};"]
-
-
-renderCommentBox :: BlogLang -> EntryId -> Html
-renderCommentBox cLang cId = [shamlet|
-<div class="cHead">#{cwHead cLang}
-^{captchaOptions cLang}
-<form method="POST" action=#{aLink}>
- <p><input name="cname" placeholder="Name" class="cInput">
- <p>
-  <label>
-   <textarea name="ctext" cols="50" rows="13" class="cInput" placeholder=#{cTextPlaceholder cLang}>
- <p>
-  <label>
-   ^{captcha}
- <p><input class="cInput" style="width:120px;" type="submit" value=#{cSend cLang}>
-|]
-  where
-   aLink = T.concat ["/", show' cLang, "/postcomment/", show' cId]
 
 showSiteNotice :: Html
 showSiteNotice = [shamlet|

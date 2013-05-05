@@ -160,5 +160,5 @@ rightText EN = "Deutsche Version <a href=\"/de\" class=\"link\">hier verf&uuml;g
 
 -- static information
 repoURL   :: Text = "https://bitbucket.org/tazjin/tazblog-haskell"
-mailTo    :: Text = "mailto:tazjin@gmail.com"
+mailTo    :: Text = "mailto:tazjin+blog@gmail.com"
 twitter   :: Text = "http://twitter.com/#!/tazjin"
