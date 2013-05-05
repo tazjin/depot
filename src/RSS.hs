@@ -16,7 +16,7 @@ import           Locales
 createChannel :: BlogLang -> UTCTime -> [ChannelElem]
 createChannel l  now = [ Language $ show l
                        , Copyright "Vincent Ambo"
-                       , WebMaster "tazjin@googlemail.com"
+                       , WebMaster "tazjin@gmail.com"
                        , ChannelPubDate now
                        ]
 

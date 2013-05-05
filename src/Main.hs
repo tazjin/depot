@@ -164,7 +164,7 @@ addComment acid lang captchakey eId = do
   -- captcha verification
   challenge <- look "recaptcha_challenge_field"
   response <- look "recaptcha_response_field"
-  (userIp, _) <- liftM rqPeer askRq -- FIXME askRq >>= return . rqPeer
+  (userIp, _) <- liftM rqPeer askRq
   validation <- liftIO $ validateCaptcha captchakey userIp challenge response
   case validation of
     Right _ -> update' acid (AddComment eId nComment)

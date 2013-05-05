@@ -131,7 +131,7 @@ renderEntries showAll entries topText footerLinks = [shamlet|
 $forall entry <- elist
   <div .row>
     <div .span2>
-      <a #bar href=#{linkElems entry}>
+      <a href=#{linkElems entry}>
         <b>#{title entry}
         <br>
         <i>#{pack $ formatTime defaultTimeLocale "%Y-%M-%d" $ edate entry}
@@ -145,7 +145,7 @@ $forall entry <- elist
         ^{preEscapedToHtml $ append " " $ btext entry}
       $if ((/=) (mtext entry) empty)
         <p>
-          <a .readmore #foo href=#{linkElems entry}>#{readMore $ lang entry}
+          <a .readmore href=#{linkElems entry}>#{readMore $ lang entry}
       $else
         <br>&nbsp;
 $maybe links <- footerLinks
