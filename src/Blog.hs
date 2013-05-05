@@ -120,7 +120,7 @@ $forall entry <- elist
       <a href=#{linkElems entry}>
         <b>#{title entry}
         <br>
-        <i>#{pack $ formatTime defaultTimeLocale "%Y-%M-%d" $ edate entry}
+        <i>#{pack $ formatTime defaultTimeLocale "%Y-%m-%d" $ edate entry}
         <br>
         #{linkText $ length $ comments entry}
         #{cHead $ lang entry}
