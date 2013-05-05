@@ -42,10 +42,8 @@ markdownCutoff = fromJust $ parseTime defaultTimeLocale "%s" "1367149834"
 
 
 -- blog CSS (admin is still static)
-stylesheetSource = $(luciusFile "../res/blogbs.lucius")
+stylesheetSource = $(luciusFile "../res/blog.lucius")
 blogStyle = renderCssUrl undefined stylesheetSource
-
---   <link rel="stylesheet" type="text/css" href="/static/blogv34.css" media="all"> FIXME
 
 -- blog HTML
 blogTemplate :: BlogLang -> Text -> Html -> Html
@@ -54,7 +52,7 @@ $doctype 5
   <head>
     <title>#{blogTitle lang t_append}
     <link rel="stylesheet" type="text/css" href="/static/bootstrap.css" media="all">
-    <link rel="stylesheet" type="text/css" href="/static/blogv300.css" media="all">
+    <link rel="stylesheet" type="text/css" href="/static/blogv40.css" media="all">
     <link rel="alternate" type="application/rss+xml" title="RSS-Feed" href=#{rssUrl}>
     <meta http-equiv="content-type" content="text/html;charset=UTF-8">
   <body>
