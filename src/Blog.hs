@@ -45,20 +45,7 @@ markdownCutoff = fromJust $ parseTime defaultTimeLocale "%s" "1367149834"
 stylesheetSource = $(luciusFile "../res/blogbs.lucius")
 blogStyle = renderCssUrl undefined stylesheetSource
 
---   <link rel="stylesheet" type="text/css" href="/static/blogv34.css" media="all">
-
-{- 
-  <div class="header">
-   <p style="clear: both;">
-    <span class="contacts" id="cosx">^{contactInfo}
-    <span class="righttext">^{preEscapedToHtml $ rightText lang}
-  <div class="middle">
-   ^{body}
-   <div class="footer">
-    ^{showFooter lang $ pack version}
-    <div class="centerbox">
-     <span style="font-size:17px;font-family:Helvetica;">ಠ_ಠ
--}
+--   <link rel="stylesheet" type="text/css" href="/static/blogv34.css" media="all"> FIXME
 
 -- blog HTML
 blogTemplate :: BlogLang -> Text -> Html -> Html
@@ -71,19 +58,20 @@ $doctype 5
     <link rel="alternate" type="application/rss+xml" title="RSS-Feed" href=#{rssUrl}>
     <meta http-equiv="content-type" content="text/html;charset=UTF-8">
   <body>
-    <div .header>
-      <div .container >
-        <div .row>
-          <div .span12 .blogtitle>
-            <a class="btitle" href=#{append "/" (show' lang)}>#{blogTitle lang empty}
-        <div .row>
-          <br>
-          <div .span6>
-            <span .contacts #cosx>^{contactInfo}
-          <div .span6>
-            <span .righttext>^{preEscapedToHtml $ rightText lang}
-    <div .container>
-      ^{body}
+    <div #wrap>
+      <div .header>
+        <div .container >
+          <div .row>
+            <div .span12 .blogtitle>
+              <a class="btitle" href=#{append "/" (show' lang)}>#{blogTitle lang empty}
+          <div .row>
+            <br>
+            <div .span6>
+              <span .contacts #cosx>^{contactInfo}
+            <div .span6>
+              <span .righttext>^{preEscapedToHtml $ rightText lang}
+      <div .container>
+        ^{body}
     <footer .footer>
       ^{showFooter lang $ pack version}
 |]
@@ -398,9 +386,10 @@ commentDeleted eId = adminTemplate "Kommentar gelöscht" $ [shamlet|
 
 showError :: BlogError -> BlogLang -> Html
 showError NotFound l = blogTemplate l (T.append ": " $ notFoundTitle l) $ [shamlet|
-<span class="innerTitle">#{notFoundTitle l}
-<div class="innerTitle">
- <p class="notFoundFace">:(
- <p class="notFoundText">#{notFoundText l}
+<div .row .text-center>
+  <div .span12  .notFoundFace>:(
+<div .row .text-center>
+  <div .span12 .notFoundText>
+    #{notFoundText l}
 |]
 
