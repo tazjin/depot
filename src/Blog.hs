@@ -138,7 +138,7 @@ $forall entry <- elist
         <br>
         #{linkText $ length $ comments entry}
         #{cHead $ lang entry}
-    <div .span10>
+    <div .span10 .entry>
       $if (isEntryMarkdown entry)
         ^{renderEntryMarkdown $ append " " $ btext entry}
       $else
@@ -158,19 +158,21 @@ $maybe links <- footerLinks
 
 showLinks :: Maybe Int -> BlogLang -> Html
 showLinks (Just i) lang = [shamlet|
- $if ((>) i 1)
-  <div class="centerbox">
-   <a href=#{nLink $ succ i}>#{backText lang}
-   \ -- #
-   <a href=#{nLink $ pred i}>#{nextText lang}
- $elseif ((<=) i 1)
-  ^{showLinks Nothing lang}
+  $if ((>) i 1)
+    <div .row .text-center>
+      <div .span12>
+        <a href=#{nLink $ succ i}>#{backText lang}
+        \ -- #
+        <a href=#{nLink $ pred i}>#{nextText lang}
+  $elseif ((<=) i 1)
+    ^{showLinks Nothing lang}
 |]
   where
    nLink page = T.concat ["/", show' lang, "/?page=", show' page]
 showLinks Nothing lang = [shamlet|
-<div class="centerbox">
- <a href=#{nLink}>#{backText lang}
+<div .row .text-center>
+  <div .span12>
+    <a href=#{nLink}>#{backText lang}
 |]
   where
    nLink = T.concat ["/", show' lang, "/?page=2"]

@@ -18,7 +18,7 @@ import           BlogDB      (BlogLang (..))
 
 data BlogError = NotFound | DBError
 
-version = "3.5"
+version = "4.0"
 
 allLang = [EN, DE]
 
@@ -159,6 +159,6 @@ rightText DE = "English version <a href=\"/en\" class=\"link\">available here</a
 rightText EN = "Deutsche Version <a href=\"/de\" class=\"link\">hier verf&uuml;gbar</a>."
 
 -- static information
-repoURL   :: Text = "https://bitbucket.org/tazjin/tazblog-haskell"
+repoURL   :: Text = "http://hg.tazj.in/tazblog-haskell"
 mailTo    :: Text = "mailto:tazjin+blog@gmail.com"
 twitter   :: Text = "http://twitter.com/#!/tazjin"
