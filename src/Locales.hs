@@ -86,8 +86,8 @@ readMore DE = "Weiterlesen"
 readMore EN = "Read more"
 
 eTimeFormat :: BlogLang -> String
-eTimeFormat DE = "Geschrieben am %d.%m.%y von "
-eTimeFormat EN = "Written on %D by "
+eTimeFormat DE = "Geschrieben am %Y-%m-%d von "
+eTimeFormat EN = "Written on %Y-%m-%d by "
 
 -- contact information
 contactText :: BlogLang -> Text
@@ -121,8 +121,8 @@ cSingle DE = "Kommentar:" --input label
 cSingle EN = "Comment:"
 
 cTimeFormat :: BlogLang -> String --formatTime expects a String
-cTimeFormat DE = "[Am %d.%m.%y um %H:%M Uhr]"
-cTimeFormat EN = "[On %D at %H:%M]"
+cTimeFormat DE = "[Am %Y-%m-%d um %H:%M Uhr]"
+cTimeFormat EN = "[On %Y-%m-%d at %H:%M]"
 
 cSend :: BlogLang -> Text
 cSend DE = "Absenden"
