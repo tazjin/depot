@@ -71,23 +71,21 @@ $doctype 5
     <link rel="alternate" type="application/rss+xml" title="RSS-Feed" href=#{rssUrl}>
     <meta http-equiv="content-type" content="text/html;charset=UTF-8">
   <body>
-    <div .container .header>
-      <div .row>
-        <div .span12 .blogtitle>
-          <a class="btitle" href=#{append "/" (show' lang)}>#{blogTitle lang empty}
-      <div .row>
-        <br>
-        <div .span6>
-          <span .contacts #cosx>^{contactInfo}
-        <div .span6>
-          <span .righttext>^{preEscapedToHtml $ rightText lang}
+    <div .header>
+      <div .container >
+        <div .row>
+          <div .span12 .blogtitle>
+            <a class="btitle" href=#{append "/" (show' lang)}>#{blogTitle lang empty}
+        <div .row>
+          <br>
+          <div .span6>
+            <span .contacts #cosx>^{contactInfo}
+          <div .span6>
+            <span .righttext>^{preEscapedToHtml $ rightText lang}
     <div .container>
       ^{body}
-    <div .container>
-      <footer>
-        ^{showFooter lang $ pack version}
-        <div class="centerbox">
-         <span style="font-size:17px;font-family:Helvetica;">ಠ_ಠ
+    <footer .footer>
+      ^{showFooter lang $ pack version}
 |]
  where
   rssUrl = T.concat ["/", show' lang, "/rss.xml"]
@@ -100,16 +98,21 @@ $doctype 5
 
 showFooter :: BlogLang -> Text -> Html
 showFooter l v = [shamlet|
-<div class="rightbox" style="text-align:right;">
- Proudly made with #
- <a class="link" href="http://haskell.org">Haskell
- , #
- <a class="link" href="http://hackage.haskell.org/package/acid-state-0.6.3">Acid-State
- \ and without PHP, Java, Perl, MySQL and Python.
- <p>
-  <a class="link" href=#{repoURL}>#{append "Version " v}
-  &nbsp;
-  <a class="link" href="/notice">#{noticeText l}
+<div .container>
+  <div .row>
+    <div .span12 .righttext style="text-align: right;margin-right:-200px">
+      Proudly made with #
+      <a class="link" href="http://haskell.org">Haskell
+      , #
+      <a class="link" href="http://hackage.haskell.org/package/acid-state-0.6.3">Acid-State
+      \ and without PHP, Java, Perl, MySQL and Python.
+      <p>
+        <a class="link" href=#{repoURL}>#{append "Version " v}
+        &nbsp;
+        <a class="link" href="/notice">#{noticeText l}
+  <div .row .text-center>
+    <div .span12>
+      <span style="font-size:13px;font-family:Helvetica;">ಠ_ಠ
 |]
 
 isEntryMarkdown :: Entry -> Bool
