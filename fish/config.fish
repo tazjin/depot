@@ -9,4 +9,6 @@ function fish_prompt
     echo -n '> '
 end
 
+set fish_greeting ""
+
 set PATH ~/Library/Haskell/bin ~/bin/ /Users/vincent/Source/management-scripts/google-apps/ $PATH
