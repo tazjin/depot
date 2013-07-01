@@ -7,12 +7,15 @@
   (package-refresh-contents))
 
 ;; Important packages
-(defvar my-pkgs '(starter-kit starter-kit-bindings haskell-mode magit)
-  "Packages to install at launch.")
+(defvar my-pkgs '(starter-kit starter-kit-bindings haskell-mode magit color-theme-solarized)
+  "A list of packages to install at launch.")
 
 (dolist (p my-pkgs)
   (when (not (package-installed-p p))
     (package-install p)))
+
+;; Set solarized theme
+(load-theme 'solarized-dark t)
 
 ;; Enable mouse support on OS X
 (unless window-system
