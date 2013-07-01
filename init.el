@@ -7,7 +7,7 @@
   (package-refresh-contents))
 
 ;; Important packages
-(defvar my-pkgs '(starter-kit starter-kit-bindings haskell-mode)
+(defvar my-pkgs '(starter-kit starter-kit-bindings haskell-mode magit)
   "Packages to install at launch.")
 
 (dolist (p my-pkgs)
