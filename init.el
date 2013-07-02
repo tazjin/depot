@@ -1,3 +1,4 @@
+;; Configure package manager
 (require 'package)
 (add-to-list 'package-archives
 	     '("marmalade" . "http://marmalade-repo.org/packages/") t)
@@ -14,8 +15,31 @@
   (when (not (package-installed-p p))
     (package-install p)))
 
+;; Configure el-get
+(require 'cl) 
+
+(add-to-list 'load-path "~/.emacs.d/el-get/el-get")
+
+;; Install el-get if not already present
+(unless (require 'el-get nil t)
+  (url-retrieve
+   "https://github.com/dimitri/el-get/raw/master/el-get-install.el"
+   (lambda (s)
+     (end-of-buffer)
+     (eval-print-last-sexp))))
+
+;; el-get recipes
+(setq
+ my:el-get-packages
+ '(el-get
+   switch-window))
+
+(el-get 'sync my:el-get-packages)
+
 ;; Set solarized theme
 (load-theme 'solarized-dark t)
+
+;; Other general settings
 
 ;; Enable mouse support on OS X
 (unless window-system
@@ -28,8 +52,16 @@
                               (interactive)
                               (scroll-up 1)))
   (defun track-mouse (e))
+
   (setq mouse-sel-mode t)
 )
+
+;; Use clipboard properly
+(setq x-select-enable-clipboard t)
+
+;; Navigate windows with M-<arrows>
+(windmove-default-keybindings 'meta)
+(setq windmove-wrap-around t)
 
 ;; Configure haskell-mode
 ;; Enable semi-automatic indentation and font-locking
