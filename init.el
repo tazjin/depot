@@ -8,7 +8,7 @@
   (package-refresh-contents))
 
 ;; Important packages
-(defvar my-pkgs '(starter-kit starter-kit-bindings haskell-mode magit color-theme-solarized)
+(defvar my-pkgs '(starter-kit starter-kit-bindings haskell-mode markdown-mode magit color-theme-solarized)
   "A list of packages to install at launch.")
 
 (dolist (p my-pkgs)
@@ -62,6 +62,13 @@
 ;; Navigate windows with M-<arrows>
 (windmove-default-keybindings 'meta)
 (setq windmove-wrap-around t)
+
+;; Configure markdown-mode
+(autoload 'markdown-mode "markdown-mode"
+  "Major mode for editing Markdown files" t)
+(add-to-list 'auto-mode-alist '("\\.txt\\'" . markdown-mode))
+(add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
+(add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
 
 ;; Configure haskell-mode
 ;; Enable semi-automatic indentation and font-locking
