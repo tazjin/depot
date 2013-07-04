@@ -16,7 +16,8 @@
                   color-theme-solarized
                   projectile
                   rainbow-delimiters
-                  nrepl)
+                  nrepl
+                  ace-jump-mode)
   "A list of packages to install at launch.")
 
 (dolist (p my-pkgs)
@@ -49,6 +50,9 @@
 
 ;; Other general settings
 
+;; Swedish!
+(set-language-environment 'Swedish)
+
 ;; Enable mouse support on OS X
 (unless window-system
   (require 'mouse)
@@ -70,6 +74,26 @@
 ;; Navigate windows with M-<arrows>
 (windmove-default-keybindings 'meta)
 (setq windmove-wrap-around t)
+
+;; Load ace-jump-mode
+(autoload
+  'ace-jump-mode
+  "ace-jump-mode"
+  "Emacs quick move minor mode"
+  t)
+
+(define-key global-map [?] 'ace-jump-mode)
+
+;; Quick jump back
+(autoload
+  'ace-jump-mode-pop-mark
+  "ace-jump-mode"
+  "Ace jump back:-)"
+  t)
+
+(eval-after-load "ace-jump-mode"
+  '(ace-jump-mode-enable-mark-sync))
+(define-key global-map (kbd "C-x ö") 'ace-jump-mode-pop-mark)
 
 ;; Configure markdown-mode
 (autoload 'markdown-mode "markdown-mode"
