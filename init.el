@@ -87,6 +87,17 @@
 ;; Hiding JOIN, QUIT, PART
 (setq erc-hide-list '("JOIN" "PART" "QUIT"))
 
+;; Eshell
+;; Start/join
+(global-set-key (kbd "C-x m") 'eshell)
+;; Always start
+(global-set-key (kbd "C-x M") (lambda () (interactive) (eshell t)))
+
+;; Git
+(global-set-key (kbd "C-c g") 'magit-status)
+
+(remove-hook 'kill-buffer-query-functions 'server-kill-buffer-query-function)
+
 ;; Start server for emacsclient
 (server-start)
 
