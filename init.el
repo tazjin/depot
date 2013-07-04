@@ -8,7 +8,14 @@
   (package-refresh-contents))
 
 ;; Important packages
-(defvar my-pkgs '(starter-kit starter-kit-bindings haskell-mode markdown-mode magit color-theme-solarized)
+(defvar my-pkgs '(starter-kit
+                  starter-kit-bindings
+                  haskell-mode
+                  markdown-mode
+                  magit
+                  color-theme-solarized
+                  projectile
+                  rainbow-delimiters)
   "A list of packages to install at launch.")
 
 (dolist (p my-pkgs)
@@ -97,6 +104,14 @@
 (global-set-key (kbd "C-c g") 'magit-status)
 
 (remove-hook 'kill-buffer-query-functions 'server-kill-buffer-query-function)
+
+;; Enable projectile for all things programming
+(require 'projectile)
+(add-hook 'prog-mode-hook 'projectile-on)
+
+;; Enable rainbow-delimiters for all things programming
+(require 'rainbow-delimiters)
+(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
 
 ;; Start server for emacsclient
 (server-start)
