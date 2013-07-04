@@ -1,6 +1,4 @@
 function fish_prompt
-    set_color blue
-    echo -n (whoami)
     set_color magenta
     echo -n (vcprompt -f "(%s:%b%a%m)")
     set_color cyan
