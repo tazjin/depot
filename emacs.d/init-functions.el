@@ -1,8 +1,6 @@
 ;; A few handy functions I use in init.el (or not, but they're nice to
 ;; have)
 
-;; Ensure that the themes folder exists
-
 (defun custom-download-theme (url filename)
   "Downloads a theme through HTTP and places it in ~/.emacs.d/themes"
 
@@ -21,6 +19,21 @@
          (concat "~/.emacs.d/themes/" filename)))
     (unless (file-exists-p file)
       (url-copy-file url file))))
+
+(defun custom-download-script (url filename)
+  "Downloads an Elisp script, places it in ~/.emacs/other and then loads it"
+ 
+  ;; Ensure the directory exists
+  (unless (file-exists-p "~/.emacs.d/other")
+    (make-directory "~/.emacs.d/other"))
+
+  ;; Download file if it doesn't exist.
+  (let ((file
+         (concat "~/.emacs.d/" filename)))
+    (unless (file-exists-p file)
+      (url-copy-file url file))
+
+    (load file)))
 
 
 ;; These come from the emacs starter kit
