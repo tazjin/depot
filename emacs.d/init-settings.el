@@ -87,6 +87,8 @@ comment as a filename."
 
 (load-theme 'hickey t)
 
+(global-hl-line-mode -1)
+
 ;; Hiding JOIN, QUIT, PART
 (setq erc-hide-list '("JOIN" "PART" "QUIT"))
 

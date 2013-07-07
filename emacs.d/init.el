@@ -34,6 +34,7 @@
 
 (load "~/.emacs.d/init-functions.el")
 (load "~/.emacs.d/init-settings.el")
+(load "~/.emacs.d/init-modes.el")
 
 (setq custom-file "~/.emacs.d/init-custom.el")
 (load custom-file)

@@ -35,7 +35,6 @@
 
     (load file)))
 
-
 ;; These come from the emacs starter kit
 (defun esk-pretty-lambdas ()
   (font-lock-add-keywords
