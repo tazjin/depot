@@ -1,3 +1,4 @@
+(mapc 'require '(projectile))
 ;; Initializes modes I use.
 
 (add-hook 'prog-mode-hook 'esk-pretty-lambdas)
@@ -33,6 +34,11 @@
 (setq nrepl-hide-special-buffers t)
 (setq nrepl-popup-stacktraces nil)
 
-;; Paredit in nrepl
-(add-hook 'nrepl-mode-hook 'paredit-mode)
-(add-hook 'nrepl-mode-hook 'rainbow-delimiters-mode)
+;; Enable projectile for all things programming
+(add-hook 'prog-mode-hook 'projectile-on)
+
+;; Enable rainbow-delimiters for all things programming
+(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
+
+;; Enable paredit in all programming buffers
+(add-hook 'prog-mode-hook 'paredit-mode)

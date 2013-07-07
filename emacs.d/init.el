@@ -40,7 +40,6 @@
 
 ;; IRC configuration (erc)
 ;; Actual servers and such are loaded from irc.el
-(require 'erc)
 (load "~/.emacs.d/irc")
 
 ;; Seed RNG

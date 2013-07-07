@@ -90,15 +90,6 @@ comment as a filename."
 ;; Hiding JOIN, QUIT, PART
 (setq erc-hide-list '("JOIN" "PART" "QUIT"))
 
-;; Enable projectile for all things programming
-(add-hook 'prog-mode-hook 'projectile-on)
-
-;; Enable rainbow-delimiters for all things programming
-(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
-
-;; Enable paredit in all Lisps
-(add-hook 'lisp-mode-hook 'paredit-mode)
-
 (eval-after-load 'diff-mode
   '(progn
      (set-face-foreground 'diff-added "green4")
