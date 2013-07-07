@@ -23,8 +23,8 @@
                   rainbow-delimiters
                   nrepl
                   clojure-mode
-                  ace-jump-mode
-                  switch-window)
+                  ace-jump-mode)
+
   "A list of packages to install at launch.")
 
 (dolist (p my-pkgs)
@@ -37,6 +37,10 @@
 
 (setq custom-file "~/.emacs.d/init-custom.el")
 (load custom-file)
+
+;; Other packages that need manual installation
+(custom-download-script "https://raw.github.com/dimitri/switch-window/master/switch-window.el"
+                        "switch-window.el")
 
 ;; IRC configuration (erc)
 ;; Actual servers and such are loaded from irc.el
