@@ -109,8 +109,6 @@ comment as a filename."
 
 ;; ## Mac specific settings ##
 
-(setq browse-url-browser-function 'browse-default-macosx-browser)
-
 ;; Enable mouse support on OS X
 (unless window-system
   (require 'mouse)
