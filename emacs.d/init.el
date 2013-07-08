@@ -14,8 +14,7 @@
   (package-refresh-contents))
 
 ;; Important packages
-(defvar my-pkgs '(starter-kit-bindings
-                  haskell-mode
+(defvar my-pkgs '(haskell-mode
                   markdown-mode
                   magit
                   leuven-theme
@@ -35,6 +34,7 @@
 (load "~/.emacs.d/init-functions.el")
 (load "~/.emacs.d/init-settings.el")
 (load "~/.emacs.d/init-modes.el")
+(load "~/.emacs.d/init-bindings.el")
 
 (setq custom-file "~/.emacs.d/init-custom.el")
 (load custom-file)
@@ -49,9 +49,6 @@
 
 ;; Seed RNG
 (random t)
-
-;; Add a fullscreen toggle
-(global-set-key (kbd "M-RET") 'toggle-frame-fullscreen)
 
 ;; Start server for emacsclient
 (server-start)
