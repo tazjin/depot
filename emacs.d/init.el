@@ -13,16 +13,22 @@
 (when (not package-archive-contents)
   (package-refresh-contents))
 
-;; Important packages
+;; Important defvar
 (defvar my-pkgs '(haskell-mode
-                  markdown-mode
-                  magit
-                  leuven-theme
-                  projectile
-                  rainbow-delimiters
-                  nrepl
-                  clojure-mode
-                  ace-jump-mode)
+		  idle-highlight-mode
+		  ido-ubiquitous
+		  magit
+		  paredit
+		  smex
+		  ace-jump-mode
+		  clojure-mode
+		  leuven-theme
+		  magit
+		  markdown-mode
+		  nrepl
+		  projectile
+		  rainbow-delimiters
+		  )
 
   "A list of packages to install at launch.")
 
