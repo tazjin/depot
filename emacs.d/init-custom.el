@@ -9,6 +9,7 @@
  '(erc-modules
    (quote
     (autojoin button completion dcc irccontrols list log match menu move-to-prompt netsplit networks noncommands notifications readonly ring scrolltobottom stamp track)))
+ '(haskell-mode-hook (quote (font-lock-mode)))
  '(ns-alternate-modifier (quote none))
  '(ns-command-modifier (quote meta)))
 (custom-set-faces

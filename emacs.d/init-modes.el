@@ -14,7 +14,7 @@
 
 ;; Configure haskell-mode
 ;; Enable semi-automatic indentation and font-locking
-(add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
+(add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
 (add-hook 'haskell-mode-hook 'font-lock-mode)
 
 ;; Add keybindings to move nested blocks with C-, rsp. C-.
