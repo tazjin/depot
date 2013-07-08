@@ -13,7 +13,6 @@ function fish_right_prompt
    set_color --bold yellow
    echo -n ']'
 end
-   
 
 set -gx EDITOR emacsclient
 set -gx ALTERNATE_EDITOR emacs
