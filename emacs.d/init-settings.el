@@ -81,11 +81,16 @@ comment as a filename."
 
 ;; ## Look and feel ##
 
-;; Theme!
+;; Themes! I download and install the ones I like and default the one
+;; I currently like most. This changes a lot because I hate
+;; everything. (It's in my nature, don't judge)
 (custom-download-theme "https://raw.github.com/owainlewis/emacs-color-themes/master/themes/hickey-theme.el"
                        "hickey-theme.el")
 
-(load-theme 'hickey t)
+(custom-download-theme "https://raw.github.com/rexim/gruber-darker-theme/master/gruber-darker-theme.el"
+                       "gruber-darker-theme.el")
+
+(load-theme 'gruber-darker t)
 
 (global-hl-line-mode -1)
 
@@ -130,10 +135,6 @@ comment as a filename."
 
 ;; Don't use Apple's native fullscreen (FIXME: Change with Mavericks)
 (setq ns-use-native-fullscreen nil)
-
-;; ... and then enable fullscreen. (This requires a nightly build of
-;; Emacs for OS X)
-;;(toggle-frame-fullscreen)
 
 ;; ## Navigation and key bindings ##
 

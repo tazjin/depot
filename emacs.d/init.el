@@ -50,5 +50,8 @@
 ;; Seed RNG
 (random t)
 
+;; Add a fullscreen toggle
+(global-set-key (kbd "M-RET") 'toggle-frame-fullscreen)
+
 ;; Start server for emacsclient
 (server-start)
