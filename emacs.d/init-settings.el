@@ -94,6 +94,8 @@ comment as a filename."
 
 (global-hl-line-mode -1)
 
+(set-default-font "Source Code Pro 13")
+
 ;; Hiding JOIN, QUIT, PART
 (setq erc-hide-list '("JOIN" "PART" "QUIT"))
 
