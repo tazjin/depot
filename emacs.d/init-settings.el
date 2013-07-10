@@ -5,6 +5,8 @@
 
 ;;; Code:
 
+(add-to-list 'exec-path  "/usr/local/bin")
+
 (when window-system
   (setq frame-title-format '(buffer-file-name "%f" ("%b")))
   (tooltip-mode -1)
