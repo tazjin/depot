@@ -1,3 +1,3 @@
 function edit
-    emacsclient -no-wait $argv
+    emacsclient -no-wait -create-frame $argv
 end

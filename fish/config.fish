@@ -14,7 +14,7 @@ function fish_right_prompt
    echo -n ']'
 end
 
-set -gx EDITOR emacsclient
+set -gx EDITOR "emacsclient -n -create-frame"
 set -gx ALTERNATE_EDITOR emacs
 set -gx VISUAL emacsclient
 
