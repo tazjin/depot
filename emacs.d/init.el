@@ -28,6 +28,8 @@
 		  nrepl
 		  projectile
 		  rainbow-delimiters
+                  geiser
+                  quack
 		  )
 
   "A list of packages to install at launch.")

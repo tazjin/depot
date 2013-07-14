@@ -5,7 +5,8 @@
 
 ;;; Code:
 
-(add-to-list 'exec-path  "/usr/local/bin")
+(add-to-list 'exec-path "/usr/local/bin")
+(add-to-list 'exec-path "/Applications/Racket/bin")
 
 (when window-system
   (setq frame-title-format '(buffer-file-name "%f" ("%b")))
