@@ -42,3 +42,7 @@
 
 ;; Enable paredit in all programming buffers
 (add-hook 'prog-mode-hook 'paredit-mode)
+
+;; Always highlight matching brackets
+(show-paren-mode 1)
+
