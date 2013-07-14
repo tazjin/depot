@@ -35,6 +35,15 @@
 
     (load file)))
 
+;; This clones a git repository to 'foldername in .emacs.d
+;; if there isn't already a folder with that name
+(defun custom-clone-git (url foldername)
+  "Clones a git repository to .emacs.d/foldername"
+  (let ((fullpath (concat "~/.emacs.d/" foldername)))
+    (unless (file-exists-p fullpath)
+      (shell-command (concat "git clone " url " " fullpath))))
+  )
+
 ;; These come from the emacs starter kit
 (defun esk-pretty-lambdas ()
   (font-lock-add-keywords
