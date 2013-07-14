@@ -15,6 +15,12 @@
 ;; Jump to a definition in the current file. (Protip: this is awesome.)
 (global-set-key (kbd "C-x C-i") 'imenu)
 
+;; Ace-jump-mode
+(global-set-key (kbd "M-j") 'ace-jump-char-mode)
+
+;; Jump to next occurence of char
+(global-set-key (kbd "M-m") 'iy-go-to-char)
+
 ;; Window switching. (C-x o goes to the next window)
 (windmove-default-keybindings) ;; Shift+direction
 

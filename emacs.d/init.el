@@ -48,6 +48,9 @@
 (custom-download-script "https://raw.github.com/dimitri/switch-window/master/switch-window.el"
                         "switch-window.el")
 
+(custom-download-script "https://raw.github.com/doitian/iy-go-to-char/master/iy-go-to-char.el"
+                        "goto-char.el")
+
 ;; NYAN CAT!
 (custom-clone-git "https://github.com/TeMPOraL/nyan-mode" "nyan-mode")
 (load "~/.emacs.d/nyan-mode/nyan-mode.el")
