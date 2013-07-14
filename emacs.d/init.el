@@ -40,9 +40,6 @@
 
 
 (load "~/.emacs.d/init-functions.el")
-(load "~/.emacs.d/init-settings.el")
-(load "~/.emacs.d/init-modes.el")
-(load "~/.emacs.d/init-bindings.el")
 
 (setq custom-file "~/.emacs.d/init-custom.el")
 (load custom-file)
@@ -50,6 +47,14 @@
 ;; Other packages that need manual installation
 (custom-download-script "https://raw.github.com/dimitri/switch-window/master/switch-window.el"
                         "switch-window.el")
+
+;; NYAN CAT!
+(custom-clone-git "https://github.com/TeMPOraL/nyan-mode" "nyan-mode")
+(load "~/.emacs.d/nyan-mode/nyan-mode.el")
+
+(load "~/.emacs.d/init-settings.el")
+(load "~/.emacs.d/init-modes.el")
+(load "~/.emacs.d/init-bindings.el")
 
 ;; IRC configuration (erc)
 ;; Actual servers and such are loaded from irc.el

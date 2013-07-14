@@ -46,3 +46,5 @@
 ;; Always highlight matching brackets
 (show-paren-mode 1)
 
+;; Enable Nyan mode
+(nyan-mode 1)

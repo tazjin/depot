@@ -99,6 +99,12 @@ comment as a filename."
 
 (set-default-font "Source Code Pro 13")
 
+;; Don't make the nyan cat too long ... I have other stuff in the mode
+;; bar as well!
+(set-variable 'nyan-bar-length 15)
+;; Not the real deal without this ...
+(set-variable 'nyan-wavy-trail t)
+
 ;; Hiding JOIN, QUIT, PART
 (setq erc-hide-list '("JOIN" "PART" "QUIT"))
 
