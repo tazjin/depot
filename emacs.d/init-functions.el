@@ -73,6 +73,10 @@
     (dotimes (_ (- 80 col (length prefix) (length postfix))) (insert "u"))
     (insert postfix)))
 
+(defun speak (m &optional voice)
+  (shell-command (if 'voice (concat "say " m)
+		   (concat "say -v " voice " " m))))
+
 ;; Reconnect rcirc
 (eval-after-load 'rcirc
   '(defun-rcirc-command reconnect (arg)
