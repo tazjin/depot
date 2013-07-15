@@ -74,8 +74,9 @@
     (insert postfix)))
 
 (defun speak (m &optional voice)
-  (shell-command (if 'voice (concat "say " m)
-		   (concat "say -v " voice " " m))))
+  (shell-command (if 'voice (concat "say -v " voice " \"" m "\"")
+		   (concat "say " m))))
+
 
 ;; Reconnect rcirc
 (eval-after-load 'rcirc
