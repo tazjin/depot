@@ -52,6 +52,16 @@
                                     ,(make-char 'greek-iso8859-7 107))
                     nil))))))
 
+(defun esk-eval-and-replace ()
+  "Replace the preceding sexp with its value."
+  (interactive)
+  (backward-kill-sexp)
+  (condition-case nil
+      (prin1 (eval (read (current-kill 0)))
+             (current-buffer))
+    (error (message "Invalid expression")
+           (insert (current-kill 0)))))
+
 (defun esk-add-watchwords ()
   (font-lock-add-keywords
    nil '(("\\<\\(FIX\\(ME\\)?\\|TODO\\|HACK\\|REFACTOR\\|NOCOMMIT\\)"
@@ -73,32 +83,9 @@
     (dotimes (_ (- 80 col (length prefix) (length postfix))) (insert "u"))
     (insert postfix)))
 
+(defun esk-turn-off-tool-bar ()
+  (if (functionp 'tool-bar-mode) (tool-bar-mode -1)))
+
 (defun speak (m &optional voice)
   (shell-command (if 'voice (concat "say -v " voice " \"" m "\"")
 		   (concat "say " m))))
-
-
-;; Reconnect rcirc
-(eval-after-load 'rcirc
-  '(defun-rcirc-command reconnect (arg)
-     "Reconnect the server process."
-     (interactive "i")
-     (unless process
-       (error "There's no process for this target"))
-     (let* ((server (car (process-contact process)))
-            (port (process-contact process :service))
-            (nick (rcirc-nick process))
-            channels query-buffers)
-       (dolist (buf (buffer-list))
-         (with-current-buffer buf
-           (when (eq process (rcirc-buffer-process))
-             (remove-hook 'change-major-mode-hook
-                          'rcirc-change-major-mode-hook)
-             (if (rcirc-channel-p rcirc-target)
-                 (setq channels (cons rcirc-target channels))
-               (setq query-buffers (cons buf query-buffers))))))
-       (delete-process process)
-       (rcirc-connect server port nick
-                      rcirc-default-user-name
-                      rcirc-default-full-name
-                      channels))))

@@ -41,6 +41,8 @@
 
 (load "~/.emacs.d/init-functions.el")
 
+(add-to-list 'load-path "~/.emacs.d/scripts/")
+
 (setq custom-file "~/.emacs.d/init-custom.el")
 (load custom-file)
 

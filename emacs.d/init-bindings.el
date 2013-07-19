@@ -30,6 +30,9 @@
 ;; Start a new eshell even if one is active.
 (global-set-key (kbd "C-x M") (lambda () (interactive) (eshell t)))
 
+;; Eval sexp and replace it with result
+(global-set-key (kbd "C-c e") 'esk-eval-and-replace)
+
 ;; Start a regular shell if you prefer that.
 (global-set-key (kbd "C-x C-m") 'shell)
 
