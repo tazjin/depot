@@ -61,6 +61,7 @@
 (load "~/.emacs.d/init-settings.el")
 (load "~/.emacs.d/init-modes.el")
 (load "~/.emacs.d/init-bindings.el")
+(load "~/.emacs.d/init-eshell.el")
 
 ;; IRC configuration (erc)
 ;; Actual servers and such are loaded from irc.el
