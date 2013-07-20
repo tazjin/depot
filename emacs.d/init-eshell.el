@@ -1,5 +1,7 @@
 ;; EShell configuration
 
+(require 'eshell)
+
 (defvar home-dir)
 (setq home-dir (expand-file-name "~"))
 
