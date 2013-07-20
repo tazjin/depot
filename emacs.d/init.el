@@ -30,6 +30,7 @@
 		  rainbow-delimiters
                   geiser
                   quack
+		  rainbow-mode
 		  )
 
   "A list of packages to install at launch.")

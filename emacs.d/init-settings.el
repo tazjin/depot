@@ -6,6 +6,7 @@
 ;;; Code:
 
 (add-to-list 'exec-path "/usr/local/bin")
+(add-to-list 'exec-path (expand-file-name "~/bin"))
 (add-to-list 'exec-path "/Applications/Racket/bin")
 
 (when window-system
