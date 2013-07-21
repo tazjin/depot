@@ -31,6 +31,7 @@
                   geiser
                   quack
 		  rainbow-mode
+		  jabber
 		  )
 
   "A list of packages to install at launch.")
