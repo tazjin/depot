@@ -5,10 +5,17 @@
 (defvar home-dir)
 (setq home-dir (expand-file-name "~"))
 
-(setq eshell-path-env (concat
-		       "/usr/local/bin:"
-		       (concat home-dir "/bin:")
-		       eshell-path-env))
+(defun eshell-mode-hook-setup ()
+  "Sets up EShell when it is loaded"
+
+  (setq eshell-path-env (concat
+			 "/usr/local/bin:"
+			 (concat home-dir "/bin:")
+			 eshell-path-env))
+
+  (setenv "PATH" eshell-path-env))
+
+(add-hook 'eshell-mode-hook 'eshell-mode-hook-setup)
 
 ;; Prompt configuration
 
