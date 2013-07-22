@@ -57,6 +57,8 @@
 
 (setq eshell-prompt-function 'prompt-f)
 (setq eshell-highlight-prompt nil)
+(setq eshell-prompt-regexp "^.+? \\((\\(git\\|svn\\|hg\\|darcs\\|cvs\\|bzr\\):.+?) \\)?[$#] ")
+
 
 ;; EShell functions that come in handy
 
