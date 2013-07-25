@@ -31,7 +31,6 @@
                   geiser
                   quack
 		  rainbow-mode
-		  jabber
 		  )
 
   "A list of packages to install at launch.")
@@ -63,6 +62,9 @@
 (load "~/.emacs.d/init-modes.el")
 (load "~/.emacs.d/init-bindings.el")
 (load "~/.emacs.d/init-eshell.el")
+
+;; A file with machine specific settings
+(load "~/.emacs.d/init-local.el")
 
 ;; IRC configuration (erc)
 ;; Actual servers and such are loaded from irc.el
