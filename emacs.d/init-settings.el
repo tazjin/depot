@@ -9,6 +9,7 @@
 (add-to-list 'exec-path (expand-file-name "~/bin"))
 (add-to-list 'exec-path "/Applications/Racket/bin")
 
+
 (when window-system
   (setq frame-title-format '(buffer-file-name "%f" ("%b")))
   (tooltip-mode -1)
@@ -171,6 +172,12 @@ comment as a filename."
 (eval-after-load "ace-jump-mode"
   '(ace-jump-mode-enable-mark-sync))
 (define-key global-map (kbd "C-x ö") 'ace-jump-mode-pop-mark)
+
+;; Keep your backup files in tmp, emacs!
+(setq backup-directory-alist
+      `((".*" . ,temporary-file-directory)))
+(setq auto-save-file-name-transforms
+      `((".*" ,temporary-file-directory t)))
 
 ;; Eshell
 ;; Start/join

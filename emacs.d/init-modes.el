@@ -14,8 +14,9 @@
 
 ;; Configure haskell-mode
 ;; Enable semi-automatic indentation and font-locking
-(add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
-(add-hook 'haskell-mode-hook 'font-lock-mode)
+(require 'hi2)
+;;(add-hook 'haskell-mode-hook 'turn-on-hi2)
+;;(add-hook 'haskell-mode-hook 'font-lock-mode)
 
 ;; Add keybindings to move nested blocks with C-, rsp. C-.
 (define-key haskell-mode-map (kbd "C-,") 'haskell-move-nested-left)
@@ -40,11 +41,17 @@
 ;; Enable rainbow-delimiters for all things programming
 (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
 
-;; Enable paredit in all programming buffers
-(add-hook 'prog-mode-hook 'paredit-mode)
+;; Enable Paredit in Emacs Lisp mode
+(add-hook 'emacs-lisp-mode-hook 'paredit-mode)
 
 ;; Always highlight matching brackets
 (show-paren-mode 1)
+
+;; Undo-Tree at all times!
+(undo-tree-mode)
+
+;; Keep track of recent files
+(recentf-mode)
 
 ;; Enable Nyan mode
 (nyan-mode 1)

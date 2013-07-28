@@ -9,15 +9,11 @@
  '(erc-modules
    (quote
     (autojoin button completion dcc irccontrols list log match menu move-to-prompt netsplit networks noncommands notifications readonly ring scrolltobottom stamp track)))
- '(haskell-mode-hook (quote (font-lock-mode)))
- '(jabber-account-list (quote (("im@tazj.in"))))
- '(jabber-history-enabled t)
- '(jabber-mode-line-compact t)
- '(jabber-mode-line-mode t)
+ '(haskell-mode-hook
+   (quote
+    (capitalized-words-mode turn-on-haskell-decl-scan turn-on-haskell-doc turn-on-hi2)))
  '(ns-alternate-modifier (quote none))
- '(ns-command-modifier (quote meta))
- '(yapm-file-path "~/.pass.gpg")
- '(yapm-user (quote hej@tazj\.in)))
+ '(ns-command-modifier (quote meta)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
