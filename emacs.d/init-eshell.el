@@ -66,6 +66,21 @@
 (setq eshell-highlight-prompt nil)
 (setq eshell-prompt-regexp "^.+? \\((\\(git\\|svn\\|hg\\|darcs\\|cvs\\|bzr\\):.+?) \\)?[$#] ")
 
+;; Ignore version control folders in autocompletion
+(setq eshell-cmpl-cycle-completions nil
+      eshell-save-history-on-exit t
+      eshell-cmpl-dir-ignore "\\`\\(\\.\\.?\\|CVS\\|\\.svn\\|\\.git\\)/\\'")
+
+;; Load some EShell extensions
+(eval-after-load 'esh-opt
+  '(progn
+     (require 'em-term)
+     (require 'em-cmpl)
+     ;; More visual commands!
+     (add-to-list 'eshell-visual-commands "ssh")
+     (add-to-list 'eshell-visual-commands "tail")))
+
+(setq eshell-directory-name "~/.config/eshell/")
 
 ;; EShell functions that come in handy
 
