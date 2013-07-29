@@ -2,6 +2,10 @@
 
 (require 'eshell)
 
+;; Generic settings
+;; Hide banner message ...
+(setq eshell-banner-message "")
+
 (defvar home-dir)
 (setq home-dir (expand-file-name "~"))
 
@@ -11,6 +15,7 @@
   (setq eshell-path-env (concat
 			 "/usr/local/bin:"
 			 (concat home-dir "/bin:")
+			 "/usr/local/share/python"
 			 eshell-path-env))
 
   (setenv "PATH" eshell-path-env))
@@ -78,7 +83,8 @@
      (require 'em-cmpl)
      ;; More visual commands!
      (add-to-list 'eshell-visual-commands "ssh")
-     (add-to-list 'eshell-visual-commands "tail")))
+     (add-to-list 'eshell-visual-commands "tail")
+     (add-to-list 'eshell-visual-commands "sl")))
 
 (setq eshell-directory-name "~/.config/eshell/")
 

@@ -20,4 +20,4 @@ set -gx VISUAL emacsclient
 
 set fish_greeting ""
 
-set PATH /usr/local/bin ~/Library/Haskell/bin ~/bin/ /Users/vincent/Source/management-scripts/google-apps/ $PATH
+set PATH /usr/local/share/python /usr/local/bin ~/Library/Haskell/bin ~/bin/ /Users/vincent/Source/management-scripts/google-apps/ $PATH
