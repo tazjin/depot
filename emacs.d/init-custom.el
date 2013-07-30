@@ -12,6 +12,7 @@
  '(haskell-mode-hook
    (quote
     (capitalized-words-mode turn-on-haskell-decl-scan turn-on-haskell-doc turn-on-hi2)))
+ '(it-mode-google-cmd "/usr/local/share/python/google")
  '(ns-alternate-modifier (quote none))
  '(ns-command-modifier (quote meta)))
 (custom-set-faces

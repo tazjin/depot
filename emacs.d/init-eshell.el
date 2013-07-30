@@ -15,7 +15,7 @@
   (setq eshell-path-env (concat
 			 "/usr/local/bin:"
 			 (concat home-dir "/bin:")
-			 "/usr/local/share/python"
+			 "/usr/local/share/python:"
 			 eshell-path-env))
 
   (setenv "PATH" eshell-path-env))

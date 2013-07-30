@@ -26,12 +26,14 @@
     magit
     magit
     markdown-mode
+    multiple-cursors
     nrepl
     paredit
     projectile
     rainbow-delimiters
     rainbow-mode
     smex
+    undo-tree
     geiser
     quack)
   "A list of packages to install at launch.")
