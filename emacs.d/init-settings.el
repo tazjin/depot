@@ -147,6 +147,11 @@ comment as a filename."
 ;; Don't use Apple's native fullscreen (FIXME: Change with Mavericks)
 (setq ns-use-native-fullscreen nil)
 
+(defun toggle-native-fullscreen ()
+  "Toggles between native and non-native OS X fullscreen"
+  (interactive)
+  (setq ns-use-native-fullscreen (not ns-use-native-fullscreen)))
+
 ;; ## Navigation and key bindings ##
 
 ;; Navigate windows with M-<arrows>
