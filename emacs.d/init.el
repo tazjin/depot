@@ -18,6 +18,7 @@
     browse-kill-ring
     clojure-mode
     flycheck
+    flx-ido
     haskell-mode
     hi2
     idle-highlight-mode

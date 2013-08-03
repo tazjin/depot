@@ -1,4 +1,4 @@
-(mapc 'require '(projectile))
+(mapc 'require '(projectile hi2))
 ;; Initializes modes I use.
 
 (add-hook 'prog-mode-hook 'esk-pretty-lambdas)
@@ -11,12 +11,6 @@
 (add-to-list 'auto-mode-alist '("\\.txt\\'" . markdown-mode))
 (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
 (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
-
-;; Configure haskell-mode
-;; Enable semi-automatic indentation and font-locking
-(require 'hi2)
-;;(add-hook 'haskell-mode-hook 'turn-on-hi2)
-;;(add-hook 'haskell-mode-hook 'font-lock-mode)
 
 ;; Add keybindings to move nested blocks with C-, rsp. C-.
 (define-key haskell-mode-map (kbd "C-,") 'haskell-move-nested-left)

@@ -3,6 +3,10 @@
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
 
+(flx-ido-mode 1)
+(setq ido-use-faces nil)
+(setq gc-cons-threshold 20000000)
+
 ;;; Code:
 
 (add-to-list 'exec-path "/usr/local/bin")

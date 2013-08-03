@@ -73,19 +73,6 @@
       (find-file (concat "/sudo:root@localhost:" (ido-read-file-name "File: ")))
     (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))))
 
-(defun esk-suck-it (suckee)
-  "Insert a comment of appropriate length about what can suck it."
-  (interactive "MWhat can suck it? ")
-  (let ((prefix (concat ";; " suckee " can s"))
-        (postfix "ck it!")
-        (col (current-column)))
-    (insert prefix)
-    (dotimes (_ (- 80 col (length prefix) (length postfix))) (insert "u"))
-    (insert postfix)))
-
-(defun esk-turn-off-tool-bar ()
-  (if (functionp 'tool-bar-mode) (tool-bar-mode -1)))
-
 (defun speak (m &optional voice)
   (shell-command (if 'voice (concat "say -v " voice " \"" m "\"")
 		   (concat "say " m))))
