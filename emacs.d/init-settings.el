@@ -111,6 +111,16 @@ comment as a filename."
 ;; Not the real deal without this ...
 (set-variable 'nyan-wavy-trail t)
 
+(setq linum-format (lambda (line)
+                     (propertize
+                      (format (concat " %"
+                                      (number-to-string
+                                       (length (number-to-string
+                                                (line-number-at-pos (point-max)))))
+                                      "d ")
+                              line)
+                      'face 'linum)))
+
 ;; Hiding JOIN, QUIT, PART
 (setq erc-hide-list '("JOIN" "PART" "QUIT"))
 

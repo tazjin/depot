@@ -12,7 +12,7 @@
   ;; there)
   (unless (member "~/.emacs.d/themes" custom-theme-load-path)
     (add-to-list 'custom-theme-load-path "~/.emacs.d/themes"))
- 
+
   ;; Download file if it doesn't exist.
 
   (let ((file
@@ -22,7 +22,7 @@
 
 (defun custom-download-script (url filename)
   "Downloads an Elisp script, places it in ~/.emacs/other and then loads it"
- 
+
   ;; Ensure the directory exists
   (unless (file-exists-p "~/.emacs.d/other")
     (make-directory "~/.emacs.d/other"))
@@ -43,6 +43,58 @@
     (unless (file-exists-p fullpath)
       (shell-command (concat "git clone " url " " fullpath))))
   )
+
+;; These come from magnars, he's got some awesome things.
+
+(defun goto-line-with-feedback ()
+  "Show line numbers temporarily, while prompting for the line number input"
+  (interactive)
+  (unwind-protect
+      (progn
+        (linum-mode 1)
+        (call-interactively 'goto-line))
+    (linum-mode -1)))
+
+(defun rotate-windows ()
+  "Rotate your windows"
+  (interactive)
+  (cond ((not (> (count-windows)1))
+         (message "You can't rotate a single window!"))
+        (t
+         (setq i 1)
+         (setq numWindows (count-windows))
+         (while  (< i numWindows)
+           (let* (
+                  (w1 (elt (window-list) i))
+                  (w2 (elt (window-list) (+ (% i numWindows) 1)))
+
+                  (b1 (window-buffer w1))
+                  (b2 (window-buffer w2))
+
+                  (s1 (window-start w1))
+                  (s2 (window-start w2))
+                  )
+             (set-window-buffer w1  b2)
+             (set-window-buffer w2 b1)
+             (set-window-start w1 s2)
+             (set-window-start w2 s1)
+             (setq i (1+ i)))))))
+
+(defun untabify-buffer ()
+  (interactive)
+  (untabify (point-min) (point-max)))
+
+(defun indent-buffer ()
+  (interactive)
+  (indent-region (point-min) (point-max)))
+
+(defun cleanup-buffer ()
+  "Perform a bunch of operations on the whitespace content of a buffer.
+Including indent-buffer, which should not be called automatically on save."
+  (interactive)
+  (untabify-buffer)
+  (delete-trailing-whitespace)
+  (indent-buffer))
 
 ;; These come from the emacs starter kit
 (defun esk-pretty-lambdas ()
@@ -75,4 +127,4 @@
 
 (defun speak (m &optional voice)
   (shell-command (if 'voice (concat "say -v " voice " \"" m "\"")
-		   (concat "say " m))))
+                   (concat "say " m))))

@@ -74,6 +74,9 @@
 ;; Actual servers and such are loaded from irc.el
 (load "~/.emacs.d/irc")
 
+;; Load magnars' string manipulation library
+(require 's)
+
 ;; Seed RNG
 (random t)
 

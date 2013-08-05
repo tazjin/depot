@@ -42,3 +42,5 @@
 ;; Add a fullscreen toggle
 (global-set-key (kbd "M-RET") 'toggle-frame-fullscreen)
 
+;; Replace standard goto-line with goto-line-with-feedback
+(global-set-key (kbd "M-g g") 'goto-line-with-feedback)
