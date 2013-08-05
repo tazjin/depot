@@ -34,7 +34,6 @@
     rainbow-delimiters
     rainbow-mode
     smex
-    tumblesocks
     undo-tree
     geiser
     quack)
