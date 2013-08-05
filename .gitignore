@@ -1,6 +1,6 @@
 scripts/
 init-local.el
-irc.el
+init-irc.el
 elpa/
 themes/
 other/

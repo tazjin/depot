@@ -77,7 +77,7 @@
 
 ;; IRC configuration (erc)
 ;; Actual servers and such are loaded from irc.el
-(load-file-if-exists "~/.emacs.d/irc.el")
+(load-file-if-exists "~/.emacs.d/init-irc.el")
 
 ;; Load magnars' string manipulation library
 (require 's)
