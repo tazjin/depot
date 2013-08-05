@@ -68,12 +68,16 @@
 (load "~/.emacs.d/init-bindings.el")
 (load "~/.emacs.d/init-eshell.el")
 
-;; A file with machine specific settings
-(load "~/.emacs.d/init-local.el")
+(defun load-file-if-exists (filename)
+  (if (file-exists-p filename)
+      (load filename)))
+
+;; A file with machine specific settings.
+(load-file-if-exists "~/.emacs.d/init-local.el")
 
 ;; IRC configuration (erc)
 ;; Actual servers and such are loaded from irc.el
-(load "~/.emacs.d/irc")
+(load-file-if-exists "~/.emacs.d/irc.el")
 
 ;; Load magnars' string manipulation library
 (require 's)
