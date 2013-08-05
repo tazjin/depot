@@ -41,11 +41,19 @@
 ;; Always highlight matching brackets
 (show-paren-mode 1)
 
-;; Undo-Tree at all times!
-(undo-tree-mode)
+;; Represent undo-history as an actual tree (visualize with C-x u)
+(setq undo-tree-mode-lighter "")
+(require 'undo-tree)
+(global-undo-tree-mode)
 
 ;; Keep track of recent files
 (recentf-mode)
 
 ;; Enable Nyan mode
 (nyan-mode 1)
+
+;; Easily navigate sillycased words
+(global-subword-mode 1)
+
+;; Transparently open compressed files
+(auto-compression-mode t)

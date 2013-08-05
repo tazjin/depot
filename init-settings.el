@@ -32,7 +32,10 @@
       uniquify-buffer-name-style 'forward
       whitespace-style '(face trailing lines-tail tabs)
       whitespace-line-column 80
+      fill-column 80
       ediff-window-setup-function 'ediff-setup-windows-plain
+      ediff-diff-options "-w"
+      ediff-split-window-function 'split-window-horizontally
       oddmuse-directory (concat user-emacs-directory "oddmuse")
       save-place-file (concat user-emacs-directory "places")
       backup-directory-alist `(("." . ,(concat user-emacs-directory "backups")))
@@ -59,6 +62,13 @@
 
 ;; Swedish!
 (set-language-environment 'Swedish)
+
+;; UTF-8 please
+(setq locale-coding-system 'utf-8) ; pretty
+(set-terminal-coding-system 'utf-8) ; pretty
+(set-keyboard-coding-system 'utf-8) ; pretty
+(set-selection-coding-system 'utf-8) ; please
+(prefer-coding-system 'utf-8) ; with sugar on top
 
 (require 'ffap)
 (defvar ffap-c-commment-regexp "^/\\*+"
@@ -161,6 +171,22 @@ comment as a filename."
 ;; Don't use Apple's native fullscreen (FIXME: Change with Mavericks)
 (setq ns-use-native-fullscreen nil)
 
+;; Auto refresh buffers
+(global-auto-revert-mode 1)
+
+;; Also auto refresh dired, but be quiet about it
+(setq global-auto-revert-non-file-buffers t)
+(setq auto-revert-verbose nil)
+
+;; Show keystrokes in progress
+(setq echo-keystrokes 0.1)
+
+;; Move files to trash when deleting
+(setq delete-by-moving-to-trash t)
+
+;; Make emacs behave sanely (overwrite selected text)
+(delete-selection-mode 1)
+
 (defun toggle-native-fullscreen ()
   "Toggles between native and non-native OS X fullscreen"
   (interactive)
@@ -168,8 +194,6 @@ comment as a filename."
 
 ;; ## Navigation and key bindings ##
 
-;; Navigate windows with M-<arrows>
-(windmove-default-keybindings 'meta)
 (setq windmove-wrap-around t)
 
 ;; Load ace-jump-mode
