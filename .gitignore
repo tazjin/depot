@@ -1,3 +1,7 @@
 scripts/
 init-local.el
 irc.el
+elpa/
+themes/
+other/
+*token*
