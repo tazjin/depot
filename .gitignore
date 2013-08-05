@@ -1,4 +1,3 @@
-/plists/.DS_Store
-/.DS_Store
-/#init.el#
-/.#init.el
+scripts/
+init-local.el
+irc.el
