@@ -16,7 +16,7 @@
 (global-set-key (kbd "C-x C-i") 'imenu)
 
 ;; Ace-jump-mode
-(global-set-key (kbd "M-j") 'ace-jump-char-mode)
+(global-set-key (kbd "M-j") 'ace-jump-word-mode)
 
 ;; Jump to next occurence of char
 (global-set-key (kbd "M-m") 'iy-go-to-char)
