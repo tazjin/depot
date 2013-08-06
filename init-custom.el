@@ -14,7 +14,8 @@
     (capitalized-words-mode turn-on-haskell-decl-scan turn-on-haskell-doc turn-on-hi2)))
  '(it-mode-google-cmd "/usr/local/share/python/google")
  '(ns-alternate-modifier (quote none))
- '(ns-command-modifier (quote meta)))
+ '(ns-command-modifier (quote meta))
+ '(require-final-newline (quote visit-save)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
