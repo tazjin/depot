@@ -43,6 +43,10 @@
     (unless (file-exists-p fullpath)
       (async-shell-command (concat "git clone " url " " fullpath)))))
 
+(defun load-file-if-exists (filename)
+  (if (file-exists-p filename)
+      (load filename)))
+
 ;; These come from magnars, he's got some awesome things.
 
 (defun goto-line-with-feedback ()
@@ -127,3 +131,5 @@ Including indent-buffer, which should not be called automatically on save."
 (defun speak (m &optional voice)
   (shell-command (if 'voice (concat "say -v " voice " \"" m "\"")
                    (concat "say " m))))
+
+(provide 'init-functions)

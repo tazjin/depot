@@ -57,3 +57,5 @@
 
 ;; Transparently open compressed files
 (auto-compression-mode t)
+
+(provide 'init-modes)

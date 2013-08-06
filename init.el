@@ -46,23 +46,21 @@
   (when (not (package-installed-p p))
     (package-install p)))
 
+;; Are we on a mac?
+(setq is-mac (equal system-type 'darwin))
 
-(load "~/.emacs.d/init-functions.el")
+(add-to-list 'load-path user-emacs-directory)
+
+(mapc 'require '(init-functions
+                 init-settings
+                 init-modes
+                 init-bindings
+                 init-eshell))
 
 (add-to-list 'load-path "~/.emacs.d/scripts/")
 
 (setq custom-file "~/.emacs.d/init-custom.el")
 (load custom-file)
-
-
-(load "~/.emacs.d/init-settings.el")
-(load "~/.emacs.d/init-modes.el")
-(load "~/.emacs.d/init-bindings.el")
-(load "~/.emacs.d/init-eshell.el")
-
-(defun load-file-if-exists (filename)
-  (if (file-exists-p filename)
-      (load filename)))
 
 ;; A file with machine specific settings.
 (load-file-if-exists "~/.emacs.d/init-local.el")

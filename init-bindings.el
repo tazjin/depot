@@ -44,3 +44,14 @@
 
 ;; Replace standard goto-line with goto-line-with-feedback
 (global-set-key (kbd "M-g g") 'goto-line-with-feedback)
+
+;; Goodness from @magnars
+;; I don't need to kill emacs that easily
+;; the mnemonic is C-x REALLY QUIT
+(global-set-key (kbd "C-x r q") 'save-buffers-kill-terminal)
+(global-set-key (kbd "C-x C-c") 'delete-frame)
+
+;; Create new frame
+(define-key global-map (kbd "C-x C-n") 'make-frame-command)
+
+(provide 'init-bindings)

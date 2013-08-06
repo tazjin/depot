@@ -96,3 +96,5 @@
   (interactive)
   (let ((inhibit-read-only t))
     (erase-buffer)))
+
+(provide 'init-eshell)

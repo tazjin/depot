@@ -45,6 +45,8 @@
 (add-to-list 'safe-local-variable-values '(lexical-binding . t))
 (add-to-list 'safe-local-variable-values '(whitespace-line-column . 80))
 
+(set-default 'indent-tabs-mode nil)
+
 ;; ido-mode is like magic pixie dust!
 (ido-mode t)
 (ido-ubiquitous t)
@@ -229,3 +231,5 @@ comment as a filename."
 (global-set-key (kbd "C-c g") 'magit-status)
 
 (remove-hook 'kill-buffer-query-functions 'server-kill-buffer-query-function)
+
+(provide 'init-settings)
