@@ -41,7 +41,7 @@
   "Clones a git repository to .emacs.d/foldername"
   (let ((fullpath (concat "~/.emacs.d/" foldername)))
     (unless (file-exists-p fullpath)
-      (shell-command (concat "git clone " url " " fullpath))))
+      (async-shell-command (concat "git clone " url " " fullpath))))
   )
 
 ;; These come from magnars, he's got some awesome things.
