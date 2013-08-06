@@ -23,17 +23,20 @@
     hi2
     idle-highlight-mode
     ido-ubiquitous
+    iy-go-to-char
     leuven-theme
     magit
     magit
     markdown-mode
     multiple-cursors
     nrepl
+    nyan-mode
     paredit
     projectile
     rainbow-delimiters
     rainbow-mode
     smex
+    switch-window
     undo-tree
     geiser
     quack)
@@ -51,16 +54,6 @@
 (setq custom-file "~/.emacs.d/init-custom.el")
 (load custom-file)
 
-;; Other packages that need manual installation
-(custom-download-script "https://raw.github.com/dimitri/switch-window/master/switch-window.el"
-                        "switch-window.el")
-
-(custom-download-script "https://raw.github.com/doitian/iy-go-to-char/master/iy-go-to-char.el"
-                        "goto-char.el")
-
-;; NYAN CAT!
-(custom-clone-git "https://github.com/TeMPOraL/nyan-mode" "nyan-mode")
-(load "~/.emacs.d/nyan-mode/nyan-mode.el")
 
 (load "~/.emacs.d/init-settings.el")
 (load "~/.emacs.d/init-modes.el")

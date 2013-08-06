@@ -20,7 +20,7 @@
     (unless (file-exists-p file)
       (url-copy-file url file))))
 
-(defun custom-download-script (url filename)
+ (defun custom-download-script (url filename)
   "Downloads an Elisp script, places it in ~/.emacs/other and then loads it"
 
   ;; Ensure the directory exists
@@ -29,7 +29,7 @@
 
   ;; Download file if it doesn't exist.
   (let ((file
-         (concat "~/.emacs.d/" filename)))
+         (concat "~/.emacs.d/other/" filename)))
     (unless (file-exists-p file)
       (url-copy-file url file))
 
@@ -39,10 +39,9 @@
 ;; if there isn't already a folder with that name
 (defun custom-clone-git (url foldername)
   "Clones a git repository to .emacs.d/foldername"
-  (let ((fullpath (concat "~/.emacs.d/" foldername)))
+  (let ((fullpath (concat "~/.emacs.d/clones/" foldername)))
     (unless (file-exists-p fullpath)
-      (async-shell-command (concat "git clone " url " " fullpath))))
-  )
+      (async-shell-command (concat "git clone " url " " fullpath)))))
 
 ;; These come from magnars, he's got some awesome things.
 

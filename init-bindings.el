@@ -19,7 +19,7 @@
 (global-set-key (kbd "M-j") 'ace-jump-word-mode)
 
 ;; Jump to next occurence of char
-(global-set-key (kbd "M-m") 'iy-go-to-char)
+(global-set-key (kbd "C-c f") 'iy-go-to-char)
 
 ;; Window switching. (C-x o goes to the next window)
 (windmove-default-keybindings) ;; Shift+direction
