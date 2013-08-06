@@ -20,9 +20,6 @@
   (mouse-wheel-mode t)
   (blink-cursor-mode -1))
 
-;; can't do it at launch or emacsclient won't always honor it
-(add-hook 'before-make-frame-hook 'esk-turn-off-tool-bar)
-
 (setq visible-bell t
       inhibit-startup-message t
       color-theme-is-global t
