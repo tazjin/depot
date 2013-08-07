@@ -119,7 +119,7 @@ Including indent-buffer, which should not be called automatically on save."
 
 (defun esk-add-watchwords ()
   (font-lock-add-keywords
-   nil '(("\\<\\(FIX\\(ME\\)?\\|TODO\\|HACK\\|REFACTOR\\|NOCOMMIT\\)"
+   nil '(("\\<\\(FIX\\(ME\\)?\\|TODO\\|DEBUG\\|HACK\\|REFACTOR\\|NOCOMMIT\\)"
           1 font-lock-warning-face t))))
 
 (defun esk-sudo-edit (&optional arg)
