@@ -27,8 +27,10 @@
 (defun clean-pwd (path)
   "Turns a path of the form /foo/bar/baz into /f/b/baz
    (inspired by fish shell)"
-  (message path)
-  (let* ((current-dir (split-string path "/"))
+  (let* ((hpath (replace-regexp-in-string home-dir
+                                          "~"
+                                          path))
+         (current-dir (split-string hpath "/"))
 	 (cdir (last current-dir))
 	 (head (butlast current-dir)))
     (concat (mapconcat (lambda (s)
@@ -38,13 +40,6 @@
 		       "/")
 	    (if head "/" nil)
 	    (car cdir))))
-
-(setq eshell-pwd-convert-function
-      (lambda  (path)
-	(clean-pwd (replace-regexp-in-string
-		    home-dir
-		    "~"
-		    path))))
 
 (defun vcprompt (&optional args)
   "Call the external vcprompt command with optional arguments.
@@ -59,7 +54,7 @@
 (defun prompt-f ()
   "My EShell prompt displaying VC info and such"
   (concat
-   (with-face (concat (eshell/pwd) " ") :foreground  "#96a6c8")
+   (with-face (concat (clean-pwd (eshell/pwd)) " ") :foreground  "#96a6c8")
    (with-face (vcprompt " -f \"(%s:%b%a%m) \"") :foreground "#5f627f")
    (if (= 0 (user-uid))
        (with-face "#" :foreground "#f43841")

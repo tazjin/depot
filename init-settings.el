@@ -120,6 +120,7 @@ comment as a filename."
 ;; Not the real deal without this ...
 (set-variable 'nyan-wavy-trail t)
 
+;; Style line numbers (shown with M-g g)
 (setq linum-format (lambda (line)
                      (propertize
                       (format (concat " %"
