@@ -14,7 +14,8 @@
   (package-refresh-contents))
 
 (defvar my-pkgs
-  '(ace-jump-mode
+  '(ac-nrepl
+    ace-jump-mode
     browse-kill-ring
     clojure-mode
     flycheck
