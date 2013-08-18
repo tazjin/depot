@@ -1,4 +1,4 @@
-(mapc 'require '(projectile hi2))
+(mapc 'require '(projectile hi2 ac-nrepl))
 ;; Initializes modes I use.
 
 (add-hook 'prog-mode-hook 'esk-pretty-lambdas)
@@ -16,14 +16,33 @@
 (define-key haskell-mode-map (kbd "C-,") 'haskell-move-nested-left)
 (define-key haskell-mode-map (kbd "C-.") 'haskell-move-nested-right)
 
-;; Configure nrepl (Clojure REPL) and clojure-mode
-;; Paredit in clojure
+;; Use auto-complete as completion at point
+(defun set-auto-complete-as-completion-at-point-function ()
+  (setq completion-at-point-functions '(auto-complete)))
+(add-hook 'auto-complete-mode-hook 'set-auto-complete-as-completion-at-point-function)
 
+
+;; Configure nrepl (Clojure REPL) and clojure-mode
+
+;; Use ac-nrepl for completion
+(add-hook 'nrepl-mode-hook 'ac-nrep-setup)
+(add-hook 'nrepl-interaction-mode-hook 'ac-nrepl-setup)
+(eval-after-load "auto-complete"
+   '(add-to-list 'ac-modes 'nrepl-mode))
+
+(add-hook 'nrepl-mode-hook 'set-auto-complete-as-completion-at-point-function)
+(add-hook 'nrepl-interaction-mode-hook 'set-auto-complete-as-completion-at-point-function)
+(define-key nrepl-interaction-mode-map (kbd "C-c C-d") 'ac-nrepl-popup-doc)
+
+;; Paredit in clojure
 (add-hook 'clojure-mode-hook 'paredit-mode)
 
 ;; eldoc in clojure
 (add-hook 'nrepl-interaction-mode-hook
-  'nrepl-turn-on-eldoc-mode)
+          'nrepl-turn-on-eldoc-mode)
+
+(add-hook 'nrepl-interaction-mode-hook
+          'paredit-mode)
 
 ;; Don't annoy me
 (setq nrepl-hide-special-buffers t)
