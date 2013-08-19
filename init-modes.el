@@ -25,13 +25,11 @@
 ;; Configure nrepl (Clojure REPL) and clojure-mode
 
 ;; Use ac-nrepl for completion
-(add-hook 'nrepl-mode-hook 'ac-nrep-setup)
+(add-hook 'nrepl-mode-hook 'ac-nrepl-setup)
 (add-hook 'nrepl-interaction-mode-hook 'ac-nrepl-setup)
 (eval-after-load "auto-complete"
    '(add-to-list 'ac-modes 'nrepl-mode))
 
-(add-hook 'nrepl-mode-hook 'set-auto-complete-as-completion-at-point-function)
-(add-hook 'nrepl-interaction-mode-hook 'set-auto-complete-as-completion-at-point-function)
 (define-key nrepl-interaction-mode-map (kbd "C-c C-d") 'ac-nrepl-popup-doc)
 
 ;; Paredit in clojure
