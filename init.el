@@ -70,6 +70,9 @@
 ;; Actual servers and such are loaded from irc.el
 (load-file-if-exists "~/.emacs.d/init-irc.el")
 
+;; Mail configuration (mu4e && mbsync)
+(load-file-if-exists "~/.emacs.d/init-mail.el")
+
 ;; Load magnars' string manipulation library
 (require 's)
 

@@ -27,10 +27,17 @@
 ;; Use ac-nrepl for completion
 (add-hook 'nrepl-mode-hook 'ac-nrepl-setup)
 (add-hook 'nrepl-interaction-mode-hook 'ac-nrepl-setup)
-(eval-after-load "auto-complete"
-   '(add-to-list 'ac-modes 'nrepl-mode))
+
+;; I want history up/down without modifiers
+(define-key nrepl-mode-map (kbd "<up>") 'nrepl-backward-input)
+(define-key nrepl-mode-map (kbd "<down>") 'nrepl-forward-input)
+(define-key nrepl-mode-map (kbd "C-<up>") 'previous-line)
+(define-key nrepl-mode-map (kbd "C-<down>") 'next-line)
 
 (define-key nrepl-interaction-mode-map (kbd "C-c C-d") 'ac-nrepl-popup-doc)
+
+(eval-after-load "auto-complete"
+   '(add-to-list 'ac-modes 'nrepl-mode))
 
 ;; Paredit in clojure
 (add-hook 'clojure-mode-hook 'paredit-mode)
