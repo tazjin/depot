@@ -35,6 +35,17 @@
 
     (load file)))
 
+(defun keychain-password (account &optional keychain)
+  "Returns the password for the account, by default it's looked up in the Login.keychain but a
+   different keychain can be specified."
+  (let ((k (if keychain keychain "Login.keychain")))
+    (replace-regexp-in-string
+     "\n" ""
+     (shell-command-to-string (concat  "security find-generic-password -w -a "
+                                       account
+                                       " "
+                                       k)))))
+
 ;; This clones a git repository to 'foldername in .emacs.d
 ;; if there isn't already a folder with that name
 (defun custom-clone-git (url foldername)

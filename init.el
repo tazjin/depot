@@ -17,6 +17,7 @@
   '(ac-nrepl
     ace-jump-mode
     browse-kill-ring
+    circe
     clojure-mode
     flycheck
     flx-ido
