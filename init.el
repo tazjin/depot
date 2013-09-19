@@ -17,7 +17,6 @@
   '(ac-nrepl
     ace-jump-mode
     browse-kill-ring
-    circe
     clojure-mode
     flycheck
     flx-ido
@@ -27,7 +26,6 @@
     ido-ubiquitous
     iy-go-to-char
     leuven-theme
-    magit
     magit
     markdown-mode
     multiple-cursors
@@ -39,9 +37,7 @@
     rainbow-mode
     smex
     switch-window
-    undo-tree
-    geiser
-    quack)
+    undo-tree)
   "A list of packages to install at launch.")
 
 (dolist (p my-pkgs)
