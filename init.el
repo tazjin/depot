@@ -60,6 +60,9 @@
 (setq custom-file "~/.emacs.d/init-custom.el")
 (load custom-file)
 
+(custom-download-script "https://gist.github.com/gongo/1789605/raw/526e3f21dc7d6cef20951cf0ce5d51b90b7821ff/json-reformat.el"
+                        "json-reformat.el")
+
 ;; A file with machine specific settings.
 (load-file-if-exists "~/.emacs.d/init-local.el")
 

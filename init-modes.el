@@ -35,11 +35,11 @@
 (add-hook 'nrepl-interaction-mode-hook 'ac-nrepl-setup)
 
 ;; I want history up/down without modifiers
-(define-key nrepl-mode-map (kbd "<up>") 'nrepl-backward-input)
-(define-key nrepl-mode-map (kbd "<down>") 'nrepl-forward-input)
-(define-key nrepl-mode-map (kbd "C-<up>") 'previous-line)
-(define-key nrepl-mode-map (kbd "C-<down>") 'next-line)
-(define-key nrepl-mode-map (kbd "C-c C-d") 'ac-nrepl-popup-doc)
+(define-key nrepl-repl-mode-map (kbd "<up>") 'nrepl-backward-input)
+(define-key nrepl-repl-mode-map (kbd "<down>") 'nrepl-forward-input)
+(define-key nrepl-repl-mode-map (kbd "C-<up>") 'previous-line)
+(define-key nrepl-repl-mode-map (kbd "C-<down>") 'next-line)
+(define-key nrepl-repl-mode-map (kbd "C-c C-d") 'ac-nrepl-popup-doc)
 
 (define-key nrepl-interaction-mode-map (kbd "C-c C-d") 'ac-nrepl-popup-doc)
 (define-key nrepl-interaction-mode-map (kbd "C-c D") 'nrepl-doc)
