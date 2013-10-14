@@ -17,7 +17,6 @@ import           Data.Text                 (Text, append, empty, pack)
 import           Data.Text.Lazy            (fromStrict)
 import           Data.Time
 import           Locales
-import           Network.Captcha.ReCaptcha
 import           System.Locale             (defaultTimeLocale)
 import           Text.Blaze.Html           (preEscapedToHtml)
 import           Text.Hamlet
@@ -121,9 +120,6 @@ $forall entry <- elist
         <b>#{title entry}
         <br>
         <i>#{pack $ formatTime defaultTimeLocale "%Y-%m-%d" $ edate entry}
-        <br>
-        #{linkText $ length $ comments entry}
-        #{cHead $ lang entry}
     <div .span10 .entry>
       $if (isEntryMarkdown entry)
         ^{renderEntryMarkdown $ append " " $ btext entry}
@@ -140,7 +136,6 @@ $maybe links <- footerLinks
   where
    elist = if' showAll entries (take 6 entries)
    linkElems Entry{..} = concat $ intersperse' "/" [show lang, show entryId]
-   linkText n = T.concat ["[", show' n, "]"]
 
 showLinks :: Maybe Int -> BlogLang -> Html
 showLinks (Just i) lang = [shamlet|
@@ -179,69 +174,10 @@ renderEntry e@Entry{..} = [shamlet|
       $else
         ^{preEscapedToHtml $ btext}
         <p>^{preEscapedToHtml $ mtext}
-<div .row .innerBoxComments>
-  <div .span10>
-    <div .boldify>#{cHead lang}:
-#{renderComments comments lang}
-<div .row .innerBoxComments>
-  <div .span10>
-    <div .boldify>#{cwHead lang}
-^{renderCommentBox lang entryId}
 |]
   where
    woText = flip T.append author $ T.pack $ formatTime defaultTimeLocale (eTimeFormat lang) edate
 
-renderComments :: [Comment] -> BlogLang -> Html
-renderComments [] lang = [shamlet|
-<div .row>
-  <div .span10>#{noComments lang}
-|]
-renderComments comments lang = [shamlet|
-$forall comment <- comments
- <div .row>
-    <div .span1 .commentname>
-      <i>#{append (cauthor comment) ": "}
-    <div .span9>
-      ^{preEscapedToHtml $ ctext comment}
-      <p .tt>#{timeString $ cdate comment}
-|]
-  where
-   timeString = formatTime defaultTimeLocale (cTimeFormat lang)
-
-renderCommentBox :: BlogLang -> EntryId -> Html
-renderCommentBox cLang cId = [shamlet|
-^{captchaOptions cLang}
-<div .row>
-  <div .span10>
-    <form method="POST" action=#{aLink}>
-      <fieldset>
-        <label>
-        <input .span8 name="cname" placeholder="Name" type="text">
-        <label>
-        <textarea .span8 name="ctext" cols="50" rows="13" placeholder=#{cTextPlaceholder cLang}>
-        ^{captcha}
-        <label>
-        <input .btn type="submit" value=#{cSend cLang}>
-|]
-  where
-   aLink = T.concat ["/", show' cLang, "/postcomment/", show' cId]
-
-
-captcha :: Html
-captcha = [shamlet|
-<div class="cCaptcha">
-  <script src="http://api.recaptcha.net/challenge?k=6LfQXccSAAAAAIjKm26XlFnBMAgvaKlOAjVWEEnM" type="text/javascript">
-  <noscript>
-    <iframe src="http://api.recaptcha.net/noscript?k=6LfQXccSAAAAAIjKm26XlFnBMAgvaKlOAjVWEEnM" height="300" width="500" seamless>
-      <br>
-      <textarea name="recaptcha_challenge_field" rows="3" cols="40">
-      <input type="hidden" name="recaptcha_response_field" value="manual_challenge">
-|]
-
-captchaOptions :: BlogLang ->  Html
-captchaOptions lang = [shamlet|<script type="text/javascript">^{preEscapedToHtml options}|]
-  where
-    options = T.concat ["var RecaptchaOptions = { theme: 'clean', lang: '", showLangText lang, "'};"]
 
 showSiteNotice :: Html
 showSiteNotice = [shamlet|

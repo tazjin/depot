@@ -1,5 +1,5 @@
 Name:                TazBlog
-Version:             4.0
+Version:             4.1
 Synopsis:            Tazjin's Blog
 License-file:        LICENSE
 Author:              Vincent Ambo
@@ -34,7 +34,6 @@ Executable tazblog
     network,
     options,
     rss,
-    recaptcha,
     hamlet,
     shakespeare-css,
     markdown

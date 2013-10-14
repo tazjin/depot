@@ -31,7 +31,6 @@ import qualified Data.Text                    as T
 import           Data.Time
 import           Happstack.Server             hiding (Session)
 import           Happstack.Server.Compression
-import           Network.Captcha.ReCaptcha
 import           Options
 import           System.Locale                (defaultTimeLocale)
 
@@ -47,8 +46,6 @@ defineOptions "MainOptions" $ do
   stringOption "optState" "statedir" "../"
     "Directory in which the /BlogState dir is located.\
     \ The default is ../ (if run from src/)"
-  stringOption "optCaptcha" "captchakey" ""
-    "The reCaptcha private key"
   intOption "optPort" "port" 8000
     "The port to run the web server on. Default is 8000"
 
@@ -61,12 +58,12 @@ main = do
     runCommand $ \opts args ->
       bracket (openLocalStateFrom (optState opts ++ "BlogState") initialBlogState)
               createCheckpointAndClose
-              (\acid -> simpleHTTP nullConf {port = optPort opts} $ tazBlog acid $ optCaptcha opts)
+              (\acid -> simpleHTTP nullConf {port = optPort opts} $ tazBlog acid)
 
-tazBlog :: AcidState Blog -> String -> ServerPart Response
-tazBlog acid captchakey = do
+tazBlog :: AcidState Blog -> ServerPart Response
+tazBlog acid = do
     compr <- compressedResponseFilter
-    msum [ path $ \(lang :: BlogLang) -> blogHandler acid lang captchakey
+    msum [ path $ \(lang :: BlogLang) -> blogHandler acid lang
          , nullDir >> showIndex acid EN
          , dir " " $ nullDir >>
             seeOther ("https://plus.google.com/115916629925754851590" :: Text) (toResponse ())
@@ -107,12 +104,9 @@ tazBlog acid captchakey = do
          , notFound $ toResponse $ showError NotFound DE
          ]
 
-blogHandler :: AcidState Blog -> BlogLang -> String -> ServerPart Response
-blogHandler acid lang captchakey =
+blogHandler :: AcidState Blog -> BlogLang -> ServerPart Response
+blogHandler acid lang =
     msum [ path $ \(eId :: Integer) -> showEntry acid lang $ EntryId eId
-         , do decodeBody tmpPolicy
-              dir "postcomment" $ path $
-                \(eId :: Integer) -> addComment acid lang captchakey $ EntryId eId
          , nullDir >> showIndex acid lang
          , dir "rss" $ nullDir >> showRSS acid lang
          , dir "rss.xml" $ nullDir >> showRSS acid lang
@@ -153,31 +147,6 @@ showRSS acid lang = do
     feed <- liftIO $ renderFeed lang $ take 6 entries
     setHeaderM "content-type" "text/xml"
     ok $ toResponse feed
-
-addComment :: AcidState Blog -> BlogLang -> String -> EntryId -> ServerPart Response
-addComment acid lang captchakey eId = do
-  now <- liftIO getCurrentTime
-  nCtext <- lookText' "ctext"
-  nComment <- Comment <$> pure now
-                      <*> lookText' "cname"
-                      <*> pure (commentEscape nCtext)
-  -- captcha verification
-  challenge <- look "recaptcha_challenge_field"
-  response <- look "recaptcha_response_field"
-  (userIp, _) <- liftM rqPeer askRq
-  validation <- liftIO $ validateCaptcha captchakey userIp challenge response
-  case validation of
-    Right _ -> update' acid (AddComment eId nComment)
-                >> seeOther ("/" ++ show lang ++ "/" ++ show eId) (toResponse())
-    Left _ -> liftIO (putStrLn "Captcha failed") >> seeOther ("/" ++ show lang ++ "/" ++ show eId) (toResponse())
-
-commentEscape :: Text -> Text
-commentEscape = newlineEscape . ltEscape . gtEscape . ampEscape
-    where
-        newlineEscape = T.replace "\n" "<br>"
-        ampEscape = T.replace "&" "&amp;"
-        ltEscape = T.replace "<" "&lt;"
-        gtEscape = T.replace ">" "&gt;"
 
 {- ADMIN stuff -}
 
