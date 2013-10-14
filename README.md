@@ -1,4 +1,6 @@
-dotfiles
+emacs.d
 ========
 
-Various configuration files
+This contains my emacs.d folder.
+
+I use emacs for many things.

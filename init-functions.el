@@ -50,7 +50,7 @@
 ;; if there isn't already a folder with that name
 (defun custom-clone-git (url foldername)
   "Clones a git repository to .emacs.d/foldername"
-  (let ((fullpath (concat "~/.emacs.d/clones/" foldername)))
+  (let ((fullpath (concat "~/.emacs.d/" foldername)))
     (unless (file-exists-p fullpath)
       (async-shell-command (concat "git clone " url " " fullpath)))))
 

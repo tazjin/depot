@@ -25,7 +25,6 @@
     idle-highlight-mode
     ido-ubiquitous
     iy-go-to-char
-    leuven-theme
     magit
     markdown-mode
     multiple-cursors
@@ -37,7 +36,8 @@
     rainbow-mode
     smex
     switch-window
-    undo-tree)
+    undo-tree
+    yasnippet)
   "A list of packages to install at launch.")
 
 (dolist (p my-pkgs)
@@ -49,8 +49,15 @@
 
 (add-to-list 'load-path user-emacs-directory)
 
-(mapc 'require '(init-functions
-                 init-settings
+(require 'init-functions)
+
+(unless (file-exists-p "~/.emacs.d/snippets")
+  (make-directory "~/.emacs.d/snippets"))
+
+(custom-clone-git "http://github.com/swannodette/clojure-snippets"
+                  "snippets/clojure-mode")
+
+(mapc 'require '(init-settings
                  init-modes
                  init-bindings
                  init-eshell))

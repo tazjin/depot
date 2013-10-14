@@ -1,3 +1,4 @@
+(require 'uniquify)
 ;; ## Generic settings ##
 
 (tool-bar-mode -1)
@@ -6,6 +7,8 @@
 (flx-ido-mode 1)
 (setq ido-use-faces nil)
 (setq gc-cons-threshold 20000000)
+
+(setq uniquify-buffer-name-style 'forward)
 
 ;;; Code:
 

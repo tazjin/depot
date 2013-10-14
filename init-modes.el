@@ -1,9 +1,12 @@
-(mapc 'require '(projectile hi2 ac-nrepl))
+(mapc 'require '(projectile hi2 ac-nrepl yasnippet))
 ;; Initializes modes I use.
 
 (add-hook 'prog-mode-hook 'esk-pretty-lambdas)
 (add-hook 'prog-mode-hook 'esk-add-watchwords)
 (add-hook 'prog-mode-hook 'idle-highlight-mode)
+
+;; Yasnippet everywhere + activate Clojure snippets!
+(yas-global-mode 1)
 
 ;; Configure markdown-mode
 (autoload 'markdown-mode "markdown-mode"
