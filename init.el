@@ -10,7 +10,7 @@
 
 ;; ... and melpa. Melpa packages that exist on marmalade will have
 ;; precendence.
-;(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
+(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
 
 (package-initialize)
 
