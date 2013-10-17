@@ -1,7 +1,7 @@
 ; Basic vim emulation
 
 (evil-mode t)
-(global-evil-tabs-mode 1)
+; (global-evil-tabs-mode 1)
 
 (evil-ex-define-cmd "Exp[lore]" 'dired-jump)
 (evil-ex-define-cmd "color[scheme]" 'customize-themes)
