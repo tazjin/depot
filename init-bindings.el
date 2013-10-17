@@ -39,8 +39,8 @@
 ;; So good!
 (global-set-key (kbd "C-c g") 'magit-status)
 
-;; Add a fullscreen toggle
-(global-set-key (kbd "M-RET") 'toggle-frame-fullscreen)
+;; Add a fullscreen toggle - TODO: reenable in next Emacs release
+; (global-set-key (kbd "M-RET") 'toggle-frame-fullscreen)
 
 ;; Replace standard goto-line with goto-line-with-feedback
 (global-set-key (kbd "M-g g") 'goto-line-with-feedback)

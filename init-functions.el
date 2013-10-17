@@ -20,13 +20,13 @@
     (unless (file-exists-p file)
       (url-copy-file url file))))
 
- (defun custom-download-script (url filename)
+(defun custom-download-script (url filename)
   "Downloads an Elisp script, places it in ~/.emacs/other and then loads it"
-
+  
   ;; Ensure the directory exists
   (unless (file-exists-p "~/.emacs.d/other")
     (make-directory "~/.emacs.d/other"))
-
+  
   ;; Download file if it doesn't exist.
   (let ((file
          (concat "~/.emacs.d/other/" filename)))
@@ -69,30 +69,6 @@
         (call-interactively 'goto-line))
     (linum-mode -1)))
 
-(defun rotate-windows ()
-  "Rotate your windows"
-  (interactive)
-  (cond ((not (> (count-windows)1))
-         (message "You can't rotate a single window!"))
-        (t
-         (setq i 1)
-         (setq numWindows (count-windows))
-         (while  (< i numWindows)
-           (let* (
-                  (w1 (elt (window-list) i))
-                  (w2 (elt (window-list) (+ (% i numWindows) 1)))
-
-                  (b1 (window-buffer w1))
-                  (b2 (window-buffer w2))
-
-                  (s1 (window-start w1))
-                  (s2 (window-start w2))
-                  )
-             (set-window-buffer w1  b2)
-             (set-window-buffer w2 b1)
-             (set-window-start w1 s2)
-             (set-window-start w2 s1)
-             (setq i (1+ i)))))))
 
 (defun untabify-buffer ()
   (interactive)
@@ -111,22 +87,6 @@ Including indent-buffer, which should not be called automatically on save."
   (indent-buffer))
 
 ;; These come from the emacs starter kit
-(defun esk-pretty-lambdas ()
-  (font-lock-add-keywords
-   nil `(("(?\\(lambda\\>\\)"
-          (0 (progn (compose-region (match-beginning 1) (match-end 1)
-                                    ,(make-char 'greek-iso8859-7 107))
-                    nil))))))
-
-(defun esk-eval-and-replace ()
-  "Replace the preceding sexp with its value."
-  (interactive)
-  (backward-kill-sexp)
-  (condition-case nil
-      (prin1 (eval (read (current-kill 0)))
-             (current-buffer))
-    (error (message "Invalid expression")
-           (insert (current-kill 0)))))
 
 (defun esk-add-watchwords ()
   (font-lock-add-keywords
@@ -138,9 +98,5 @@ Including indent-buffer, which should not be called automatically on save."
   (if (or arg (not buffer-file-name))
       (find-file (concat "/sudo:root@localhost:" (ido-read-file-name "File: ")))
     (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))))
-
-(defun speak (m &optional voice)
-  (shell-command (if 'voice (concat "say -v " voice " \"" m "\"")
-                   (concat "say " m))))
 
 (provide 'init-functions)

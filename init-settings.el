@@ -1,6 +1,7 @@
 (require 'uniquify)
-;; ## Generic settings ##
+; ## Generic settings ##
 
+; Hide those ugly tool bars
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
 
@@ -12,11 +13,8 @@
 
 ;;; Code:
 
-(add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
-
 (add-to-list 'exec-path "/usr/local/bin")
 (add-to-list 'exec-path (expand-file-name "~/bin"))
-(add-to-list 'exec-path "/Applications/Racket/bin")
 
 
 (when window-system
@@ -25,6 +23,7 @@
   (mouse-wheel-mode t)
   (blink-cursor-mode -1))
 
+; Fix some defaults
 (setq visible-bell t
       inhibit-startup-message t
       color-theme-is-global t
@@ -75,43 +74,22 @@
 (prefer-coding-system 'utf-8) ; with sugar on top
 
 (require 'ffap)
-(defvar ffap-c-commment-regexp "^/\\*+"
-  "Matches an opening C-style comment, like \"/***\".")
-
-(defadvice ffap-file-at-point (after avoid-c-comments activate)
-  "Don't return paths like \"/******\" unless they actually exist.
-
-This fixes the bug where ido would try to suggest a C-style
-comment as a filename."
-  (ignore-errors
-    (when (and ad-return-value
-               (string-match-p ffap-c-commment-regexp
-                               ad-return-value)
-               (not (ffap-file-exists-string ad-return-value)))
-      (setq ad-return-value nil))))
 
 (defalias 'yes-or-no-p 'y-or-n-p)
 (defalias 'auto-tail-revert-mode 'tail-mode)
-
-;; Hippie expand: at times perhaps too hip
-(eval-after-load 'hippie-exp
-  '(progn
-     (dolist (f '(try-expand-line try-expand-list try-complete-file-name-partially))
-       (delete f hippie-expand-try-functions-list))
-     
-     ;; Add this back in at the end of the list.
-     (add-to-list 'hippie-expand-try-functions-list 'try-complete-file-name-partially t)))
 
 ;; ## Look and feel ##
 
 ;; Themes! I download and install the ones I like and default the one
 ;; I currently like most. This changes a lot because I hate
 ;; everything. (It's in my nature, don't judge)
-(custom-download-theme "https://raw.github.com/owainlewis/emacs-color-themes/master/themes/hickey-theme.el"
-                       "hickey-theme.el")
+(custom-download-theme
+ "https://raw.github.com/owainlewis/emacs-color-themes/master/themes/hickey-theme.el"
+ "hickey-theme.el")
 
-(custom-download-theme "https://raw.github.com/rexim/gruber-darker-theme/master/gruber-darker-theme.el"
-                       "gruber-darker-theme.el")
+(custom-download-theme
+ "https://raw.github.com/rexim/gruber-darker-theme/master/gruber-darker-theme.el"
+ "gruber-darker-theme.el")
 
 (load-theme 'gruber-darker t)
 
@@ -126,18 +104,16 @@ comment as a filename."
 (set-variable 'nyan-wavy-trail t)
 
 ;; Style line numbers (shown with M-g g)
-(setq linum-format (lambda (line)
-                     (propertize
-                      (format (concat " %"
-                                      (number-to-string
-                                       (length (number-to-string
-                                                (line-number-at-pos (point-max)))))
-                                      "d ")
-                              line)
-                      'face 'linum)))
-
-;; Hiding JOIN, QUIT, PART
-(setq erc-hide-list '("JOIN" "PART" "QUIT"))
+(setq linum-format
+      (lambda (line)
+        (propertize
+         (format (concat " %"
+                         (number-to-string
+                          (length (number-to-string
+                                   (line-number-at-pos (point-max)))))
+                         "d ")
+                 line)
+         'face 'linum)))
 
 (eval-after-load 'diff-mode
   '(progn
@@ -173,9 +149,6 @@ comment as a filename."
 ;; Menu bar doesn't take up additional space, so lets use it.
 (menu-bar-mode 1)
 
-;; Don't use Apple's native fullscreen (FIXME: Change with Mavericks)
-(setq ns-use-native-fullscreen nil)
-
 ;; Auto refresh buffers
 (global-auto-revert-mode 1)
 
@@ -191,11 +164,6 @@ comment as a filename."
 
 ;; Make emacs behave sanely (overwrite selected text)
 (delete-selection-mode 1)
-
-(defun toggle-native-fullscreen ()
-  "Toggles between native and non-native OS X fullscreen"
-  (interactive)
-  (setq ns-use-native-fullscreen (not ns-use-native-fullscreen)))
 
 ;; ## Navigation and key bindings ##
 

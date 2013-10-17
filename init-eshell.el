@@ -11,9 +11,7 @@
 
 (defun eshell-mode-hook-setup ()
   "Sets up EShell when it is loaded"
-
   (setq eshell-path-env (concat
-                         "/Applications/Postgres.app/Contents/MacOS/bin:"
 			 "/usr/local/bin:"
 			 (concat home-dir "/bin:")
 			 "/usr/local/share/python:"

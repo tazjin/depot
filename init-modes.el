@@ -1,12 +1,8 @@
 (mapc 'require '(projectile hi2 ac-nrepl yasnippet))
 ;; Initializes modes I use.
 
-(add-hook 'prog-mode-hook 'esk-pretty-lambdas)
 (add-hook 'prog-mode-hook 'esk-add-watchwords)
 (add-hook 'prog-mode-hook 'idle-highlight-mode)
-
-;; Yasnippet everywhere + activate Clojure snippets!
-(yas-global-mode 1)
 
 ;; Configure markdown-mode
 (autoload 'markdown-mode "markdown-mode"
@@ -15,14 +11,12 @@
 (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
 (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
 
-;; Add keybindings to move nested blocks with C-, rsp. C-.
-(define-key haskell-mode-map (kbd "C-,") 'haskell-move-nested-left)
-(define-key haskell-mode-map (kbd "C-.") 'haskell-move-nested-right)
-
 ;; Use auto-complete as completion at point
 (defun set-auto-complete-as-completion-at-point-function ()
   (setq completion-at-point-functions '(auto-complete)))
-(add-hook 'auto-complete-mode-hook 'set-auto-complete-as-completion-at-point-function)
+
+(add-hook 'auto-complete-mode-hook
+          'set-auto-complete-as-completion-at-point-function)
 
 
 ;; Configure nrepl (Clojure REPL) and clojure-mode
@@ -30,12 +24,12 @@
 (defun nrepl-mode-setup ()
   "Activates paredit, rainbow delimiters and ac-nrepl"
   (ac-nrepl-setup)
-  (rainbow-delimiters-mode)
-  (paredit-mode))
+  (rainbow-delimiters-mode 1)
+  (paredit-mode 1))
 
 ;; Use ac-nrepl for completion
 (add-hook 'nrepl-mode-hook 'nrepl-mode-setup)
-(add-hook 'nrepl-interaction-mode-hook 'ac-nrepl-setup)
+(add-hook 'nrepl-interaction-mode-hook 'nrepl-mode-setup)
 
 ;; I want history up/down without modifiers
 (define-key nrepl-repl-mode-map (kbd "<up>") 'nrepl-backward-input)

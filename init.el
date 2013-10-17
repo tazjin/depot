@@ -1,3 +1,7 @@
+;; Emacs 24 or higher!
+(when (< emacs-major-version 24)
+  (error "This setup requires Emacs v24, or higher. You have: v%d" emacs-major-version))
+
 ;; Configure package manager
 (require 'package)
 
@@ -6,7 +10,7 @@
 
 ;; ... and melpa. Melpa packages that exist on marmalade will have
 ;; precendence.
-(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
+;(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
 
 (package-initialize)
 
@@ -14,21 +18,16 @@
   (package-refresh-contents))
 
 (defvar my-pkgs
-  '(ac-nrepl
+  '(; Basic functionality
     ace-jump-mode
     browse-kill-ring
-    clojure-mode
-    flycheck
     flx-ido
-    haskell-mode
-    hi2
+    flycheck
     idle-highlight-mode
     ido-ubiquitous
     iy-go-to-char
     magit
-    markdown-mode
     multiple-cursors
-    nrepl
     nyan-mode
     paredit
     projectile
@@ -37,8 +36,25 @@
     smex
     switch-window
     undo-tree
-    yasnippet)
+
+    ; Clojure
+    ac-nrepl
+;    clojure-cheatsheet
+    clojure-mode
+    nrepl
+;    nrepl-eval-sexp-fu
+)
   "A list of packages to install at launch.")
+
+(defvar evil-pkgs
+  '(evil
+    evil-leader
+;    evil-tabs
+    evil-paredit
+    key-chord
+    surround)
+  "Evil related packages"
+)
 
 (dolist (p my-pkgs)
   (when (not (package-installed-p p))
@@ -47,38 +63,40 @@
 ;; Are we on a mac?
 (setq is-mac (equal system-type 'darwin))
 
+;; Is this being used by a vim user?
+(setq is-vim-mode t)
+
+(when is-vim-mode
+  (dolist (p evil-pkgs)
+    (when (not (package-installed-p p))
+      (package-install p))))
+
 (add-to-list 'load-path user-emacs-directory)
 
-(require 'init-functions)
-
-(unless (file-exists-p "~/.emacs.d/snippets")
-  (make-directory "~/.emacs.d/snippets"))
-
-(custom-clone-git "http://github.com/swannodette/clojure-snippets"
-                  "snippets/clojure-mode")
-
-(mapc 'require '(init-settings
+(mapc 'require '(init-functions
+                 init-settings
                  init-modes
                  init-bindings
                  init-eshell))
+
+(when is-vim-mode
+  (require 'init-evil))
 
 (add-to-list 'load-path "~/.emacs.d/scripts/")
 
 (setq custom-file "~/.emacs.d/init-custom.el")
 (load custom-file)
 
-(custom-download-script "https://gist.github.com/gongo/1789605/raw/526e3f21dc7d6cef20951cf0ce5d51b90b7821ff/json-reformat.el"
-                        "json-reformat.el")
+(custom-download-script
+ "https://gist.github.com/gongo/1789605/raw/526e3f21dc7d6cef20951cf0ce5d51b90b7821ff/json-reformat.el"
+ "json-reformat.el")
 
 ;; A file with machine specific settings.
 (load-file-if-exists "~/.emacs.d/init-local.el")
 
-;; IRC configuration (erc)
+;; IRC configuration
 ;; Actual servers and such are loaded from irc.el
 (load-file-if-exists "~/.emacs.d/init-irc.el")
-
-;; Mail configuration (mu4e && mbsync)
-(load-file-if-exists "~/.emacs.d/init-mail.el")
 
 ;; Load magnars' string manipulation library
 (require 's)
