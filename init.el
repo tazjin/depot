@@ -30,6 +30,7 @@
     multiple-cursors
     nyan-mode
     paredit
+    project-explorer
     projectile
     rainbow-delimiters
     rainbow-mode
@@ -64,7 +65,7 @@
 (setq is-mac (equal system-type 'darwin))
 
 ;; Is this being used by a vim user?
-(setq is-vim-mode t)
+(setq is-vim-mode nil)
 
 (when is-vim-mode
   (dolist (p evil-pkgs)
