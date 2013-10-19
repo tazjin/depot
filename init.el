@@ -36,6 +36,7 @@
     rainbow-delimiters
     rainbow-mode
     smex
+    smart-mode-line
     switch-window
     undo-tree
 

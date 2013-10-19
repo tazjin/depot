@@ -1,4 +1,6 @@
 (require 'uniquify)
+(require 'smart-mode-line)
+
 ; ## Generic settings ##
 
 ; Hide those ugly tool bars
@@ -41,6 +43,10 @@
       save-place-file (concat user-emacs-directory "places")
       backup-directory-alist `(("." . ,(concat user-emacs-directory "backups")))
       diff-switches "-u")
+
+;; Fix mode line
+(if after-init-time (sml/setup)
+  (add-hook 'after-init-hook 'sml/setup))
 
 (setq smex-save-file (concat user-emacs-directory ".smex-items"))
 (smex-initialize)

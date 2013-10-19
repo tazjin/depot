@@ -64,9 +64,6 @@
 ;; Keep track of recent files
 (recentf-mode)
 
-;; Enable Nyan mode
-(nyan-mode 1)
-
 ;; Easily navigate sillycased words
 (global-subword-mode 1)
 
