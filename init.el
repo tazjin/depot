@@ -40,9 +40,9 @@
 
     ; Clojure
     ac-nrepl
-;    clojure-cheatsheet
+    clojure-cheatsheet
+    cider
     clojure-mode
-    nrepl
 ;    nrepl-eval-sexp-fu
 )
   "A list of packages to install at launch.")
