@@ -21,6 +21,7 @@
   '(; Basic functionality
     ace-jump-mode
     browse-kill-ring
+    dash
     flx-ido
     flycheck
     idle-highlight-mode

@@ -1,4 +1,4 @@
-(mapc 'require '(projectile hi2 ac-nrepl yasnippet))
+(mapc 'require '(projectile ac-nrepl cider))
 ;; Initializes modes I use.
 
 (add-hook 'prog-mode-hook 'esk-add-watchwords)
@@ -19,45 +19,30 @@
           'set-auto-complete-as-completion-at-point-function)
 
 
-;; Configure nrepl (Clojure REPL) and clojure-mode
+;; Configure CIDER (Clojure REPL) and clojure-mode
 
-(defun nrepl-mode-setup ()
+(defun cider-mode-setup ()
   "Activates paredit, rainbow delimiters and ac-nrepl"
   (ac-nrepl-setup)
-  (rainbow-delimiters-mode 1)
-  (paredit-mode 1))
+  (clojure-mode))
 
-;; Use ac-nrepl for completion
-(add-hook 'nrepl-mode-hook 'nrepl-mode-setup)
-(add-hook 'nrepl-interaction-mode-hook 'nrepl-mode-setup)
-
-;; I want history up/down without modifiers
-(define-key nrepl-repl-mode-map (kbd "<up>") 'nrepl-backward-input)
-(define-key nrepl-repl-mode-map (kbd "<down>") 'nrepl-forward-input)
-(define-key nrepl-repl-mode-map (kbd "C-<up>") 'previous-line)
-(define-key nrepl-repl-mode-map (kbd "C-<down>") 'next-line)
-(define-key nrepl-repl-mode-map (kbd "C-c C-d") 'ac-nrepl-popup-doc)
-
-(define-key nrepl-interaction-mode-map (kbd "C-c C-d") 'ac-nrepl-popup-doc)
-(define-key nrepl-interaction-mode-map (kbd "C-c D") 'nrepl-doc)
-
-
+(add-hook 'cider-repl-mode-hook 'cider-mode-setup)
+(add-hook 'cider-interaction-mode-hook 'cider-mode-setup)
 (eval-after-load "auto-complete"
-   '(add-to-list 'ac-modes 'nrepl-mode))
+  '(add-to-list 'ac-modes 'cider-repl-mode))
 
 ;; Paredit in clojure
 (add-hook 'clojure-mode-hook 'paredit-mode)
 
 ;; eldoc in clojure
-(add-hook 'nrepl-interaction-mode-hook
-          'nrepl-turn-on-eldoc-mode)
-
-(add-hook 'nrepl-interaction-mode-hook
-          'paredit-mode)
+(add-hook 'cider-interaction-mode-hook
+          'cider-turn-on-eldoc-mode)
 
 ;; Don't annoy me
-(setq nrepl-hide-special-buffers t)
-(setq nrepl-popup-stacktraces nil)
+(setq cider-hide-special-buffers t)
+(setq cider-popup-stacktraces nil)
+; (setq cider-repl-pop-to-buffer-on-connect nil)
+(setq cider-repl-popup-stacktraces t)
 
 ;; Enable projectile for all things programming
 (add-hook 'prog-mode-hook 'projectile-on)
