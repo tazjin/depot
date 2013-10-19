@@ -41,7 +41,7 @@
 ;; Don't annoy me
 (setq cider-hide-special-buffers t)
 (setq cider-popup-stacktraces nil)
-; (setq cider-repl-pop-to-buffer-on-connect nil)
+(setq cider-repl-pop-to-buffer-on-connect nil)
 (setq cider-repl-popup-stacktraces t)
 
 ;; Enable projectile for all things programming
