@@ -39,6 +39,9 @@
 ;; So good!
 (global-set-key (kbd "C-c g") 'magit-status)
 
+;; Open project drawer
+(global-set-key (kbd "M-p") 'project-explorer-open)
+
 ;; Add a fullscreen toggle - TODO: reenable in next Emacs release
 ; (global-set-key (kbd "M-RET") 'toggle-frame-fullscreen)
 

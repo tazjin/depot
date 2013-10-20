@@ -1,4 +1,4 @@
-(mapc 'require '(projectile ac-nrepl cider))
+(mapc 'require '(projectile ac-nrepl cider project-explorer))
 ;; Initializes modes I use.
 
 (add-hook 'prog-mode-hook 'esk-add-watchwords)

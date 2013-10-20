@@ -35,6 +35,7 @@
       uniquify-buffer-name-style 'forward
       whitespace-style '(face trailing lines-tail tabs)
       whitespace-line-column 80
+      default-directory "~"
       fill-column 80
       ediff-window-setup-function 'ediff-setup-windows-plain
       ediff-diff-options "-w"
@@ -101,7 +102,10 @@
 
 (global-hl-line-mode -1)
 
+(set-face-attribute 'default nil :font "Source Code Pro 13")
 (set-default-font "Source Code Pro 13")
+
+(add-to-list 'after-make-frame-functions 'set-font)
 
 ;; Don't make the nyan cat too long ... I have other stuff in the mode
 ;; bar as well!
