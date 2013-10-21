@@ -33,6 +33,7 @@
     paredit
     project-explorer
     projectile
+    puppet-mode
     rainbow-delimiters
     rainbow-mode
     smex
@@ -52,7 +53,7 @@
 (defvar evil-pkgs
   '(evil
     evil-leader
-;    evil-tabs
+    evil-tabs
     evil-paredit
     key-chord
     surround)
