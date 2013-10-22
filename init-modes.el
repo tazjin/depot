@@ -24,7 +24,7 @@
 (defun cider-mode-setup ()
   "Activates paredit, rainbow delimiters and ac-nrepl"
   (ac-nrepl-setup)
-  (clojure-mode))
+  (paredit-mode))
 
 (add-hook 'cider-repl-mode-hook 'cider-mode-setup)
 (add-hook 'cider-interaction-mode-hook 'cider-mode-setup)
