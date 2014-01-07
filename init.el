@@ -12,10 +12,9 @@
 ;; precendence.
 (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
 
+;; And load things!
+(package-refresh-contents)
 (package-initialize)
-
-(when (not package-archive-contents)
-  (package-refresh-contents))
 
 (defvar my-pkgs
   '(; Basic functionality
@@ -57,8 +56,7 @@
     evil-paredit
     key-chord
     surround)
-  "Evil related packages"
-)
+  "Evil related packages")
 
 (dolist (p my-pkgs)
   (when (not (package-installed-p p))

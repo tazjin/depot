@@ -50,6 +50,7 @@
   (add-hook 'after-init-hook 'sml/setup))
 
 (setq smex-save-file (concat user-emacs-directory ".smex-items"))
+(setq smex-key-advice-ignore-menu-bar t)
 (smex-initialize)
 (global-set-key (kbd "M-x") 'smex)
 
