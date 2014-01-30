@@ -59,8 +59,8 @@
 
 ;; Cider/nrepl stuff
 ;; I want history up/down without modifiers
-(define-key cider-repl-mode-map (kbd "<up>") 'cider-backward-input)
-(define-key cider-repl-mode-map (kbd "<down>") 'cider-forward-input)
+(define-key cider-repl-mode-map (kbd "<up>") 'cider-repl-backward-input)
+(define-key cider-repl-mode-map (kbd "<down>") 'cider-repl-forward-input)
 (define-key cider-repl-mode-map (kbd "C-<up>") 'previous-line)
 (define-key cider-repl-mode-map (kbd "C-<down>") 'next-line)
 

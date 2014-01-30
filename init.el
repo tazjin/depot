@@ -13,12 +13,13 @@
 (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
 
 ;; And load things!
-(package-refresh-contents)
+;; (package-refresh-contents)
 (package-initialize)
 
 (defvar my-pkgs
   '(; Basic functionality
     ace-jump-mode
+    ack-and-a-half
     browse-kill-ring
     dash
     flx-ido
@@ -65,6 +66,9 @@
 ;; Are we on a mac?
 (setq is-mac (equal system-type 'darwin))
 
+;; Or on Linux?
+(setq is-linux (equal system-type 'gnu/linux))
+
 ;; Is this being used by a vim user?
 (setq is-vim-mode nil)
 
@@ -88,10 +92,6 @@
 
 (setq custom-file "~/.emacs.d/init-custom.el")
 (load custom-file)
-
-(custom-download-script
- "https://gist.github.com/gongo/1789605/raw/526e3f21dc7d6cef20951cf0ce5d51b90b7821ff/json-reformat.el"
- "json-reformat.el")
 
 ;; A file with machine specific settings.
 (load-file-if-exists "~/.emacs.d/init-local.el")

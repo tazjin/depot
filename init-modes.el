@@ -53,6 +53,10 @@
 ;; Enable Paredit in Emacs Lisp mode
 (add-hook 'emacs-lisp-mode-hook 'paredit-mode)
 
+;; Configure Haskell mode
+;; Indentation ...
+(add-hook 'haskell-mode-hook 'hi2-mode)
+
 ;; Always highlight matching brackets
 (show-paren-mode 1)
 

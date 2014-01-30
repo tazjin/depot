@@ -54,7 +54,7 @@
   "My EShell prompt displaying VC info and such"
   (concat
    (with-face (concat (clean-pwd (eshell/pwd)) " ") :foreground  "#96a6c8")
-   (with-face (vcprompt " -f \"(%s:%b%a%m) \"") :foreground "#5f627f")
+   ;(with-face (vcprompt " -f \"(%s:%b%a%m) \"") :foreground "#5f627f")
    (if (= 0 (user-uid))
        (with-face "#" :foreground "#f43841")
      (with-face "$" :foreground "#73c936"))

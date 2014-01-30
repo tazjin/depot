@@ -4,8 +4,11 @@
 ; ## Generic settings ##
 
 ; Hide those ugly tool bars
-(tool-bar-mode -1)
-(scroll-bar-mode -1)
+(tool-bar-mode 0)
+(scroll-bar-mode 0)
+
+;; Go away go away
+(setq initial-scratch-message "")
 
 (flx-ido-mode 1)
 (setq ido-use-faces nil)
@@ -44,6 +47,11 @@
       save-place-file (concat user-emacs-directory "places")
       backup-directory-alist `(("." . ,(concat user-emacs-directory "backups")))
       diff-switches "-u")
+
+;; Fix keys on Linux
+(if is-linux
+    (setq x-super-keysym 'meta
+          x-alt-keysym 'alt))
 
 ;; Fix mode line
 (if after-init-time (sml/setup)
@@ -103,7 +111,7 @@
 
 (global-hl-line-mode -1)
 
-(set-face-attribute 'default nil :font "Source Code Pro 13")
+(set-face-attribute 'default nil :font "Source Code Pro 12")
 (set-default-font "Source Code Pro 13")
 
 (add-to-list 'after-make-frame-functions 'set-font)
