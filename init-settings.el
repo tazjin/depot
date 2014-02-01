@@ -29,7 +29,7 @@
   (blink-cursor-mode -1))
 
 ; Fix some defaults
-(setq visible-bell t
+(setq visible-bell nil
       inhibit-startup-message t
       color-theme-is-global t
       sentence-end-double-space nil
