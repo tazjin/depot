@@ -111,8 +111,10 @@
 
 (global-hl-line-mode -1)
 
-(set-face-attribute 'default nil :font "Source Code Pro 12")
-(set-default-font "Source Code Pro 13")
+(setq default-frame-alist '((font-backend . "xft")
+                            (font . "Source Code Pro-12")))
+
+(set-default-font "Source Code Pro 12")
 
 (add-to-list 'after-make-frame-functions 'set-font)
 
