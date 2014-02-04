@@ -72,6 +72,10 @@
 ;; Is this being used by a vim user?
 (setq is-vim-mode nil)
 
+;; What's the home folder?
+(defvar home-dir)
+(setq home-dir (expand-file-name "~"))
+
 (when is-vim-mode
   (dolist (p evil-pkgs)
     (when (not (package-installed-p p))
@@ -94,11 +98,11 @@
 (load custom-file)
 
 ;; A file with machine specific settings.
-(load-file-if-exists "~/.emacs.d/init-local.el")
+;(load-file-if-exists (concat home-dir "/.emacs.d/init-local.el"))
 
 ;; IRC configuration
 ;; Actual servers and such are loaded from irc.el
-(load-file-if-exists "~/.emacs.d/init-irc.el")
+; (load-file-if-exists (concat home-dir "/.emacs.d/init-irc.el"))
 
 ;; Load magnars' string manipulation library
 (require 's)
@@ -107,4 +111,5 @@
 (random t)
 
 ;; Start server for emacsclient
-(server-start)
+;; (server-start)
+

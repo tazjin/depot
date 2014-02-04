@@ -6,9 +6,6 @@
 ;; Hide banner message ...
 (setq eshell-banner-message "")
 
-(defvar home-dir)
-(setq home-dir (expand-file-name "~"))
-
 (defun eshell-mode-hook-setup ()
   "Sets up EShell when it is loaded"
   (setq eshell-path-env (concat

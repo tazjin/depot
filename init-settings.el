@@ -116,8 +116,6 @@
 
 (set-default-font "Source Code Pro 12")
 
-(add-to-list 'after-make-frame-functions 'set-font)
-
 ;; Don't make the nyan cat too long ... I have other stuff in the mode
 ;; bar as well!
 (set-variable 'nyan-bar-length 15)
