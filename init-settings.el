@@ -7,6 +7,15 @@
 (tool-bar-mode 0)
 (scroll-bar-mode 0)
 
+(defun disable-scroll-bar ()
+  (scroll-bar-mode 0))
+
+; And remember to do it if I create a new frame.
+(add-hook 'before-make-frame-hook 'disable-scroll-bar)
+
+;; Don't make any noises, don't flash, just leave me alone
+(setq ring-bell-function 'ignore)
+
 ;; Go away go away
 (setq initial-scratch-message "")
 
@@ -45,7 +54,7 @@
       ediff-split-window-function 'split-window-horizontally
       oddmuse-directory (concat user-emacs-directory "oddmuse")
       save-place-file (concat user-emacs-directory "places")
-      backup-directory-alist `(("." . ,(concat user-emacs-directory "backups")))
+      backup-directory-alist `((,(concat user-emacs-directory "backups")))
       diff-switches "-u")
 
 ;; Fix keys on Linux

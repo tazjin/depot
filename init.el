@@ -13,7 +13,7 @@
 (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
 
 ;; And load things!
-;; (package-refresh-contents)
+(package-refresh-contents)
 (package-initialize)
 
 (defvar my-pkgs
@@ -112,4 +112,3 @@
 
 ;; Start server for emacsclient
 ;; (server-start)
-
