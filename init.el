@@ -21,6 +21,7 @@
     ace-jump-mode
     ack-and-a-half
     browse-kill-ring
+    confluence
     dash
     flx-ido
     flycheck
@@ -31,22 +32,20 @@
     multiple-cursors
     nyan-mode
     paredit
-    project-explorer
     projectile
     puppet-mode
     rainbow-delimiters
     rainbow-mode
+    s
     smex
     smart-mode-line
     switch-window
     undo-tree
 
     ; Clojure
-    ac-nrepl
-    clojure-cheatsheet
+    ac-cider-compliment
     cider
     clojure-mode
-;    nrepl-eval-sexp-fu
 )
   "A list of packages to install at launch.")
 
@@ -106,6 +105,8 @@
 
 ;; Load magnars' string manipulation library
 (require 's)
+
+(require 'ack-and-a-half)
 
 ;; Seed RNG
 (random t)

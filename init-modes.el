@@ -1,4 +1,4 @@
-(mapc 'require '(projectile ac-nrepl cider project-explorer))
+(mapc 'require '(projectile ac-cider-compliment cider))
 ;; Initializes modes I use.
 
 (add-hook 'prog-mode-hook 'esk-add-watchwords)
@@ -23,8 +23,12 @@
 
 (defun cider-mode-setup ()
   "Activates paredit, rainbow delimiters and ac-nrepl"
-  (ac-nrepl-setup)
+  (ac-cider-compliment-setup)
+  (ac-flyspell-workaround)
   (paredit-mode))
+
+(eval-after-load "auto-complete"
+  '(add-to-list 'ac-modes cider-mode))
 
 (add-hook 'cider-repl-mode-hook 'cider-mode-setup)
 (add-hook 'cider-interaction-mode-hook 'cider-mode-setup)
