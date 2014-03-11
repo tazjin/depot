@@ -13,7 +13,8 @@ md5sums=('881e1e021b6cc0e95cdbda952520d059')
 build() {
   cd "$srcdir"
   cd tazjin-*
-  
+
+  cabal update
   cabal sandbox init
   cabal install -j --only-dependencies
   cabal build
