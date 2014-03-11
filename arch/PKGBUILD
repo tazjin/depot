@@ -7,7 +7,7 @@ arch=('i686' 'x86_64')
 url="http://tazj.in"
 makedepends=('ghc' 'cabal-install')
 source=(https://bitbucket.org/tazjin/tazblog-haskell/get/$pkgver.tar.gz)
-md5sums=('881e1e021b6cc0e95cdbda952520d059')
+md5sums=('981cdfdd3cba59f13213a644717f5343')
 
 
 build() {
