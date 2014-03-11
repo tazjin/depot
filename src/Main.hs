@@ -44,7 +44,8 @@ import           RSS
 
 data MainOptions = MainOptions {
   optState :: String,
-  optPort  :: Int
+  optPort  :: Int,
+  optRes   :: String
 }
 
 instance Options MainOptions where
@@ -53,7 +54,9 @@ instance Options MainOptions where
         "Directory in which the BlogState is located."
     <*> simpleOption "port" 8000
         "Port to run on. Default is 8000."
-
+    <*> simpleOption "res" "/usr/share/tazblog/res"
+        "Resources folder location."
+        
 tmpPolicy :: BodyPolicy
 tmpPolicy = defaultBodyPolicy "./tmp/" 0 200000 1000
 
@@ -63,10 +66,10 @@ main = do
     runCommand $ \opts args ->
       bracket (openLocalStateFrom (optState opts ++ "BlogState") initialBlogState)
               createCheckpointAndClose
-              (\acid -> simpleHTTP nullConf {port = optPort opts} $ tazBlog acid)
+              (\acid -> simpleHTTP nullConf {port = optPort opts} $ tazBlog acid (optRes opts))
 
-tazBlog :: AcidState Blog -> ServerPart Response
-tazBlog acid = do
+tazBlog :: AcidState Blog -> String -> ServerPart Response
+tazBlog acid resDir = do
     compr <- compressedResponseFilter
     msum [ path $ \(lang :: BlogLang) -> blogHandler acid lang
          , nullDir >> showIndex acid EN
@@ -104,8 +107,8 @@ tazBlog acid = do
               ok $ toResponse blogStyle
          , do setHeaderM "cache-control" "max-age=630720000"
               setHeaderM "expires" "Tue, 20 Jan 2037 04:20:42 GMT"
-              dir "static" $ serveDirectory DisableBrowsing [] "../res"
-         , serveDirectory DisableBrowsing [] "../res"
+              dir "static" $ serveDirectory DisableBrowsing [] resDir
+         , serveDirectory DisableBrowsing [] resDir
          , notFound $ toResponse $ showError NotFound DE
          ]
 
