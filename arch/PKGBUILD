@@ -1,0 +1,31 @@
+# Maintainer: Vincent Ambo <dev@tazj.in>
+pkgname=tazblog
+pkgver=4.1
+pkgrel=1
+pkgdesc="Tazjin's blog written in Haskell"
+arch=('i686' 'x86_64')
+url="http://tazj.in"
+makedepends=('ghc' 'cabal-install')
+source=(https://bitbucket.org/tazjin/tazblog-haskell/get/$pkgver.tar.gz)
+md5sums=('881e1e021b6cc0e95cdbda952520d059')
+
+
+build() {
+  cd "$srcdir"
+  cd tazjin-*
+  
+  cabal sandbox init
+  cabal install -j --only-dependencies
+  cabal build
+}
+
+package() {
+  cd "$srcdir"
+  cd tazjin-*
+
+  install -d "${pkgdir}/usr/bin"
+  install -m755 dist/build/tazblog/tazblog "${pkgdir}/usr/bin/tazblog"
+
+  install -d "${pkgdir}/usr/share/tazblog"
+  cp -r res/ "${pkgdir}/usr/share/tazblog"
+}
