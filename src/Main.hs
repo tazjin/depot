@@ -42,12 +42,17 @@ import           RSS
 
 {- Server -}
 
-defineOptions "MainOptions" $ do
-  stringOption "optState" "statedir" "../"
-    "Directory in which the /BlogState dir is located.\
-    \ The default is ../ (if run from src/)"
-  intOption "optPort" "port" 8000
-    "The port to run the web server on. Default is 8000"
+data MainOptions = MainOptions {
+  optState :: String,
+  optPort  :: Int
+}
+
+instance Options MainOptions where
+  defineOptions = pure MainOptions
+    <*> simpleOption "statedir" "/var/tazblog/"
+        "Directory in which the BlogState is located."
+    <*> simpleOption "port" 8000
+        "Port to run on. Default is 8000."
 
 tmpPolicy :: BodyPolicy
 tmpPolicy = defaultBodyPolicy "./tmp/" 0 200000 1000
