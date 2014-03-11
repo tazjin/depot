@@ -24,9 +24,15 @@ package() {
   cd "$srcdir"
   cd tazjin-*
 
+  # Install blog itself
   install -d "${pkgdir}/usr/bin"
   install -m755 dist/build/tazblog/tazblog "${pkgdir}/usr/bin/tazblog"
 
+  # Install resources
   install -d "${pkgdir}/usr/share/tazblog"
   cp -r res/ "${pkgdir}/usr/share/tazblog"
+
+  # Install service file
+  install -d "${pkgdir}/usr/lib/systemd/system"
+  cp "arch/tazblog@.service" "${pkgdir}/usr/lib/systemd/system/"
 }

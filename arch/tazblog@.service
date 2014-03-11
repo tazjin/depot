@@ -1,0 +1,11 @@
+[Unit]
+Description=tazblog web process
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/tazblog
+Restart=always
+User=%i
+
+[Install]
+WantedBy=multi-user.target
