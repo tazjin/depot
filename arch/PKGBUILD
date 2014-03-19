@@ -8,7 +8,7 @@ url="http://tazj.in"
 license=('MIT')
 makedepends=('ghc' 'cabal-install')
 source=(https://bitbucket.org/tazjin/tazblog-haskell/get/$pkgver.tar.gz)
-md5sums=('981cdfdd3cba59f13213a644717f5343')
+md5sums=('c6f4966785e8fb4c1fb93477403c2731')
 
 
 build() {
