@@ -1,7 +1,7 @@
 # Maintainer: Vincent Ambo <dev@tazj.in>
 pkgname=tazblog
 pkgver=4.1
-pkgrel=1
+pkgrel=2
 pkgdesc="Tazjin's blog written in Haskell"
 arch=('i686' 'x86_64')
 url="http://tazj.in"
