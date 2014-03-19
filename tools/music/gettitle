@@ -1,4 +1,0 @@
-#!/bin/bash
-
-osascript -e 'tell application "iTunes" to get name of current track'
-osascript -e 'tell application "iTunes" to get artist of current track'
