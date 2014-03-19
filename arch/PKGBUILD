@@ -5,6 +5,7 @@ pkgrel=1
 pkgdesc="Tazjin's blog written in Haskell"
 arch=('i686' 'x86_64')
 url="http://tazj.in"
+license=('MIT')
 makedepends=('ghc' 'cabal-install')
 source=(https://bitbucket.org/tazjin/tazblog-haskell/get/$pkgver.tar.gz)
 md5sums=('981cdfdd3cba59f13213a644717f5343')

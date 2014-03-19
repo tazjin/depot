@@ -1,6 +1,7 @@
 Name:                TazBlog
 Version:             4.1
 Synopsis:            Tazjin's Blog
+License:             MIT
 License-file:        LICENSE
 Author:              Vincent Ambo
 Maintainer:          tazjin@gmail.com
