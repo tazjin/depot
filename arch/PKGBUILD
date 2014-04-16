@@ -1,14 +1,14 @@
 # Maintainer: Vincent Ambo <dev@tazj.in>
 pkgname=tazblog
-pkgver=4.1
-pkgrel=2
+pkgver=4.2
+pkgrel=1
 pkgdesc="Tazjin's blog written in Haskell"
 arch=('i686' 'x86_64')
 url="http://tazj.in"
 license=('MIT')
 makedepends=('ghc' 'cabal-install')
 source=(https://bitbucket.org/tazjin/tazblog-haskell/get/$pkgver.tar.gz)
-md5sums=('c6f4966785e8fb4c1fb93477403c2731')
+md5sums=('SKIP')
 
 
 build() {

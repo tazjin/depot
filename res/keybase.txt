@@ -1,0 +1,68 @@
+==================================================================
+https://keybase.io/tazjin
+--------------------------------------------------------------------
+
+I hereby claim:
+
+  * I am an admin of http://tazj.in
+  * I am tazjin (https://keybase.io/tazjin) on keybase.
+  * I have a public key with fingerprint DCF3 4CFA C1AC 44B8 7E26  3331 36EE 3481 4F6D 294A
+
+To claim this, I am signing this object:
+
+{
+    "body": {
+        "key": {
+            "fingerprint": "dcf34cfac1ac44b87e26333136ee34814f6d294a",
+            "host": "keybase.io",
+            "key_id": "36EE34814F6D294A",
+            "uid": "2268b75a56bb9693d3ef077bc1217900",
+            "username": "tazjin"
+        },
+        "service": {
+            "hostname": "tazj.in",
+            "protocol": "http:"
+        },
+        "type": "web_service_binding",
+        "version": 1
+    },
+    "ctime": 1397643582,
+    "expire_in": 157680000,
+    "prev": "39412fda4ef75c58357b7b073b0432e70d84cefc1e4f7293af0d2c357e6ee3bf",
+    "seqno": 3,
+    "tag": "signature"
+}
+
+with the aforementioned key, yielding the PGP signature:
+
+-----BEGIN PGP MESSAGE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+owGbwMvMwMWY9pU1Q3bHF2vG0wdeJTEE+0W6VSsl5adUKllVK2Wngqm0zLz01KKC
+osy8EiUrpZTkNGOT5LTEZMPEZBOTJAvzVCMzY2NjQ2Oz1FRjEwtDkzSzFCNLk0Ql
+HaWM/GKQDqAxSYnFqXqZ+UAxICc+MwUoamzm6gpW72bmAlTvCJQrBUsYGZlZJJmb
+JpqaJSVZmlkapxinphmYmyclGxoZmlsaGIAUFqcW5SXmpgJVlyRWZWXmKdXqKAHF
+yjKTU0EuBlmMJK8HVKCjVFCUX5KfnJ8DFMwoKSmwAukpqSwAKSpPTYqHao9PysxL
+AXoYqKEstag4Mz9PycoQqDK5JBNknqGxpbmZibGphZGOUmpFQWZRanwmSIWpuZmF
+ARCArEktA3nP0sTQKC0l0SQ1zdw02dTC2NQ8yTzJwNw4ycDE2CjV3CDFwiQ5NS3Z
+MNUkzdzI0jgxzSDFKBmoKhUUjklpSiAPFeblK1kZA52ZmA40sjgzPS+xpLQoVam2
+k0mGhYGRi4GNlQkUZQxcnAKwiIybyP+/7grfnOLwh9NWuSl90lrVJc9Yf4VdsDXl
+7myDtqgv5+a3vI3aPZO//0DEi8Sv//w3eSyJXOa/j+PK20z3bzPcm1OWnWdT6L7/
+/Z/c4a5J1zd/DMmz7pgh1+G9pPvek8mTzGwu9sVH+c6qtepZILU9Zb+Rz3sHVZU8
+haT+VyHNDxxcw+raTv6b9FFEwrp19i3tIM6ml8v5VnLqdex9sudP2MW9hkazX/vb
+mZixL6stPnL8mX2gMg/PM/dVVzh07189c8b+mtLxO863mX/W6K8StIwWOrriwqa9
+X/8Fczk3qDwLnrR04i/5fNWWJ6cOuuZYRmTUi/KW/+ctW2c0w1zNxudMwPNv6/c4
+uBziFZEUC/0x33zZvkOeax4o7LWr+vPibpHvpJlRM5qtrUsCXpw/Uh32jlF+t0PL
+EjY+RVWxwoP7j/tHbl35Y+rcZlUr9znGVyNf/b9ZLrN3rwlDEcfkyXu7/ReFc7Xf
+ZVJ2jD0jO6PivMqm+DNLWZyvXEor8TD+u7NdZvXhm7K9tXOXO6w/8r583q/qngnH
+hcQiHrLLG5rNNFR7WrpGfYZAr+PfhMXvak4J3fGLX5IRqbgkvOOpm+1u3e4e8xtb
+pwlNvntv/YoLtecM1/P2nOp7y6Opaf10ZrnwvcbSDNZ5GttibG5zH+WT/Pyq62Ro
+/EZnvj9FprUfGBzZmh36OM3+3roV+KxG1oT/xyvtv16VqUEA
+=fuV3
+-----END PGP MESSAGE-----
+
+And finally, I am proving ownership of this host by posting or
+appending to this document.
+
+View my publicly-auditable identity here: https://keybase.io/tazjin
+
+==================================================================
