@@ -34,7 +34,9 @@ import qualified Data.Text              as Text
 
 
 newtype EntryId = EntryId { unEntryId :: Integer }
-    deriving (Eq, Ord, Data, Enum, Typeable, SafeCopy)
+    deriving (Eq, Ord, Data, Enum, Typeable)
+
+$(deriveSafeCopy 0 'base ''EntryId)
 
 instance Show EntryId where
   show = show . unEntryId
@@ -78,15 +80,25 @@ data Entry = Entry {
 $(deriveSafeCopy 0 'base ''Entry)
 
 -- ixSet requires different datatypes for field indexes, so let's define some
-newtype Author = Author Text   deriving (Eq, Ord, Data, Typeable, SafeCopy)
-newtype Title  = Title Text    deriving (Eq, Ord, Data, Typeable, SafeCopy)
-newtype BText  = BText Text    deriving (Eq, Ord, Data, Typeable, SafeCopy) -- standard text
-newtype MText  = MText Text    deriving (Eq, Ord, Data, Typeable, SafeCopy) -- "read more" text
-newtype Tag    = Tag Text      deriving (Eq, Ord, Data, Typeable, SafeCopy)
-newtype EDate  = EDate UTCTime deriving (Eq, Ord, Data, Typeable, SafeCopy)
-newtype SDate  = SDate UTCTime   deriving (Eq, Ord, Data, Typeable, SafeCopy)
-newtype Username = Username Text deriving (Eq, Ord, Data, Typeable, SafeCopy)
-newtype SessionID = SessionID Text deriving (Eq, Ord, Data, Typeable, SafeCopy)
+newtype Author = Author Text   deriving (Eq, Ord, Data, Typeable)
+newtype Title  = Title Text    deriving (Eq, Ord, Data, Typeable)
+newtype BText  = BText Text    deriving (Eq, Ord, Data, Typeable) -- standard text
+newtype MText  = MText Text    deriving (Eq, Ord, Data, Typeable) -- "read more" text
+newtype Tag    = Tag Text      deriving (Eq, Ord, Data, Typeable)
+newtype EDate  = EDate UTCTime deriving (Eq, Ord, Data, Typeable)
+newtype SDate  = SDate UTCTime   deriving (Eq, Ord, Data, Typeable)
+newtype Username = Username Text deriving (Eq, Ord, Data, Typeable)
+newtype SessionID = SessionID Text deriving (Eq, Ord, Data, Typeable)
+
+$(deriveSafeCopy 0 'base ''Author)
+$(deriveSafeCopy 0 'base ''Title)
+$(deriveSafeCopy 0 'base ''BText)
+$(deriveSafeCopy 0 'base ''MText)
+$(deriveSafeCopy 0 'base ''Tag)
+$(deriveSafeCopy 0 'base ''EDate)
+$(deriveSafeCopy 0 'base ''SDate)
+$(deriveSafeCopy 0 'base ''Username)
+$(deriveSafeCopy 0 'base ''SessionID)
 
 instance Indexable Entry where
     empty = ixSet [ ixFun $ \e -> [ entryId e]
