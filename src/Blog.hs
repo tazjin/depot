@@ -285,30 +285,7 @@ editPage (Entry{..}) = adminTemplate "Index" $ [shamlet|
      <textarea name="mtext" cols="100" rows="15">#{mtext}
   <input type="hidden" name="eid" value=#{unEntryId entryId}>
   <input type="submit" style="margin-left:20px;" value="Absenden">
-  <div class="editComments">#{editComments comments entryId}
   <p>^{adminFooter}
-|]
-
-editComments :: [Comment] -> EntryId -> Html
-editComments comments eId = [shamlet|
-<table>
- $forall c <- comments
-  <tr>
-   <td>#{cauthor c}
-   <td>#{cPostTime $ cdate c}
-  <tr>
-   <td><a href=#{cDeleteLink $ cdate c}>Löschen
-|]
- where
-  cPostTime = formatTime defaultTimeLocale "%c"
-  cDeleteLink cd = concat ["/admin/cdelete/", show eId, formatTime defaultTimeLocale "/%s%Q" cd]
-
-commentDeleted :: EntryId -> Html
-commentDeleted eId = adminTemplate "Kommentar gelöscht" $ [shamlet|
-<div>Der Kommentar wurde gelöscht.
-<br>
-<a href=#{append "/de/" $ show' eId}>Eintrag ansehen | #
-<a href=#{append "/admin/edit/" $ show' eId}>Eintrag bearbeiten
 |]
 
 showError :: BlogError -> BlogLang -> Html

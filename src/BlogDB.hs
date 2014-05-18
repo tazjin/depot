@@ -6,7 +6,6 @@ import           Data.Acid
 import           Data.Acid.Advanced
 import           Data.Acid.Local
 import           Data.ByteString        (ByteString)
-import           Data.Char              (toLower)
 import           Data.Data              (Data, Typeable)
 import           Data.IxSet             (Indexable (..), IxSet (..), Proxy (..),
                                          getOne, ixFun, ixSet, (@=))
@@ -41,14 +40,6 @@ instance Show BlogLang where
 
 $(deriveSafeCopy 0 'base ''BlogLang)
 
-data Comment = Comment {
-    cdate   :: UTCTime,
-    cauthor :: Text,
-    ctext   :: Text
-} deriving (Eq, Ord, Show, Data, Typeable)
-
-$(deriveSafeCopy 0 'base ''Comment)
-
 data Entry = Entry {
     entryId  :: EntryId,
     lang     :: BlogLang,
@@ -57,8 +48,7 @@ data Entry = Entry {
     btext    :: Text,
     mtext    :: Text,
     edate    :: UTCTime,
-    tags     :: [Text],
-    comments :: [Comment]
+    tags     :: [Text]
 } deriving (Eq, Ord, Show, Data, Typeable)
 
 $(deriveSafeCopy 0 'base ''Entry)
@@ -93,7 +83,6 @@ instance Indexable Entry where
                   , ixFun $ \e -> [ MText $ mtext e]
                   , ixFun $ \e -> [ EDate $ edate e]
                   , ixFun $ \e -> map Tag (tags e)
-                  , ixFun comments
                   ]
 
 data User = User {
@@ -143,22 +132,6 @@ insertEntry e =
     do b@Blog{..} <- get
        put $ b { blogEntries = IxSet.insert e blogEntries }
        return e
-
-addComment :: EntryId -> Comment -> Update Blog Entry
-addComment eId c =
-	do b@Blog{..} <- get
-	   let (Just e) = getOne $ blogEntries @= eId
-	   let newEntry = e { comments = insert c $ comments e }
-	   put $ b { blogEntries = IxSet.updateIx eId newEntry blogEntries }
-	   return newEntry
-
-deleteComment :: EntryId -> UTCTime -> Update Blog Entry
-deleteComment eId cDate =
-   do b@Blog{..} <- get
-      let (Just e) = getOne $ blogEntries @= eId
-      let newEntry = e {comments = filter (\c -> cdate c /= cDate) (comments e)}
-      put $ b { blogEntries = IxSet.updateIx eId newEntry blogEntries }
-      return newEntry
 
 updateEntry :: Entry -> Update Blog Entry
 updateEntry e =
@@ -219,8 +192,6 @@ hashString = B64.encode .  SHA.hash . B.pack
 
 $(makeAcidic ''Blog
     [ 'insertEntry
-    , 'addComment
-    , 'deleteComment
     , 'updateEntry
     , 'getEntry
     , 'latestEntries

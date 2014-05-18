@@ -99,35 +99,6 @@ noticeText :: BlogLang -> Text
 noticeText EN = "site notice"
 noticeText DE = "Impressum"
 
--- comments
-noComments :: BlogLang -> Text
-noComments DE = " Keine Kommentare"
-noComments EN = " No comments yet"
-
-cHead :: BlogLang -> Text
-cHead DE = "Kommentare"
-cHead EN = "Comments"
-
-cwHead :: BlogLang -> Text
-cwHead DE = "Kommentieren:"
-cwHead EN = "Comment:"
-
-cSingle :: BlogLang -> Text
-cSingle DE = "Kommentar:" --input label
-cSingle EN = "Comment:"
-
-cTimeFormat :: BlogLang -> String --formatTime expects a String
-cTimeFormat DE = "[Am %Y-%m-%d um %H:%M Uhr]"
-cTimeFormat EN = "[On %Y-%m-%d at %H:%M]"
-
-cSend :: BlogLang -> Text
-cSend DE = "Absenden"
-cSend EN = "Submit"
-
-cTextPlaceholder :: BlogLang -> Text
-cTextPlaceholder DE = "Kommentartext hier eingeben :]"
-cTextPlaceholder EN = "Enter your comment here :]"
-
 -- RSS Strings
 rssTitle :: BlogLang -> String
 rssTitle DE = "Tazjins Blog"

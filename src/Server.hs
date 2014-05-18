@@ -32,7 +32,7 @@ instance FromReqURI BlogLang where
       _    -> Nothing
 
 tmpPolicy :: BodyPolicy
-tmpPolicy = defaultBodyPolicy "./tmp/" 0 200000 1000
+tmpPolicy = defaultBodyPolicy "/tmp" 0 200000 1000
 
 runBlog :: AcidState Blog -> Int -> String -> IO ()
 runBlog acid port respath =
@@ -62,9 +62,6 @@ tazBlog acid resDir = do
               dirs "admin/edit" $ path $ \(eId :: Integer) -> editEntry acid eId
          , do guardSession acid
               dirs "admin/updateentry" $ nullDir >> updateEntry acid
-         , do guardSession acid
-              dirs "admin/cdelete" $ path $ \(eId :: Integer) -> path $ \(cId :: String) ->
-                deleteComment acid (EntryId eId) cId
          , do dir "admin" nullDir
               guardSession acid
               ok $ toResponse $ adminIndex ("tazjin" :: Text)
@@ -144,7 +141,6 @@ postEntry acid = do
                     <*> pure nMtext
                     <*> pure now
                     <*> pure [] -- NYI
-                    <*> pure []
     update' acid (InsertEntry nEntry)
     seeOther ("/" ++ lang ++ "/" ++ show eId) (toResponse())
   where
@@ -180,13 +176,6 @@ updateEntry acid = do
     update' acid (UpdateEntry nEntry)
     seeOther (concat $ intersperse' "/" [show $ lang entry, show eId])
              (toResponse ())
-
-deleteComment :: AcidState Blog -> EntryId -> String -> ServerPart Response
-deleteComment acid eId cId = do
-    nEntry <- update' acid (DeleteComment eId cDate)
-    ok $ toResponse $ commentDeleted eId
-  where
-    (cDate :: UTCTime) = fromJust $ parseTime defaultTimeLocale "%s%Q" cId
 
 guardSession :: AcidState Blog -> ServerPartT IO ()
 guardSession acid = do
