@@ -1,7 +1,3 @@
-{-# LANGUAGE DeriveDataTypeable  #-}
-{-# LANGUAGE OverloadedStrings   #-}
-{-# LANGUAGE ScopedTypeVariables #-}
-
 module Locales where
 
 import           Data.Data   (Data, Typeable)

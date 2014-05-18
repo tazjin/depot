@@ -1,5 +1,3 @@
-{-# LANGUAGE RecordWildCards #-}
-
 module RSS (renderFeed) where
 
 import qualified Data.Text     as T

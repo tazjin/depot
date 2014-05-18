@@ -1,10 +1,3 @@
-{-# LANGUAGE DeriveDataTypeable  #-}
-{-# LANGUAGE OverloadedStrings   #-}
-{-# LANGUAGE QuasiQuotes         #-}
-{-# LANGUAGE RecordWildCards     #-}
-{-# LANGUAGE ScopedTypeVariables #-}
-{-# LANGUAGE TemplateHaskell     #-}
-
 module Blog where
 
 import           BlogDB

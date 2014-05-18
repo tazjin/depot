@@ -1,11 +1,3 @@
-{-# LANGUAGE DeriveDataTypeable         #-}
-{-# LANGUAGE GeneralizedNewtypeDeriving #-}
-{-# LANGUAGE OverloadedStrings          #-}
-{-# LANGUAGE RecordWildCards            #-}
-{-# LANGUAGE ScopedTypeVariables        #-}
-{-# LANGUAGE TemplateHaskell            #-}
-{-# LANGUAGE TypeFamilies               #-}
-
 module BlogDB where
 
 import           Control.Monad.Reader   (ask)

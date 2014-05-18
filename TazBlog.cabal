@@ -14,7 +14,6 @@ Executable tazblog
   hs-source-dirs: src
   main-is: Main.hs
   ghc-options: -O2
-
   Build-depends:
     base,
     bytestring,
@@ -38,3 +37,14 @@ Executable tazblog
     hamlet,
     shakespeare,
     markdown
+  extensions:
+    DeriveDataTypeable
+    FlexibleContexts
+    GeneralizedNewtypeDeriving
+    MultiParamTypeClasses
+    OverloadedStrings
+    RecordWildCards
+    ScopedTypeVariables
+    TemplateHaskell
+    TypeFamilies
+    QuasiQuotes
