@@ -15,7 +15,6 @@ import           Data.SafeCopy          (SafeCopy, base, deriveSafeCopy)
 import           Data.Text              (Text, pack)
 import           Data.Text.Lazy         (toStrict)
 import           Data.Time
-import           Happstack.Server       (FromReqURI (..))
 import           System.Environment     (getEnv)
 
 import qualified Crypto.Hash.SHA512     as SHA (hash)
@@ -39,13 +38,6 @@ data BlogLang = EN | DE
 instance Show BlogLang where
     show DE = "de"
     show EN = "en"
-
-instance FromReqURI BlogLang where
-  fromReqURI sub =
-    case map toLower sub of
-      "de" -> Just DE
-      "en" -> Just EN
-      _    -> Nothing
 
 $(deriveSafeCopy 0 'base ''BlogLang)
 

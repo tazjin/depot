@@ -1,0 +1,20 @@
+steps:
+  - imports:
+      align: group
+  - language_pragmas:
+      style: vertical
+      remove_redundant: true
+  - records: {}
+  - trailing_whitespace: {}
+columns: 120
+language_extensions:
+  - DeriveDataTypeable
+  - FlexibleContexts
+  - GeneralizedNewtypeDeriving
+  - MultiParamTypeClasses
+  - OverloadedStrings
+  - RecordWildCards
+  - ScopedTypeVariables
+  - TemplateHaskell
+  - TypeFamilies
+  - QuasiQuotes
