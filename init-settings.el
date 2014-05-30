@@ -62,10 +62,6 @@
     (setq x-super-keysym 'meta
           x-alt-keysym 'alt))
 
-;; Fix mode line
-(if after-init-time (sml/setup)
-  (add-hook 'after-init-hook 'sml/setup))
-
 (setq smex-save-file (concat user-emacs-directory ".smex-items"))
 (setq smex-key-advice-ignore-menu-bar t)
 (smex-initialize)
@@ -233,5 +229,8 @@
 (global-set-key (kbd "C-c g") 'magit-status)
 
 (remove-hook 'kill-buffer-query-functions 'server-kill-buffer-query-function)
+
+;; Set up Java home & path
+(setenv "JAVA_HOME" "/opt/java")
 
 (provide 'init-settings)

@@ -69,5 +69,7 @@
 (define-key cider-mode-map (kbd "C-c C-d") 'ac-cider-compliment-popup-doc)
 (define-key cider-mode-map (kbd "C-c D") 'cider-doc)
 
+;; Org-mode agenda keys
+(global-set-key (kbd "C-c a") 'org-agenda)
 
 (provide 'init-bindings)
