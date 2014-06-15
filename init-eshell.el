@@ -12,6 +12,7 @@
 			 "/usr/local/bin:"
 			 (concat home-dir "/bin:")
 			 "/usr/local/share/python:"
+                         "/opt/java/bin"
 			 eshell-path-env))
 
   (setenv "PATH" eshell-path-env))

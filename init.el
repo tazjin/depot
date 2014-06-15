@@ -30,12 +30,15 @@
     iy-go-to-char
     magit
     multiple-cursors
+    mvn
     nyan-mode
     paredit
+    password-store
     projectile
     puppet-mode
     rainbow-delimiters
     rainbow-mode
+    rust-mode
     s
     smex
     smart-mode-line
@@ -111,5 +114,6 @@
 ;; Seed RNG
 (random t)
 
-;; Start server for emacsclient
-;; (server-start)
+;; SML should respect theme colours
+(setq sml/theme 'black)
+(sml/setup)

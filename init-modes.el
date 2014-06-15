@@ -18,7 +18,6 @@
 (add-hook 'auto-complete-mode-hook
           'set-auto-complete-as-completion-at-point-function)
 
-
 ;; Configure CIDER (Clojure REPL) and clojure-mode
 
 (defun cider-mode-setup ()
