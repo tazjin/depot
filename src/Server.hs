@@ -19,7 +19,7 @@ import           Happstack.Server.Compression
 import           System.Locale                (defaultTimeLocale)
 
 import Blog
-import BlogDB  hiding (addComment, deleteComment, updateEntry)
+import BlogDB  hiding (updateEntry)
 import Locales
 import RSS
 
@@ -140,7 +140,6 @@ postEntry acid = do
                     <*> pure nBtext
                     <*> pure nMtext
                     <*> pure now
-                    <*> pure [] -- NYI
     update' acid (InsertEntry nEntry)
     seeOther ("/" ++ lang ++ "/" ++ show eId) (toResponse())
   where

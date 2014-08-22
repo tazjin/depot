@@ -26,7 +26,7 @@ import qualified Data.Text              as Text
 newtype EntryId = EntryId { unEntryId :: Integer }
     deriving (Eq, Ord, Data, Enum, Typeable)
 
-$(deriveSafeCopy 0 'base ''EntryId)
+$(deriveSafeCopy 2 'base ''EntryId)
 
 instance Show EntryId where
   show = show . unEntryId
@@ -47,11 +47,10 @@ data Entry = Entry {
     title    :: Text,
     btext    :: Text,
     mtext    :: Text,
-    edate    :: UTCTime,
-    tags     :: [Text]
+    edate    :: UTCTime
 } deriving (Eq, Ord, Show, Data, Typeable)
 
-$(deriveSafeCopy 0 'base ''Entry)
+$(deriveSafeCopy 2 'base ''Entry)
 
 -- ixSet requires different datatypes for field indexes, so let's define some
 newtype Author = Author Text   deriving (Eq, Ord, Data, Typeable)
@@ -64,15 +63,15 @@ newtype SDate  = SDate UTCTime   deriving (Eq, Ord, Data, Typeable)
 newtype Username = Username Text deriving (Eq, Ord, Data, Typeable)
 newtype SessionID = SessionID Text deriving (Eq, Ord, Data, Typeable)
 
-$(deriveSafeCopy 0 'base ''Author)
-$(deriveSafeCopy 0 'base ''Title)
-$(deriveSafeCopy 0 'base ''BText)
-$(deriveSafeCopy 0 'base ''MText)
-$(deriveSafeCopy 0 'base ''Tag)
-$(deriveSafeCopy 0 'base ''EDate)
-$(deriveSafeCopy 0 'base ''SDate)
-$(deriveSafeCopy 0 'base ''Username)
-$(deriveSafeCopy 0 'base ''SessionID)
+$(deriveSafeCopy 2 'base ''Author)
+$(deriveSafeCopy 2 'base ''Title)
+$(deriveSafeCopy 2 'base ''BText)
+$(deriveSafeCopy 2 'base ''MText)
+$(deriveSafeCopy 2 'base ''Tag)
+$(deriveSafeCopy 2 'base ''EDate)
+$(deriveSafeCopy 2 'base ''SDate)
+$(deriveSafeCopy 2 'base ''Username)
+$(deriveSafeCopy 2 'base ''SessionID)
 
 instance Indexable Entry where
     empty = ixSet [ ixFun $ \e -> [ entryId e]
@@ -82,7 +81,6 @@ instance Indexable Entry where
                   , ixFun $ \e -> [ BText $ btext e]
                   , ixFun $ \e -> [ MText $ mtext e]
                   , ixFun $ \e -> [ EDate $ edate e]
-                  , ixFun $ \e -> map Tag (tags e)
                   ]
 
 data User = User {
