@@ -7,23 +7,23 @@ arch=('i686' 'x86_64')
 url="http://tazj.in"
 license=('MIT')
 makedepends=('ghc' 'cabal-install')
-source=(https://bitbucket.org/tazjin/tazblog-haskell/get/$pkgver.tar.gz)
-md5sums=('SKIP')
-
+source=('tazblog@.service')
+sha1sums=('6aeb901a9d0e25763c9c99168a440dd5ac99ffc1')
 
 build() {
   cd "$srcdir"
-  cd tazjin-*
+  test -e blog-src || ln -fs ../../ blog-src
+  cd blog-src
 
-  cabal update
   cabal sandbox init
+  cabal update
   cabal install -j --only-dependencies
   cabal build
 }
 
 package() {
   cd "$srcdir"
-  cd tazjin-*
+  cd blog-src
 
   # Install blog itself
   install -d "${pkgdir}/usr/bin"

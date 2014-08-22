@@ -12,3 +12,6 @@ $(ARCH_PKG):
 docker: archpkg
 	cat Dockerfile.raw | envsubst > Dockerfile; \
 	docker build -t tazjin/tazblog .
+
+clean:
+	rm -rf dist arch/*.pkg.tar.xz arch/pkg arch/src arch/*. Dockerfile
