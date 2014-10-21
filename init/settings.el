@@ -240,4 +240,4 @@
 (setq lpr-command "xpp")
 
 
-(provide 'init-settings)
+(provide 'settings)

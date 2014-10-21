@@ -89,4 +89,4 @@
   (let ((inhibit-read-only t))
     (erase-buffer)))
 
-(provide 'init-eshell)
+(provide 'eshell-setup)

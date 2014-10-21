@@ -3,8 +3,8 @@
 auto-save-list/
 clones/
 elpa/
-init-irc.el
-init-local.el
+irc.el
+local.el
 other/
 scripts/
 themes/

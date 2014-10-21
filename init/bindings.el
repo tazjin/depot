@@ -72,4 +72,4 @@
 ;; Org-mode agenda keys
 (global-set-key (kbd "C-c a") 'org-agenda)
 
-(provide 'init-bindings)
+(provide 'bindings)

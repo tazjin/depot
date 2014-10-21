@@ -85,18 +85,16 @@
 
 (add-to-list 'load-path user-emacs-directory)
 
-(mapc 'require '(init-functions
-                 init-settings
-                 init-modes
-                 init-bindings
-                 init-eshell))
+(mapc 'require '(functions
+                 settings
+                 modes
+                 bindings
+                 eshell-setup))
 
 (when is-vim-mode
   (require 'init-evil))
 
-(add-to-list 'load-path "~/.emacs.d/scripts/")
-
-(setq custom-file "~/.emacs.d/init-custom.el")
+(setq custom-file (concat user-emacs-directory "init/custom.el"))
 (load custom-file)
 
 ;; A file with machine specific settings.
