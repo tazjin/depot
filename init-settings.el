@@ -230,7 +230,14 @@
 
 (remove-hook 'kill-buffer-query-functions 'server-kill-buffer-query-function)
 
+;; Display tabs as 4 spaces
+(setq default-tab-width 4)
+
 ;; Set up Java home & path
-(setenv "JAVA_HOME" "/opt/java")
+(setenv "JAVA_HOME" "/usr/lib/jvm/default")
+
+;; Use CUPS
+(setq lpr-command "xpp")
+
 
 (provide 'init-settings)

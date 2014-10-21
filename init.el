@@ -115,5 +115,5 @@
 (random t)
 
 ;; SML should respect theme colours
-(setq sml/theme 'black)
+; (setq sml/theme 'black)
 (sml/setup)

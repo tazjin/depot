@@ -48,7 +48,7 @@
 (setq cider-repl-popup-stacktraces t)
 
 ;; Enable projectile for all things programming
-(add-hook 'prog-mode-hook 'projectile-on)
+(add-hook 'prog-mode-hook 'projectile-mode)
 
 ;; Enable rainbow-delimiters for all things programming
 (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
