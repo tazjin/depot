@@ -1,7 +1,3 @@
-;; Emacs 24 or higher!
-(when (< emacs-major-version 24)
-  (error "This setup requires Emacs v24, or higher. You have: v%d" emacs-major-version))
-
 ;; Configure package manager
 (require 'package)
 
@@ -25,6 +21,8 @@
     dash
     flx-ido
     flycheck
+    go-mode
+    haskell-mode
     idle-highlight-mode
     ido-ubiquitous
     iy-go-to-char
@@ -52,15 +50,6 @@
 )
   "A list of packages to install at launch.")
 
-(defvar evil-pkgs
-  '(evil
-    evil-leader
-    evil-tabs
-    evil-paredit
-    key-chord
-    surround)
-  "Evil related packages")
-
 (dolist (p my-pkgs)
   (when (not (package-installed-p p))
     (package-install p)))
@@ -71,19 +60,11 @@
 ;; Or on Linux?
 (setq is-linux (equal system-type 'gnu/linux))
 
-;; Is this being used by a vim user?
-(setq is-vim-mode nil)
-
 ;; What's the home folder?
 (defvar home-dir)
 (setq home-dir (expand-file-name "~"))
 
-(when is-vim-mode
-  (dolist (p evil-pkgs)
-    (when (not (package-installed-p p))
-      (package-install p))))
-
-(add-to-list 'load-path user-emacs-directory)
+(add-to-list 'load-path (concat user-emacs-directory "init"))
 
 (mapc 'require '(functions
                  settings
@@ -91,18 +72,10 @@
                  bindings
                  eshell-setup))
 
-(when is-vim-mode
-  (require 'init-evil))
+(add-to-list 'load-path (concat user-emacs-directory "scripts"))
 
 (setq custom-file (concat user-emacs-directory "init/custom.el"))
 (load custom-file)
-
-;; A file with machine specific settings.
-;(load-file-if-exists (concat home-dir "/.emacs.d/init-local.el"))
-
-;; IRC configuration
-;; Actual servers and such are loaded from irc.el
-; (load-file-if-exists (concat home-dir "/.emacs.d/init-irc.el"))
 
 ;; Load magnars' string manipulation library
 (require 's)
