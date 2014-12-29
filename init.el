@@ -13,41 +13,44 @@
 (package-initialize)
 
 (defvar my-pkgs
-  '(; Basic functionality
+  '(;; All packages
+    ac-cider-compliment
     ace-jump-mode
     ack-and-a-half
     browse-kill-ring
+    cider
+    clojure-mode
     confluence
     dash
+    dockerfile-mode
     flx-ido
     flycheck
     go-mode
     haskell-mode
+    hi2
     idle-highlight-mode
     ido-ubiquitous
     iy-go-to-char
     magit
+    markdown-mode+
     multiple-cursors
     mvn
     nyan-mode
     paredit
     password-store
+    pkgbuild-mode
     projectile
     puppet-mode
     rainbow-delimiters
     rainbow-mode
     rust-mode
     s
-    smex
     smart-mode-line
+    smex
     switch-window
     undo-tree
-
-    ; Clojure
-    ac-cider-compliment
-    cider
-    clojure-mode
-)
+    yaml-mode
+    )
   "A list of packages to install at launch.")
 
 (dolist (p my-pkgs)
@@ -89,5 +92,5 @@
 (random t)
 
 ;; SML should respect theme colours
-; (setq sml/theme 'black)
+;; (setq sml/theme 'black)
 (sml/setup)
