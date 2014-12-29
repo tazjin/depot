@@ -70,7 +70,10 @@
                  settings
                  modes
                  bindings
-                 eshell-setup))
+                 eshell-setup
+                 clojure
+                 haskell
+                 ))
 
 (add-to-list 'load-path (concat user-emacs-directory "scripts"))
 
