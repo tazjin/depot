@@ -23,6 +23,7 @@
     confluence
     dash
     dockerfile-mode
+    erlang
     flx-ido
     flycheck
     go-mode

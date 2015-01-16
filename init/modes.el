@@ -21,10 +21,14 @@
 
 ;; Configure Erlang mode
 
-;; Don't indent after '>' while I'm writing
-(add-hook 'erlang-mode-hook
-          '(lambda ()
-             (local-set-key ">" 'self-insert-command)))
+(defun erlang-mode-init-setup ()
+  (interactive)
+  ;; Don't indent after '>' while I'm writing
+  (local-set-key ">" 'self-insert-command)
+  ;(local-set-key "RET" 'newline)
+  )
+
+(add-hook 'erlang-mode-hook 'erlang-mode-init-setup)
 
 ;; Enable projectile for all things programming
 (add-hook 'prog-mode-hook 'projectile-mode)
