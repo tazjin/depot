@@ -75,7 +75,7 @@
                  bindings
                  eshell-setup
                  clojure
-                 haskell
+                 haskell-setup
                  ))
 
 (add-to-list 'load-path (concat user-emacs-directory "scripts"))
