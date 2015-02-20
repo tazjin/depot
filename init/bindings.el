@@ -31,7 +31,7 @@
 (global-set-key (kbd "C-x M") (lambda () (interactive) (eshell t)))
 
 ;; Eval sexp and replace it with result
-(global-set-key (kbd "C-c e") 'esk-eval-and-replace)
+(global-set-key (kbd "C-c e") 'replace-last-sexp)
 
 ;; Start a regular shell if you prefer that.
 (global-set-key (kbd "C-x C-m") 'shell)
@@ -45,8 +45,8 @@
 ;; Add a fullscreen toggle - TODO: reenable in next Emacs release
 ; (global-set-key (kbd "M-RET") 'toggle-frame-fullscreen)
 
-;; Replace standard goto-line with goto-line-with-feedback
-(global-set-key (kbd "M-g g") 'goto-line-with-feedback)
+;; Replace standard goto-line with ace-jump-line-mode
+(global-set-key (kbd "M-g g") 'ace-jump-line-mode)
 
 ;; Goodness from @magnars
 ;; I don't need to kill emacs that easily

@@ -25,6 +25,9 @@
 
 (setq uniquify-buffer-name-style 'forward)
 
+;; Give me column numbers
+(column-number-mode t)
+
 ;;; Code:
 
 (add-to-list 'exec-path "/usr/local/bin")
