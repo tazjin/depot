@@ -42,11 +42,12 @@
 ;; Open project drawer
 (global-set-key (kbd "M-p") 'project-explorer-open)
 
-;; Add a fullscreen toggle - TODO: reenable in next Emacs release
-; (global-set-key (kbd "M-RET") 'toggle-frame-fullscreen)
-
 ;; Replace standard goto-line with ace-jump-line-mode
 (global-set-key (kbd "M-g g") 'ace-jump-line-mode)
+(global-set-key (kbd "M-g M-g") 'goto-line-with-feedback)
+
+;; Bind whitespace cleanup to a key
+(global-set-key (kbd "C-c w") 'whitespace-cleanup)
 
 ;; Goodness from @magnars
 ;; I don't need to kill emacs that easily
@@ -59,5 +60,8 @@
 
 ;; Org-mode agenda keys
 (global-set-key (kbd "C-c a") 'org-agenda)
+
+;; Open Fefes Blog
+(global-set-key (kbd "C-c C-f") 'fefes-blog)
 
 (provide 'bindings)

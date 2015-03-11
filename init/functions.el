@@ -106,4 +106,9 @@ Including indent-buffer, which should not be called automatically on save."
       (kill-sexp -1)
       (insert (format "%S" value))))
 
+;; Open Fefes blog
+(defun fefes-blog ()
+  (interactive)
+  (eww "https://blog.fefe.de/"))
+
 (provide 'functions)
