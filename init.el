@@ -16,7 +16,7 @@
   '(;; All packages
     ac-cider-compliment
     ace-jump-mode
-    ack-and-a-half
+    ag
     browse-kill-ring
     cider
     clojure-mode
@@ -86,8 +86,6 @@
 
 ;; Load magnars' string manipulation library
 (require 's)
-
-(require 'ack-and-a-half)
 
 ;; Seed RNG
 (random t)
