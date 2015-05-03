@@ -25,7 +25,9 @@
   (interactive)
   ;; Don't indent after '>' while I'm writing
   (local-set-key ">" 'self-insert-command)
-  ;(local-set-key "RET" 'newline)
+  ;;(local-set-key "RET" 'newline)
+  (projectile-mode 1)
+  (rainbow-delimiters-mode 1)
   )
 
 (add-hook 'erlang-mode-hook 'erlang-mode-init-setup)

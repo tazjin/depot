@@ -17,6 +17,7 @@
 
 ;; Ace-jump-mode
 (global-set-key (kbd "M-j") 'ace-jump-word-mode)
+(global-set-key (kbd "M-p") 'ace-jump-mode-pop-mark)
 
 ;; Jump to next occurence of char
 (global-set-key (kbd "C-c f") 'iy-go-to-char)
@@ -39,9 +40,6 @@
 ;; So good!
 (global-set-key (kbd "C-c g") 'magit-status)
 
-;; Open project drawer
-(global-set-key (kbd "M-p") 'project-explorer-open)
-
 ;; Replace standard goto-line with ace-jump-line-mode
 (global-set-key (kbd "M-g g") 'ace-jump-line-mode)
 (global-set-key (kbd "M-g M-g") 'goto-line-with-feedback)
@@ -57,6 +55,9 @@
 
 ;; Create new frame
 (define-key global-map (kbd "C-x C-n") 'make-frame-command)
+
+;; Recompile easily
+(define-key prog-mode-map (kbd "C-c r") 'recompile)
 
 ;; Org-mode agenda keys
 (global-set-key (kbd "C-c a") 'org-agenda)

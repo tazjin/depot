@@ -28,6 +28,9 @@
 ;; Give me column numbers
 (column-number-mode t)
 
+;; Bash is the reliable one here
+(setq multi-term-program "/bin/bash")
+
 ;;; Code:
 
 (add-to-list 'exec-path "/usr/local/bin")

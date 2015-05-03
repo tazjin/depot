@@ -35,6 +35,7 @@
     magit
     markdown-mode+
     multiple-cursors
+    multi-term
     mvn
     nyan-mode
     paredit
