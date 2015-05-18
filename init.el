@@ -2,11 +2,11 @@
 (require 'package)
 
 ;; Add Marmalade repo
-(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
+(add-to-list 'package-archives '("marmalade" . "https://marmalade-repo.org/packages/"))
 
 ;; ... and melpa. Melpa packages that exist on marmalade will have
 ;; precendence.
-(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
+; (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
 
 ;; And load things!
 (package-refresh-contents)

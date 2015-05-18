@@ -13,7 +13,6 @@
  '(magit-log-show-gpg-status t)
  '(ns-alternate-modifier (quote none))
  '(ns-command-modifier (quote meta))
- '(org-agenda-files (quote ("~/source/spotify-puppet/modules/jira/TODO.org")))
  '(require-final-newline (quote visit-save))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -28,4 +27,4 @@
  '(rainbow-delimiters-depth-6-face ((t (:foreground "#268bd2"))))
  '(rainbow-delimiters-depth-7-face ((t (:foreground "#cb4b16"))))
  '(rainbow-delimiters-depth-8-face ((t (:foreground "#d33682"))))
- '(rainbow-delimiters-depth-9-face ((t (:foreground "#839496")))))
+ '(rainbow-delimiters-depth-9-face ((t (:foreground "#839496"))))))
