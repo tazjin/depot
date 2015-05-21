@@ -31,6 +31,9 @@
 ;; Bash is the reliable one here
 (setq multi-term-program "/bin/bash")
 
+;; Use the GPG-provided SSH agent
+(setenv "SSH_AUTH_SOCK" (concat (getenv "HOME") "/.gnupg/S.gpg-agent.ssh"))
+
 ;;; Code:
 
 (add-to-list 'exec-path "/usr/local/bin")
