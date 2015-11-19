@@ -10,7 +10,6 @@ import           Data.Text                 (Text, append, empty, pack)
 import           Data.Text.Lazy            (fromStrict)
 import           Data.Time
 import           Locales
-import           System.Locale             (defaultTimeLocale)
 import           Text.Blaze.Html           (preEscapedToHtml)
 import           Text.Hamlet
 import           Text.Lucius
@@ -30,7 +29,7 @@ show' = pack . show
 
 -- |After this time all entries are Markdown
 markdownCutoff :: UTCTime
-markdownCutoff = fromJust $ parseTime defaultTimeLocale "%s" "1367149834"
+markdownCutoff = fromJust $ parseTimeM False defaultTimeLocale "%s" "1367149834"
 
 
 -- blog CSS (admin is still static)

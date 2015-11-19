@@ -16,7 +16,6 @@ import qualified Data.Text                    as T
 import           Data.Time
 import           Happstack.Server             hiding (Session)
 import           Happstack.Server.Compression
-import           System.Locale                (defaultTimeLocale)
 
 import Blog
 import BlogDB  hiding (updateEntry)
