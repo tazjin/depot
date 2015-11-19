@@ -14,7 +14,7 @@ import           BlogDB      (BlogLang (..))
 
 data BlogError = NotFound | DBError
 
-version = "4.2"
+version = "5.0-beta"
 
 allLang = [EN, DE]
 
