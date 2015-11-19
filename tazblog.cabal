@@ -55,7 +55,8 @@ executable tazblog
   build-depends: base,
                  acid-state,
                  tazblog,
-                 options
+                 options,
+                 network
 
 executable tazblog-db
   hs-source-dirs: db
