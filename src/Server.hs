@@ -15,20 +15,11 @@ import           Data.Text                    (Text)
 import qualified Data.Text                    as T
 import           Data.Time
 import           Happstack.Server             hiding (Session)
-import           Happstack.Server.Compression
 
 import Blog
 import BlogDB  hiding (updateEntry)
 import Locales
 import RSS
-
-
-instance FromReqURI BlogLang where
-  fromReqURI sub =
-    case map toLower sub of
-      "de" -> Just DE
-      "en" -> Just EN
-      _    -> Nothing
 
 tmpPolicy :: BodyPolicy
 tmpPolicy = defaultBodyPolicy "/tmp" 0 200000 1000
@@ -39,13 +30,9 @@ runBlog acid port respath =
 
 tazBlog :: AcidState Blog -> String -> ServerPart Response
 tazBlog acid resDir = do
-    compr <- compressedResponseFilter
-    msum [ path $ \(lang :: BlogLang) -> blogHandler acid lang
-         , nullDir >> showIndex acid EN
-         , dir " " $ nullDir >>
-            seeOther ("https://plus.google.com/115916629925754851590" :: Text) (toResponse ())
+    msum [ nullDir >> blogHandler acid EN
+         , dir "de" $ blogHandler acid DE
          , path $ \(year :: Int) -> path $ \(month :: Int) -> path $ \(id_ :: String) -> formatOldLink year month id_
-         , dir "res" $ serveDirectory DisableBrowsing [] "../res"
          , dir "notice" $ ok $ toResponse showSiteNotice
          {- :Admin handlers -}
          , do dirs "admin/postentry" nullDir
@@ -75,7 +62,7 @@ tazBlog acid resDir = do
               setHeaderM "expires" "Tue, 20 Jan 2037 04:20:42 GMT"
               dir "static" $ serveDirectory DisableBrowsing [] resDir
          , serveDirectory DisableBrowsing [] resDir
-         , notFound $ toResponse $ showError NotFound DE
+         , notFound $ toResponse $ showError NotFound EN
          ]
 
 blogHandler :: AcidState Blog -> BlogLang -> ServerPart Response

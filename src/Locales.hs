@@ -118,12 +118,7 @@ notFoundTitle EN = "Not found"
 
 notFoundText :: BlogLang -> Text
 notFoundText DE = "Das gewünschte Objekt wurde leider nicht gefunden."
-notFoundText EN = "The requested object could unfortunately not be found."
-
--- right side text (this is inserted AS IS. Escape HTML!)
-rightText :: BlogLang -> Text
-rightText DE = "English version <a href=\"/en\" class=\"link\">available here</a>."
-rightText EN = "Deutsche Version <a href=\"/de\" class=\"link\">hier verf&uuml;gbar</a>."
+notFoundText EN = "The requested object could not be found."
 
 -- static information
 repoURL   :: Text = "http://hg.tazj.in/tazblog-haskell"

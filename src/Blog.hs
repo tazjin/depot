@@ -57,8 +57,6 @@ $doctype 5
             <br>
             <div .span6>
               <span .contacts #cosx>^{contactInfo}
-            <div .span6>
-              <span .righttext>^{preEscapedToHtml $ rightText lang}
       <div .container>
         ^{body}
     <footer .footer>
