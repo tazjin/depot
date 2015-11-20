@@ -19,12 +19,6 @@ sub vcl_recv {
                 return (purge);
         }
 
-        # Redirect /en to / (no more multi-language support)
-        if (req.url ~ "^/en") {
-                set req.url = regsub(req.url, "^/en/", "/");
-                return (synth(301, ""));
-        }
-
         # Don't cache admin page
         if (req.url ~ "^/admin") {
                 return (pass);
