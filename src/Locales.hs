@@ -5,8 +5,6 @@ import           Data.Maybe  (fromMaybe)
 import           Data.Text   (Text)
 import qualified Data.Text   as T
 import           Network.URI
-
-
 import           BlogDB      (BlogLang (..))
 
 {- to add a language simply define its abbreviation and Show instance then
@@ -14,7 +12,7 @@ import           BlogDB      (BlogLang (..))
 
 data BlogError = NotFound | DBError
 
-version = "5.0"
+version = "5.0.1"
 
 allLang = [EN, DE]
 

@@ -21,6 +21,14 @@ import BlogDB  hiding (updateEntry)
 import Locales
 import RSS
 
+
+instance FromReqURI BlogLang where
+  fromReqURI sub =
+    case map toLower sub of
+      "de" -> Just DE
+      "en" -> Just EN
+      _    -> Nothing
+
 tmpPolicy :: BodyPolicy
 tmpPolicy = defaultBodyPolicy "/tmp" 0 200000 1000
 
@@ -31,8 +39,7 @@ runBlog acid port respath =
 tazBlog :: AcidState Blog -> String -> ServerPart Response
 tazBlog acid resDir = do
     msum [ nullDir >> blogHandler acid EN
-         , dir "de" $ blogHandler acid DE
-         , path $ \(year :: Int) -> path $ \(month :: Int) -> path $ \(id_ :: String) -> formatOldLink year month id_
+         , path $ \(lang :: BlogLang) -> blogHandler acid lang
          , dir "notice" $ ok $ toResponse showSiteNotice
          {- :Admin handlers -}
          , do dirs "admin/postentry" nullDir
@@ -62,7 +69,7 @@ tazBlog acid resDir = do
               setHeaderM "expires" "Tue, 20 Jan 2037 04:20:42 GMT"
               dir "static" $ serveDirectory DisableBrowsing [] resDir
          , serveDirectory DisableBrowsing [] resDir
-         , notFound $ toResponse $ showError NotFound EN
+         , notFound $ toResponse $ showError NotFound DE
          ]
 
 blogHandler :: AcidState Blog -> BlogLang -> ServerPart Response
@@ -73,11 +80,6 @@ blogHandler acid lang =
          , dir "rss.xml" $ nullDir >> showRSS acid lang
          , notFound $ toResponse $ showError NotFound lang
          ]
-
-formatOldLink :: Int -> Int -> String -> ServerPart Response
-formatOldLink y m id_ =
-  flip seeOther (toResponse ()) $
-    concat $ intersperse' "/"  ["de", show y, show m, replace '.' '/' id_]
 
 showEntry :: AcidState Blog -> BlogLang -> EntryId -> ServerPart Response
 showEntry acid lang eId = do
