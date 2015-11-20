@@ -3,6 +3,7 @@ kind: ReplicationController
 metadata:
   name: tazblog
 spec:
+  replicas: 2
   selector:
     app: tazblog
   template:
@@ -26,7 +27,7 @@ spec:
         - image: tazjin/hitch:master
           imagePullPolicy: Always
           name: tazblog-hitch
-          command: ["hitch", "--user=hitch", "/etc/hitch/ssl/tazblog-tls"]
+          command: ["hitch", "--backend=:6081", "--user=hitch", "/etc/hitch/ssl/tazblog-tls"]
           ports:
             - containerPort: 8443
           volumeMounts:
