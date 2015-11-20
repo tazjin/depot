@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: tazblog-db
+  labels:
+    app: tazblog-db
+spec:
+  selector:
+    app: tazblog-db
+  ports:
+    - port: 8070
+      name: tazblog-db

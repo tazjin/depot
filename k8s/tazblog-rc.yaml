@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: tazblog
+spec:
+  selector:
+    app: tazblog
+  template:
+    metadata:
+      labels:
+        app: tazblog
+    spec:
+      containers:
+        - image: tazjin/tazblog-haskell:master
+          imagePullPolicy: Always
+          name: tazblog
+          command: ["tazblog", "--dbHost", "tazblog-db.default.svc.cluster.local"]
+          ports:
+            - containerPort: 8000
+        - image: tazjin/varnish
+          imagePullPolicy: Always
+          name: tazblog-varnish
+          ports:
+            - containerPort: 6081
+            - containerPort: 6082
+        - image: tazjin/hitch:master
+          imagePullPolicy: Always
+          name: tazblog-hitch
+          command: ["hitch", "--user=hitch", "/etc/hitch/ssl/tazblog-tls"]
+          ports:
+            - containerPort: 8443
+          volumeMounts:
+            - name: tazblog-tls
+              readOnly: true
+              mountPath: /etc/hitch/ssl
+      volumes:
+        - name: tazblog-tls
+          secret:
+            secretName: tazblog-tls

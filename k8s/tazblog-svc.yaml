@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: tazblog
+  labels:
+    app: tazblog
+spec:
+  type: LoadBalancer
+  selector:
+    app: tazblog
+  ports:
+    - port: 80
+      targetPort: 6081
+      name: tazblog-http
+    - port: 443
+      targetPort: 8443
+      name: tazblog-https
