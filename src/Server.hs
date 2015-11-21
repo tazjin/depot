@@ -21,7 +21,6 @@ import BlogDB  hiding (updateEntry)
 import Locales
 import RSS
 
-
 instance FromReqURI BlogLang where
   fromReqURI sub =
     case map toLower sub of

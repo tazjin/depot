@@ -83,8 +83,6 @@ showFooter l v = [shamlet|
       \ and without PHP, Java, Perl, MySQL and Python.
       <p>
         <a class="link" href=#{repoURL}>#{append "Version " v}
-        &nbsp;
-        <a class="link" href="/notice">#{noticeText l}
   <div .row .text-center>
     <div .span12>
       <span style="font-size:13px;font-family:Helvetica;">ಠ_ಠ
@@ -167,24 +165,6 @@ renderEntry e@Entry{..} = [shamlet|
 |]
   where
    woText = flip T.append author $ T.pack $ formatTime defaultTimeLocale (eTimeFormat lang) edate
-
-
-showSiteNotice :: Html
-showSiteNotice = [shamlet|
-$doctype 5
-<head>
- <title>Impressum
-<body>
- <h2>Impressum
- <br>
- <p>
-  Vincent Ambo
-  <br>
-  Gyllenborgsgatan 8, LGH 1306
-  <br>
-  11243 Stockholm
-  <p><a href="/" style="color:black;">Back
-|]
 
 {- Administration pages -}
 
