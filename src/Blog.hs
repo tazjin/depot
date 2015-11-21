@@ -72,7 +72,7 @@ renderEntries :: Bool -> [Entry] -> Maybe Html -> Html
 renderEntries showAll entries pageLinks = [shamlet|
 $forall entry <- toDisplay
   <article>
-    <h2>
+    <h2 .inline>
       <a href=#{linkElems entry} .unstyled-link>
         #{title entry}
     <aside .date>
@@ -115,7 +115,7 @@ showLinks Nothing lang = [shamlet|
 renderEntry :: Entry -> Html
 renderEntry e@Entry{..} = [shamlet|
 <article>
-  <h2>
+  <h2 .inline>
     #{title}
   <aside .date>
     #{pack $ formatTime defaultTimeLocale "%Y-%m-%d" edate}
