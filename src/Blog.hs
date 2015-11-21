@@ -82,8 +82,9 @@ $forall entry <- toDisplay
     $else
       ^{preEscapedToHtml $ btext entry}
     $if ((/=) (mtext entry) empty)
-      <a .uncoloured-link href=#{linkElems entry}>
-        #{readMore $ lang entry}
+      <p>
+        <a .uncoloured-link href=#{linkElems entry}>
+          #{readMore $ lang entry}
   <hr>
 $maybe links <- pageLinks
   ^{links}
@@ -123,6 +124,7 @@ renderEntry e@Entry{..} = [shamlet|
     <p>^{renderEntryMarkdown $ mtext}
   $else
     ^{preEscapedToHtml $ btext}
+    <p>^{preEscapedToHtml $ mtext}
 <hr>
 |]
 
