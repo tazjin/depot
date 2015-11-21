@@ -41,6 +41,12 @@ sub vcl_backend_response {
 sub vcl_deliver {
         # Add an HSTS header to everything
         set resp.http.Strict-Transport-Security = "max-age=31536000;includeSubdomains;preload";
+
+        if (obj.hits > 0) {
+                set resp.http.X-Cache = "HIT";
+        } else {
+                set resp.http.X-Cache = "MISS";
+        }
 }
 
 sub vcl_synth {
