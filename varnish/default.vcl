@@ -26,7 +26,7 @@ sub vcl_recv {
         }
 
         # Redirect non-www to www and non-HTTPS to HTTPS
-        if (req.http.host ~ "tazj.in" || std.port(local.ip) == 6081) {
+        if (req.http.host ~ "^tazj.in" || std.port(local.ip) == 6081) {
                 return (synth (750, ""));
         }
 }
