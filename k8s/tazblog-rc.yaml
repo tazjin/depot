@@ -27,7 +27,7 @@ spec:
         - image: tazjin/hitch:master
           imagePullPolicy: Always
           name: tazblog-hitch
-          command: ["hitch", "--backend=:6081", "--user=hitch", "/etc/hitch/ssl/tazblog-tls"]
+          command: ["hitch", "--backend=[127.0.0.1]:6081", "--user=hitch", "/etc/hitch/ssl/tazblog-tls"]
           ports:
             - containerPort: 8443
           volumeMounts:
