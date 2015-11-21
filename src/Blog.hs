@@ -222,16 +222,12 @@ editPage (Entry{..}) = adminTemplate "Index" $ [shamlet|
 
 showError :: BlogError -> BlogLang -> Html
 showError NotFound l = blogTemplate l (T.append ": " $ notFoundTitle l) $ [shamlet|
-<div .row .text-center>
-  <div .span12  .notFoundFace>:(
-<div .row .text-center>
-  <div .span12 .notFoundText>
-    #{notFoundText l}
+<p>:(
+<p>#{notFoundText l}
+<hr>
 |]
 showError UnknownError l = blogTemplate l "" $ [shamlet|
-<div .row .text-center>
-  <div .span12  .notFoundFace>:(
-<div .row .text-center>
-  <div .span12 .notFoundText>
-    #{unknownErrorText l}
+<p>:(
+<p>#{unknownErrorText l}
+<hr>
 |]
