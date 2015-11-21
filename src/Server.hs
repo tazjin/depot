@@ -40,7 +40,6 @@ tazBlog acid resDir = do
                 adminHandler acid -- this checks auth
               , method GET >> (ok $ toResponse adminLogin)
               , method POST >> processLogin acid ]
-         , dirs "static/blogv40.css" $ serveBlogStyle
          , dir "static" $ staticHandler resDir
          , blogHandler acid EN
          , notFound $ toResponse $ showError NotFound DE
@@ -96,7 +95,7 @@ showIndex acid lang = do
     entries <- query' acid (LatestEntries lang)
     (page :: Maybe Int) <- optional $ lookRead "page"
     ok $ toResponse $ blogTemplate lang "" $
-        renderEntries False (eDrop page entries) (topText lang) (Just $ showLinks page lang)
+        renderEntries False (eDrop page entries) (Just $ showLinks page lang)
   where
     eDrop :: Maybe Int -> [a] -> [a]
     eDrop (Just i) = drop ((i-1) * 6)

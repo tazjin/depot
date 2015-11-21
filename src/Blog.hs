@@ -28,61 +28,39 @@ show' = pack . show
 markdownCutoff :: UTCTime
 markdownCutoff = fromJust $ parseTimeM False defaultTimeLocale "%s" "1367149834"
 
-
--- blog CSS (admin is still static)
-stylesheetSource = $(luciusFile "res/blog.lucius")
-blogStyle = renderCssUrl undefined stylesheetSource
-
 -- blog HTML
 blogTemplate :: BlogLang -> Text -> Html -> Html
 blogTemplate lang t_append body = [shamlet|
 $doctype 5
   <head>
-    <title>#{blogTitle lang t_append}
-    <link rel="stylesheet" type="text/css" href="/static/bootstrap.css" media="all">
-    <link rel="stylesheet" type="text/css" href="/static/blogv40.css" media="all">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="/static/blog.css" media="all">
     <link rel="alternate" type="application/rss+xml" title="RSS-Feed" href=#{rssUrl}>
-    <meta http-equiv="content-type" content="text/html;charset=UTF-8">
+    <title>#{blogTitle lang t_append}
   <body>
-    <div #wrap>
-      <div .header>
-        <div .container >
-          <div .row>
-            <div .span12 .blogtitle>
-              <a class="btitle" href="/">#{blogTitle lang empty}
-          <div .row>
-            <br>
-            <div .span6>
-              <span .contacts #cosx>^{contactInfo}
-      <div .container>
-        ^{body}
-    <footer .footer>
-      ^{showFooter $ pack version}
+    <header>
+      <h1>
+        <a href="/" .unstyled-link>#{blogTitle lang empty}
+      <hr>
+    ^{body}
+    ^{showFooter}
 |]
  where
   rssUrl = T.concat ["/", show' lang, "/rss.xml"]
-  contactInfo = [shamlet|
-#{contactText lang}
-<a class="link" href=#{mailTo}>Mail
-#{orText lang}
-<a class="link" href=#{twitter} target="_blank">Twitter
-|]
 
-showFooter :: Text -> Html
-showFooter v = [shamlet|
-<div .container>
-  <div .row>
-    <div .span12 .righttext style="text-align: right;margin-right:-200px">
-      Proudly made with #
-      <a class="link" href="http://haskell.org">Haskell
-      , #
-      <a class="link" href="https://hackage.haskell.org/package/acid-state">Acid-State
-      \ and without PHP, Java, Perl, MySQL and Python.
-      <p>
-        <a class="link" href=#{repoURL}>#{append "Version " v}
-  <div .row .text-center>
-    <div .span12>
-      <span style="font-size:13px;font-family:Helvetica;">ಠ_ಠ
+showFooter :: Html
+showFooter = [shamlet|
+<footer>
+  <p .footer>Served without any dynamic languages.
+  <p .footer>
+    <a href=#{repoURL} .uncoloured-link>Version #{version}
+    |
+    <a href=#{twitter} .uncoloured-link>Twitter
+    |
+    <a href=#{mailTo} .uncoloured-link>Mail
+  <p .lod>
+    ಠ_ಠ
 |]
 
 isEntryMarkdown :: Entry -> Bool
@@ -91,77 +69,63 @@ isEntryMarkdown e = edate e > markdownCutoff
 renderEntryMarkdown :: Text -> Html
 renderEntryMarkdown = markdown def {msXssProtect = False} . fromStrict
 
-renderEntries :: Bool -> [Entry] -> Text -> Maybe Html -> Html
-renderEntries showAll entries topText footerLinks = [shamlet|
-<div .row>
-  <div .span12>
-    <p>
-      <span class="innerTitle">
-        <b>#{topText}
-$forall entry <- elist
-  <div .row>
-    <div .span2>
-      <a href=#{linkElems entry}>
-        <b>#{title entry}
-        <br>
-        <i>#{pack $ formatTime defaultTimeLocale "%Y-%m-%d" $ edate entry}
-    <div .span10 .entry>
-      $if (isEntryMarkdown entry)
-        ^{renderEntryMarkdown $ append " " $ btext entry}
-      $else
-        ^{preEscapedToHtml $ append " " $ btext entry}
-      $if ((/=) (mtext entry) empty)
-        <p>
-          <a .readmore href=#{linkElems entry}>#{readMore $ lang entry}
-      $else
-        <br>&nbsp;
-$maybe links <- footerLinks
+renderEntries :: Bool -> [Entry] -> Maybe Html -> Html
+renderEntries showAll entries pageLinks = [shamlet|
+$forall entry <- toDisplay
+  <article>
+    <h2>
+      <a href=#{linkElems entry} .unstyled-link>
+        #{title entry}
+    <aside .date>
+      #{pack $ formatTime defaultTimeLocale "%Y-%m-%d" $ edate entry}
+    $if (isEntryMarkdown entry)
+      ^{renderEntryMarkdown $ btext entry}
+    $else
+      ^{preEscapedToHtml $ btext entry}
+    $if ((/=) (mtext entry) empty)
+      <a .uncoloured-link href=#{linkElems entry}>
+        #{readMore $ lang entry}
+  <hr>
+$maybe links <- pageLinks
   ^{links}
 |]
   where
-   elist = if' showAll entries (take 6 entries)
+   toDisplay = if' showAll entries (take 6 entries)
    linkElems Entry{..} = concat $ intersperse' "/" [show lang, show entryId]
 
 showLinks :: Maybe Int -> BlogLang -> Html
 showLinks (Just i) lang = [shamlet|
   $if ((>) i 1)
-    <div .row .text-center>
-      <div .span12>
-        <a href=#{nLink $ succ i}>#{backText lang}
-        \ -- #
-        <a href=#{nLink $ pred i}>#{nextText lang}
+    <div .navigation>
+      <a href=#{nLink $ succ i} .uncoloured-link>#{backText lang}
+      |
+      <a href=#{nLink $ pred i} .uncoloured-link>#{nextText lang}
   $elseif ((<=) i 1)
     ^{showLinks Nothing lang}
 |]
   where
    nLink page = T.concat ["/", show' lang, "/?page=", show' page]
 showLinks Nothing lang = [shamlet|
-<div .row .text-center>
-  <div .span12>
-    <a href=#{nLink}>#{backText lang}
+<div .navigation>
+  <a href=#{nLink} .uncoloured-link>#{backText lang}
 |]
   where
    nLink = T.concat ["/", show' lang, "/?page=2"]
 
 renderEntry :: Entry -> Html
 renderEntry e@Entry{..} = [shamlet|
-<div .row .pusher>
-  <div .span9>
-    <span .boldify>#{title}
-  <div .span3>
-    <span .righttext><i>#{woText}</i>
-<div .row .innerContainer>
-  <div .span10>
-    <article>
-      $if (isEntryMarkdown e)
-        ^{renderEntryMarkdown btext}
-        <p>^{renderEntryMarkdown $ mtext}
-      $else
-        ^{preEscapedToHtml $ btext}
-        <p>^{preEscapedToHtml $ mtext}
+<article>
+  <h2>
+    #{title}
+  <aside .date>
+    #{pack $ formatTime defaultTimeLocale "%Y-%m-%d" edate}
+  $if (isEntryMarkdown e)
+    ^{renderEntryMarkdown btext}
+    <p>^{renderEntryMarkdown $ mtext}
+  $else
+    ^{preEscapedToHtml $ btext}
+<hr>
 |]
-  where
-   woText = flip T.append author $ T.pack $ formatTime defaultTimeLocale (eTimeFormat lang) edate
 
 {- Administration pages -}
 

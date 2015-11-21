@@ -20,8 +20,8 @@ if' True x _ = x
 if' False _ y = y
 
 blogTitle :: BlogLang -> Text -> Text
-blogTitle DE s = T.concat ["Tazjins Blog", s]
-blogTitle EN s = T.concat ["Tazjin's Blog", s]
+blogTitle DE s = T.concat ["Tazjins blog", s]
+blogTitle EN s = T.concat ["Tazjin's blog", s]
 
 showLangText :: BlogLang -> Text
 showLangText EN = "en"
@@ -77,8 +77,8 @@ nextText DE = "Später"
 nextText EN = "Later"
 
 readMore :: BlogLang -> Text
-readMore DE = "Weiterlesen"
-readMore EN = "Read more"
+readMore DE = "[Weiterlesen]"
+readMore EN = "[Read more]"
 
 eTimeFormat :: BlogLang -> String
 eTimeFormat DE = "Geschrieben am %Y-%m-%d von "
