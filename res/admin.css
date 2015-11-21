@@ -1,7 +1,6 @@
 @charset "UTF-8";
 /* CSS Document */
 
-
 body {
 	padding-top: 20px;
 	font-family: 'PT Sans', sans-serif;
@@ -19,7 +18,7 @@ body {
 	background-color: rgb(245,245,245);
 }
 
-.loginBox {	
+.loginBox {
 	width: 400px;
 	margin: 0 auto;
 }
@@ -31,7 +30,7 @@ body {
 	font-size: 12px;
 	padding-left: 20px;
 	padding-top: 11px;
-	background: url(/res/loginBoxTop.png);
+	background: url(/static/loginBoxTop.png);
 }
 
 .loginBoxMiddle {
