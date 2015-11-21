@@ -1,15 +1,17 @@
 apiVersion: v1
 kind: ReplicationController
 metadata:
-  name: tazblog
+  name: tazblog-5.1
 spec:
   replicas: 2
   selector:
     app: tazblog
+    version: v5.1
   template:
     metadata:
       labels:
         app: tazblog
+        version: v5.1
     spec:
       containers:
         - image: tazjin/tazblog-haskell:master
@@ -27,7 +29,7 @@ spec:
         - image: tazjin/hitch:master
           imagePullPolicy: Always
           name: tazblog-hitch
-          command: ["hitch", "--backend=[127.0.0.1]:6081", "--user=hitch", "/etc/hitch/ssl/tazblog-tls"]
+          command: ["hitch", "--backend=[127.0.0.1]:6083", "--write-proxy", "--user=hitch", "/etc/hitch/ssl/tazblog-tls"]
           ports:
             - containerPort: 8443
           volumeMounts:
