@@ -27,7 +27,7 @@ instance Options MainOptions where
         "Remote acid-state database port. Default is 8070"
     <*> simpleOption "blogPort" 8000
         "Port to serve the blog on. Default is 8000."
-    <*> simpleOption "resourceDir" "/opt/tazblog/res"
+    <*> simpleOption "resourceDir" "/opt/tazblog/static"
         "Resources folder location."
 
 main :: IO()
