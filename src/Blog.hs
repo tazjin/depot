@@ -1,7 +1,6 @@
 module Blog where
 
 import BlogDB
-import Data.List       (intersperse)
 import Data.Maybe      (fromJust)
 import Data.Text       (Text, append, empty, pack)
 import Data.Text.Lazy  (fromStrict)
@@ -12,10 +11,6 @@ import Text.Hamlet
 import Text.Markdown
 
 import qualified Data.Text as T
-
--- custom list functions
-intersperse' :: a -> [a] -> [a]
-intersperse' sep l = sep : intersperse sep l
 
 replace :: Eq a => a -> a -> [a] -> [a]
 replace x y = map (\z -> if z == x then y else z)
@@ -91,7 +86,7 @@ $maybe links <- pageLinks
 |]
   where
    toDisplay = if showAll then entries else (take 6 entries)
-   linkElems Entry{..} = concat $ intersperse' "/" [show lang, show entryId]
+   linkElems Entry{..} = concat $ ["/", show lang, "/", show entryId]
 
 showLinks :: Maybe Int -> BlogLang -> Html
 showLinks (Just i) lang = [shamlet|

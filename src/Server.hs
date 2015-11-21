@@ -149,7 +149,7 @@ updateEntry acid entryId = do
                          , btext = nBtext
                          , mtext = nMtext}
     update' acid (UpdateEntry newEntry)
-    seeOther (concat $ intersperse' "/" [show $ lang entry, show entryId])
+    seeOther (concat $ ["/", show $ lang entry, "/", show entryId])
              (toResponse ())
 
 guardSession :: AcidState Blog -> ServerPartT IO ()
