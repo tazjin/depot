@@ -124,6 +124,6 @@ unknownErrorText DE = "Ein unbekannter Fehler ist aufgetreten."
 unknownErrorText EN = "An unknown error has occured."
 
 -- static information
-repoURL   :: Text = "http://hg.tazj.in/tazblog-haskell"
+repoURL   :: Text = "https://bitbucket.org/tazjin/tazblog-haskell"
 mailTo    :: Text = "mailto:tazjin+blog@gmail.com"
 twitter   :: Text = "http://twitter.com/#!/tazjin"
