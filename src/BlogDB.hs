@@ -7,11 +7,9 @@ import Data.Acid.Advanced
 import Data.Acid.Remote
 import Data.ByteString      (ByteString)
 import Data.Data            (Data, Typeable)
-import Data.IxSet           (Indexable (..), IxSet (..), Proxy (..), getOne, ixFun, ixSet, (@=))
-import Data.List            (insert)
-import Data.SafeCopy        (SafeCopy, base, deriveSafeCopy)
+import Data.IxSet           (Indexable (..), IxSet, Proxy (..), getOne, ixFun, ixSet, (@=))
+import Data.SafeCopy        (base, deriveSafeCopy)
 import Data.Text            (Text, pack)
-import Data.Text.Lazy       (toStrict)
 import Data.Time
 import Network              (PortID (..))
 import System.Environment   (getEnv)
@@ -20,7 +18,6 @@ import qualified Crypto.Hash.SHA512     as SHA (hash)
 import qualified Data.ByteString.Base64 as B64 (encode)
 import qualified Data.ByteString.Char8  as B
 import qualified Data.IxSet             as IxSet
-import qualified Data.Text              as Text
 
 newtype EntryId = EntryId { unEntryId :: Integer }
     deriving (Eq, Ord, Data, Enum, Typeable)
@@ -138,12 +135,12 @@ updateEntry e =
 
 getEntry :: EntryId -> Query Blog (Maybe Entry)
 getEntry eId =
-    do b@Blog{..} <- ask
+    do Blog{..} <- ask
        return $ getOne $ blogEntries @= eId
 
 latestEntries :: BlogLang -> Query Blog [Entry]
 latestEntries lang =
-    do b@Blog{..} <- ask
+    do Blog{..} <- ask
        return $ IxSet.toDescList (Proxy :: Proxy EDate) $ blogEntries @= lang
 
 addSession :: Session -> Update Blog Session
@@ -154,7 +151,7 @@ addSession nSession =
 
 getSession :: SessionID -> Query Blog (Maybe Session)
 getSession sId =
-  do b@Blog{..} <- ask
+  do Blog{..} <- ask
      return $ getOne $ blogSessions @= sId
 
 clearSessions :: Update Blog [Session]
@@ -172,12 +169,12 @@ addUser un pw =
 
 getUser :: Username -> Query Blog (Maybe User)
 getUser uN =
-  do b@Blog{..} <- ask
+  do Blog{..} <- ask
      return $ getOne $ blogUsers @= uN
 
 checkUser :: Username -> String -> Query Blog Bool
 checkUser uN pw =
-  do b@Blog{..} <- ask
+  do Blog{..} <- ask
      let user = getOne $ blogUsers @= uN
      case user of
        Nothing  -> return False

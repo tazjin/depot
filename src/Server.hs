@@ -2,15 +2,13 @@
 
 module Server where
 
-import           Control.Applicative    (optional, pure, (<$>), (<*>))
-import           Control.Monad          (liftM, msum, mzero, unless, when)
+import           Control.Applicative    (optional)
+import           Control.Monad          (msum, mzero, unless)
 import           Control.Monad.IO.Class (liftIO)
-import           Control.Monad.Reader   (ask)
 import           Data.Acid
 import           Data.Acid.Advanced
-import           Data.ByteString.Char8  (ByteString, pack, unpack)
+import           Data.ByteString.Char8  (unpack)
 import           Data.Char              (toLower)
-import           Data.Maybe             (fromJust)
 import           Data.Text              (Text)
 import qualified Data.Text              as T
 import           Data.Time
@@ -136,7 +134,7 @@ postEntry acid = do
     timeToId t = EntryId . read $ formatTime defaultTimeLocale "%s" t
     getLang :: String -> ServerPart BlogLang
     getLang "de" = return DE
-    getLang "en" = return EN
+    getLang _ = return EN -- English is default
 
 entryList :: AcidState Blog -> BlogLang -> ServerPart Response
 entryList acid lang = do

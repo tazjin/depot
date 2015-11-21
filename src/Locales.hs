@@ -1,7 +1,6 @@
 module Locales where
 
 import           BlogDB      (BlogLang (..))
-import           Data.Data   (Data, Typeable)
 import           Data.Maybe  (fromMaybe)
 import           Data.Text   (Text)
 import qualified Data.Text   as T
@@ -10,7 +9,7 @@ import           Network.URI
 {- to add a language simply define its abbreviation and Show instance then
  - translate the appropriate strings and add CouchDB views in Server.hs -}
 
-data BlogError = NotFound | DBError
+data BlogError = NotFound | UnknownError
 
 version = "5.1-beta"
 
@@ -37,31 +36,33 @@ getMonth l y m = T.append (monthName l m) $ T.pack $ show y
   where
     monthName :: BlogLang -> Int -> Text
     monthName DE m = case m of
-                    1 -> "Januar "
-                    2 -> "Februar "
-                    3 -> "März "
-                    4 -> "April "
-                    5 -> "Mai "
-                    6 -> "Juni "
-                    7 -> "Juli "
-                    8 -> "August "
-                    9 -> "September "
+                    1  -> "Januar "
+                    2  -> "Februar "
+                    3  -> "März "
+                    4  -> "April "
+                    5  -> "Mai "
+                    6  -> "Juni "
+                    7  -> "Juli "
+                    8  -> "August "
+                    9  -> "September "
                     10 -> "Oktober "
                     11 -> "November "
                     12 -> "Dezember "
+                    _  -> "Unbekannt "
     monthName EN m = case m of
-                    1 -> "January "
-                    2 -> "February "
-                    3 -> "March "
-                    4 -> "April "
-                    5 -> "May "
-                    6 -> "June "
-                    7 -> "July "
-                    8 -> "August "
-                    9 -> "September "
+                    1  -> "January "
+                    2  -> "February "
+                    3  -> "March "
+                    4  -> "April "
+                    5  -> "May "
+                    6  -> "June "
+                    7  -> "July "
+                    8  -> "August "
+                    9  -> "September "
                     10 -> "October "
                     11 -> "November "
                     12 -> "December "
+                    _  -> "Unknown "
 
 entireMonth :: BlogLang -> Text
 entireMonth DE = "Ganzer Monat"
@@ -117,6 +118,10 @@ notFoundTitle EN = "Not found"
 notFoundText :: BlogLang -> Text
 notFoundText DE = "Das gewünschte Objekt wurde leider nicht gefunden."
 notFoundText EN = "The requested object could not be found."
+
+unknownErrorText :: BlogLang -> Text
+unknownErrorText DE = "Ein unbekannter Fehler ist aufgetreten."
+unknownErrorText EN = "An unknown error has occured."
 
 -- static information
 repoURL   :: Text = "http://hg.tazj.in/tazblog-haskell"

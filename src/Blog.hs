@@ -1,11 +1,8 @@
 module Blog where
 
 import BlogDB
-import Control.Monad   (unless, when)
-import Data.Data       (Data, Typeable)
 import Data.List       (intersperse)
 import Data.Maybe      (fromJust)
-import Data.Monoid     (mempty)
 import Data.Text       (Text, append, empty, pack)
 import Data.Text.Lazy  (fromStrict)
 import Data.Time
@@ -60,7 +57,7 @@ $doctype 5
       <div .container>
         ^{body}
     <footer .footer>
-      ^{showFooter lang $ pack version}
+      ^{showFooter $ pack version}
 |]
  where
   rssUrl = T.concat ["/", show' lang, "/rss.xml"]
@@ -71,8 +68,8 @@ $doctype 5
 <a class="link" href=#{twitter} target="_blank">Twitter
 |]
 
-showFooter :: BlogLang -> Text -> Html
-showFooter l v = [shamlet|
+showFooter :: Text -> Html
+showFooter v = [shamlet|
 <div .container>
   <div .row>
     <div .span12 .righttext style="text-align: right;margin-right:-200px">
@@ -271,4 +268,10 @@ showError NotFound l = blogTemplate l (T.append ": " $ notFoundTitle l) $ [shaml
   <div .span12 .notFoundText>
     #{notFoundText l}
 |]
-
+showError UnknownError l = blogTemplate l "" $ [shamlet|
+<div .row .text-center>
+  <div .span12  .notFoundFace>:(
+<div .row .text-center>
+  <div .span12 .notFoundText>
+    #{unknownErrorText l}
+|]
