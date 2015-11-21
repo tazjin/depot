@@ -184,7 +184,7 @@ adminLogin = adminTemplate "Login" $ [shamlet|
 <div class="loginBox">
  <div class="loginBoxTop">TazBlog Admin: Login
  <div class="loginBoxMiddle">
-  <form action="/dologin" method="POST">
+  <form action="/admin" method="POST">
    <p>Account ID
    <p><input type="text" style="font-size:2;" name="account" value="tazjin" readonly="1">
    <p>Passwort
@@ -195,40 +195,39 @@ adminLogin = adminTemplate "Login" $ [shamlet|
 adminIndex :: Text -> Html
 adminIndex sUser = adminTemplate "Index" $ [shamlet|
 <div style="float:center;">
- <form action="/admin/postentry" method="POST">
+ <form action="/admin/entry" method="POST">
   <table>
    <tr>
-    <thead><td>Titel:
+    <thead><td>Title:
     <td><input type="text" name="title">
    <tr>
-    <thead><td>Sprache:
+    <thead><td>Language:
     <td><select name="lang">
+     <option value="en">English
      <option value="de">Deutsch
-     <option value="en">Englisch
    <tr>
     <thead><td>Text:
     <td>
      <textarea name="btext" cols="100" rows="15">
    <tr>
     <thead>
-     <td style="vertical-align:top;">Mehr Text:
+     <td style="vertical-align:top;">Read more:
     <td>
      <textarea name="mtext" cols="100" rows="15">
   <input type="hidden" name="author" value=#{sUser}>
-  <input style="margin-left:20px;" type="submit" value="Absenden">
+  <input style="margin-left:20px;" type="submit" value="Submit">
  ^{adminFooter}
 |]
 
 adminFooter :: Html
 adminFooter = [shamlet|
-<a href="/">Startseite
-\ -- Entrylist: #
-<a href="/admin/entrylist/de">DE
-\ & #
-<a href="/admin/entrylist/en">EN
+<a href="/">Front page
 \ -- #
-<a href="#">Backup
-\ (NYI)
+  <a href="/admin">New article
+\ -- Entry list: #
+  <a href="/admin/entrylist/en">EN
+\ & #
+<a href="/admin/entrylist/de">DE
 |]
 
 adminEntryList :: [Entry] -> Html
@@ -237,7 +236,7 @@ adminEntryList entries = adminTemplate "EntryList" $ [shamlet|
  <table>
   $forall entry <- entries
    <tr>
-    <td><a href=#{append "/admin/edit/" (show' $ entryId entry)}>#{title entry}
+    <td><a href=#{append "/admin/entry/" (show' $ entryId entry)}>#{title entry}
     <td>#{formatPostDate $ edate entry}
 |]
  where
@@ -246,10 +245,10 @@ adminEntryList entries = adminTemplate "EntryList" $ [shamlet|
 editPage :: Entry -> Html
 editPage (Entry{..}) = adminTemplate "Index" $ [shamlet|
 <div style="float:center;">
- <form action="/admin/updateentry" method="POST">
+ <form action=#{append "/admin/entry/" (show' entryId)} method="POST">
   <table>
    <tr>
-    <td>Titel:
+    <td>Title:
     <td>
      <input type="text" name="title" value=#{title}>
    <tr>
@@ -257,11 +256,10 @@ editPage (Entry{..}) = adminTemplate "Index" $ [shamlet|
     <td>
      <textarea name="btext" cols="100" rows="15">#{btext}
    <tr>
-    <td style="vertical-align:top;">Mehr Text:
+    <td style="vertical-align:top;">Read more:
     <td>
      <textarea name="mtext" cols="100" rows="15">#{mtext}
-  <input type="hidden" name="eid" value=#{unEntryId entryId}>
-  <input type="submit" style="margin-left:20px;" value="Absenden">
+  <input type="submit" style="margin-left:20px;" value="Submit">
   <p>^{adminFooter}
 |]
 

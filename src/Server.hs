@@ -37,37 +37,14 @@ runBlog acid port respath =
 
 tazBlog :: AcidState Blog -> String -> ServerPart Response
 tazBlog acid resDir = do
-    msum [ nullDir >> blogHandler acid EN
-         , path $ \(lang :: BlogLang) -> blogHandler acid lang
-         , dir "notice" $ ok $ toResponse showSiteNotice
-         {- :Admin handlers -}
-         , do dirs "admin/postentry" nullDir
-              guardSession acid
-              postEntry acid
-         , do dirs "admin/entrylist" $ dir (show DE) nullDir
-              guardSession acid
-              entryList acid DE
-         , do dirs "admin/entrylist" $ dir (show EN) nullDir
-              guardSession acid
-              entryList acid EN
-         , do guardSession acid
-              dirs "admin/edit" $ path $ \(eId :: Integer) -> editEntry acid eId
-         , do guardSession acid
-              dirs "admin/updateentry" $ nullDir >> updateEntry acid
-         , do dir "admin" nullDir
-              guardSession acid
-              ok $ toResponse $ adminIndex ("tazjin" :: Text)
-         , dir "admin" $ ok $ toResponse adminLogin
-         , dir "dologin" $ processLogin acid
-         , do dirs "static/blogv40.css" nullDir
-              setHeaderM "content-type" "text/css"
-              setHeaderM "cache-control" "max-age=630720000"
-              setHeaderM "expires" "Tue, 20 Jan 2037 04:20:42 GMT"
-              ok $ toResponse blogStyle
-         , do setHeaderM "cache-control" "max-age=630720000"
-              setHeaderM "expires" "Tue, 20 Jan 2037 04:20:42 GMT"
-              dir "static" $ serveDirectory DisableBrowsing [] resDir
-         , serveDirectory DisableBrowsing [] resDir
+    msum [ path $ \(lang :: BlogLang) -> blogHandler acid lang
+         , dir "admin" $ msum [
+                adminHandler acid -- this checks auth
+              , method GET >> (ok $ toResponse adminLogin)
+              , method POST >> processLogin acid ]
+         , dirs "static/blogv40.css" $ serveBlogStyle
+         , dir "static" $ staticHandler resDir
+         , blogHandler acid EN
          , notFound $ toResponse $ showError NotFound DE
          ]
 
@@ -79,6 +56,30 @@ blogHandler acid lang =
          , dir "rss.xml" $ nullDir >> showRSS acid lang
          , notFound $ toResponse $ showError NotFound lang
          ]
+
+staticHandler :: String -> ServerPart Response
+staticHandler resDir = do
+  setHeaderM "cache-control" "max-age=630720000"
+  setHeaderM "expires" "Tue, 20 Jan 2037 04:20:42 GMT"
+  serveDirectory DisableBrowsing [] resDir
+
+serveBlogStyle :: ServerPart Response
+serveBlogStyle = do
+  setHeaderM "content-type" "text/css"
+  setHeaderM "cache-control" "max-age=630720000"
+  setHeaderM "expires" "Tue, 20 Jan 2037 04:20:42 GMT"
+  ok $ toResponse $ blogStyle
+
+adminHandler :: AcidState Blog -> ServerPart Response
+adminHandler acid = do
+  guardSession acid
+  msum [ dir "entry" $ method POST >> postEntry acid
+       , dir "entry" $ path $ \(entry :: Integer) -> msum [
+              method GET >> editEntry acid entry
+            , method POST >> updateEntry acid entry ]
+       , dir "entrylist" $ path $ \(lang :: BlogLang) -> entryList acid lang
+       , ok $ toResponse $ adminIndex "tazjin"
+       ]
 
 showEntry :: AcidState Blog -> BlogLang -> EntryId -> ServerPart Response
 showEntry acid lang eId = do
@@ -114,6 +115,7 @@ showRSS acid lang = do
 
 postEntry :: AcidState Blog -> ServerPart Response
 postEntry acid = do
+    nullDir
     decodeBody tmpPolicy
     now <- liftIO getCurrentTime
     let eId = timeToId now
@@ -142,25 +144,22 @@ entryList acid lang = do
     ok $ toResponse $ adminEntryList entries
 
 editEntry :: AcidState Blog -> Integer -> ServerPart Response
-editEntry acid i = do
-    (Just entry) <- query' acid (GetEntry eId)
+editEntry acid entryId = do
+    (Just entry) <- query' acid (GetEntry $ EntryId entryId)
     ok $ toResponse $ editPage entry
-  where
-    eId = EntryId i
 
-updateEntry :: AcidState Blog -> ServerPart Response -- TODO: Clean this up
-updateEntry acid = do
+updateEntry :: AcidState Blog -> Integer -> ServerPart Response
+updateEntry acid entryId = do
     decodeBody tmpPolicy
-    (eId :: Integer) <- lookRead "eid"
-    (Just entry) <- query' acid (GetEntry $ EntryId eId)
+    (Just entry) <- query' acid (GetEntry $ EntryId entryId)
     nTitle <- lookText' "title"
     nBtext <- lookText' "btext"
     nMtext <- lookText' "mtext"
-    let nEntry = entry { title = nTitle
-                        , btext = nBtext
-                        , mtext = nMtext}
-    update' acid (UpdateEntry nEntry)
-    seeOther (concat $ intersperse' "/" [show $ lang entry, show eId])
+    let newEntry = entry { title = nTitle
+                         , btext = nBtext
+                         , mtext = nMtext}
+    update' acid (UpdateEntry newEntry)
+    seeOther (concat $ intersperse' "/" [show $ lang entry, show entryId])
              (toResponse ())
 
 guardSession :: AcidState Blog -> ServerPartT IO ()
@@ -186,7 +185,7 @@ processLogin acid = do
     login <- query' acid (CheckUser (Username account) password)
     if login
       then createSession account
-      else ok $ toResponse adminLogin
+      else unauthorized $ toResponse adminLogin
   where
     createSession account = do
       now <- liftIO getCurrentTime
