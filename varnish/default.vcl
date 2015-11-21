@@ -30,8 +30,11 @@ sub vcl_backend_response {
         if (beresp.ttl < 1m) {
                 set beresp.ttl = 1m;
         }
+}
 
-        # Add an HSTS header to our response
+sub vcl_deliver {
+        # Add an HSTS header to everything
+        set resp.http.Strict-Transport-Security = "max-age=31536000;includeSubdomains;preload";
 }
 
 sub vcl_synth {
