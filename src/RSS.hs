@@ -1,15 +1,15 @@
 module RSS (renderFeed) where
 
-import qualified Data.Text     as T
+import qualified Data.Text as T
 
-import           Control.Monad (liftM)
-import           Data.Maybe    (fromMaybe)
-import           Data.Time     (UTCTime, getCurrentTime)
-import           Network.URI
-import           Text.RSS
+import Control.Monad (liftM)
+import Data.Maybe    (fromMaybe)
+import Data.Time     (UTCTime, getCurrentTime)
+import Network.URI
+import Text.RSS
 
-import           BlogDB        hiding (Title)
-import           Locales
+import BlogDB  hiding (Title)
+import Locales
 
 createChannel :: BlogLang -> UTCTime -> [ChannelElem]
 createChannel l  now = [ Language $ show l

@@ -2,19 +2,19 @@
 
 module Server where
 
-import           Control.Applicative          (optional, pure, (<$>), (<*>))
-import           Control.Monad                (liftM, msum, mzero, unless, when)
-import           Control.Monad.IO.Class       (liftIO)
-import           Control.Monad.Reader         (ask)
+import           Control.Applicative    (optional, pure, (<$>), (<*>))
+import           Control.Monad          (liftM, msum, mzero, unless, when)
+import           Control.Monad.IO.Class (liftIO)
+import           Control.Monad.Reader   (ask)
 import           Data.Acid
 import           Data.Acid.Advanced
-import           Data.ByteString.Char8        (ByteString, pack, unpack)
-import           Data.Char                    (toLower)
-import           Data.Maybe                   (fromJust)
-import           Data.Text                    (Text)
-import qualified Data.Text                    as T
+import           Data.ByteString.Char8  (ByteString, pack, unpack)
+import           Data.Char              (toLower)
+import           Data.Maybe             (fromJust)
+import           Data.Text              (Text)
+import qualified Data.Text              as T
 import           Data.Time
-import           Happstack.Server             hiding (Session)
+import           Happstack.Server       hiding (Session)
 
 import Blog
 import BlogDB  hiding (updateEntry)

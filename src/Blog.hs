@@ -1,21 +1,21 @@
 module Blog where
 
-import           BlogDB
-import           Control.Monad             (unless, when)
-import           Data.Data                 (Data, Typeable)
-import           Data.List                 (intersperse)
-import           Data.Maybe                (fromJust)
-import           Data.Monoid               (mempty)
-import           Data.Text                 (Text, append, empty, pack)
-import           Data.Text.Lazy            (fromStrict)
-import           Data.Time
-import           Locales
-import           Text.Blaze.Html           (preEscapedToHtml)
-import           Text.Hamlet
-import           Text.Lucius
-import           Text.Markdown
+import BlogDB
+import Control.Monad   (unless, when)
+import Data.Data       (Data, Typeable)
+import Data.List       (intersperse)
+import Data.Maybe      (fromJust)
+import Data.Monoid     (mempty)
+import Data.Text       (Text, append, empty, pack)
+import Data.Text.Lazy  (fromStrict)
+import Data.Time
+import Locales
+import Text.Blaze.Html (preEscapedToHtml)
+import Text.Hamlet
+import Text.Lucius
+import Text.Markdown
 
-import qualified Data.Text                 as T
+import qualified Data.Text as T
 
 -- custom list functions
 intersperse' :: a -> [a] -> [a]

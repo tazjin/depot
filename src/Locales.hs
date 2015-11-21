@@ -1,11 +1,11 @@
 module Locales where
 
+import           BlogDB      (BlogLang (..))
 import           Data.Data   (Data, Typeable)
 import           Data.Maybe  (fromMaybe)
 import           Data.Text   (Text)
 import qualified Data.Text   as T
 import           Network.URI
-import           BlogDB      (BlogLang (..))
 
 {- to add a language simply define its abbreviation and Show instance then
  - translate the appropriate strings and add CouchDB views in Server.hs -}
