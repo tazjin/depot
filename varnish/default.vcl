@@ -47,6 +47,7 @@ sub vcl_synth {
         # Execute TLS or www. redirect
         if (resp.status == 750) {
                 set resp.http.Location = "https://www.tazj.in" + req.url;
+                set resp.http.Strict-Transport-Security = "max-age=31536000;includeSubdomains;preload";
                 set resp.status = 301;
                 return (deliver);
         }
