@@ -1,27 +1,26 @@
 module BlogDB where
 
-import           Control.Monad.Reader   (ask)
-import           Control.Monad.State    (get, put)
-import           Data.Acid
-import           Data.Acid.Advanced
-import           Data.Acid.Local
-import           Data.ByteString        (ByteString)
-import           Data.Data              (Data, Typeable)
-import           Data.IxSet             (Indexable (..), IxSet (..), Proxy (..),
-                                         getOne, ixFun, ixSet, (@=))
-import           Data.List              (insert)
-import           Data.SafeCopy          (SafeCopy, base, deriveSafeCopy)
-import           Data.Text              (Text, pack)
-import           Data.Text.Lazy         (toStrict)
-import           Data.Time
-import           System.Environment     (getEnv)
+import Control.Monad.Reader (ask)
+import Control.Monad.State  (get, put)
+import Data.Acid
+import Data.Acid.Advanced
+import Data.Acid.Remote
+import Data.ByteString      (ByteString)
+import Data.Data            (Data, Typeable)
+import Data.IxSet           (Indexable (..), IxSet (..), Proxy (..), getOne, ixFun, ixSet, (@=))
+import Data.List            (insert)
+import Data.SafeCopy        (SafeCopy, base, deriveSafeCopy)
+import Data.Text            (Text, pack)
+import Data.Text.Lazy       (toStrict)
+import Data.Time
+import Network              (PortID (..))
+import System.Environment   (getEnv)
 
 import qualified Crypto.Hash.SHA512     as SHA (hash)
 import qualified Data.ByteString.Base64 as B64 (encode)
 import qualified Data.ByteString.Char8  as B
 import qualified Data.IxSet             as IxSet
 import qualified Data.Text              as Text
-
 
 newtype EntryId = EntryId { unEntryId :: Integer }
     deriving (Eq, Ord, Data, Enum, Typeable)
@@ -41,13 +40,13 @@ instance Show BlogLang where
 $(deriveSafeCopy 0 'base ''BlogLang)
 
 data Entry = Entry {
-    entryId  :: EntryId,
-    lang     :: BlogLang,
-    author   :: Text,
-    title    :: Text,
-    btext    :: Text,
-    mtext    :: Text,
-    edate    :: UTCTime
+    entryId :: EntryId,
+    lang    :: BlogLang,
+    author  :: Text,
+    title   :: Text,
+    btext   :: Text,
+    mtext   :: Text,
+    edate   :: UTCTime
 } deriving (Eq, Ord, Show, Data, Typeable)
 
 $(deriveSafeCopy 2 'base ''Entry)
@@ -201,10 +200,9 @@ $(makeAcidic ''Blog
     , 'clearSessions
     ])
 
-interactiveUserAdd :: IO ()
-interactiveUserAdd = do
-  tbDir <- getEnv "TAZBLOG"
-  acid <- openLocalStateFrom (tbDir ++ "/BlogState") initialBlogState
+interactiveUserAdd :: String -> IO ()
+interactiveUserAdd dbHost = do
+  acid <- openRemoteState skipAuthenticationPerform dbHost (PortNumber 8070)
   putStrLn "Username:"
   un <- getLine
   putStrLn "Password:"
