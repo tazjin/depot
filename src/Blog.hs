@@ -52,7 +52,7 @@ $doctype 5
         <div .container >
           <div .row>
             <div .span12 .blogtitle>
-              <a class="btitle" href=#{append "/" (show' lang)}>#{blogTitle lang empty}
+              <a class="btitle" href="/">#{blogTitle lang empty}
           <div .row>
             <br>
             <div .span6>
