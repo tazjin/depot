@@ -1,4 +1,5 @@
 vcl 4.0;
+import std;
 
 # By default, Varnish will run on the same servers as the blog. Inside of
 # Kubernetes this will be inside the same pod.
@@ -23,6 +24,11 @@ sub vcl_recv {
         if (req.url ~ "^/admin") {
                 return (pass);
         }
+
+        # Redirect non-www to www and non-HTTPS to HTTPS
+        if (req.http.host ~ "tazj.in" || std.port(local.ip) == 6081) {
+                return (synth (750, ""));
+        }
 }
 
 sub vcl_backend_response {
@@ -38,9 +44,10 @@ sub vcl_deliver {
 }
 
 sub vcl_synth {
-        # Execute redirects
-        if (resp.status == 301) {
-                set resp.http.Location = req.url;
+        # Execute TLS or www. redirect
+        if (resp.status == 750) {
+                set resp.http.Location = "https://www.tazj.in" + req.url;
+                set resp.status = 301;
                 return (deliver);
         }
 }
