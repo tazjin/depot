@@ -90,7 +90,7 @@ $maybe links <- pageLinks
   ^{links}
 |]
   where
-   toDisplay = if' showAll entries (take 6 entries)
+   toDisplay = if showAll then entries else (take 6 entries)
    linkElems Entry{..} = concat $ intersperse' "/" [show lang, show entryId]
 
 showLinks :: Maybe Int -> BlogLang -> Html
