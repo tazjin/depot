@@ -76,7 +76,7 @@ showFooter v = [shamlet|
       Proudly made with #
       <a class="link" href="http://haskell.org">Haskell
       , #
-      <a class="link" href="http://hackage.haskell.org/package/acid-state-0.6.3">Acid-State
+      <a class="link" href="https://hackage.haskell.org/package/acid-state">Acid-State
       \ and without PHP, Java, Perl, MySQL and Python.
       <p>
         <a class="link" href=#{repoURL}>#{append "Version " v}
