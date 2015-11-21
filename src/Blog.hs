@@ -9,7 +9,6 @@ import Data.Time
 import Locales
 import Text.Blaze.Html (preEscapedToHtml)
 import Text.Hamlet
-import Text.Lucius
 import Text.Markdown
 
 import qualified Data.Text as T

@@ -60,13 +60,6 @@ staticHandler resDir = do
   setHeaderM "expires" "Tue, 20 Jan 2037 04:20:42 GMT"
   serveDirectory DisableBrowsing [] resDir
 
-serveBlogStyle :: ServerPart Response
-serveBlogStyle = do
-  setHeaderM "content-type" "text/css"
-  setHeaderM "cache-control" "max-age=630720000"
-  setHeaderM "expires" "Tue, 20 Jan 2037 04:20:42 GMT"
-  ok $ toResponse $ blogStyle
-
 adminHandler :: AcidState Blog -> ServerPart Response
 adminHandler acid = do
   guardSession acid
