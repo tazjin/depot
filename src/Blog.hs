@@ -29,6 +29,7 @@ $doctype 5
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content=#{blogTitle lang t_append}>
     <link rel="stylesheet" type="text/css" href="/static/blog.css" media="all">
     <link rel="alternate" type="application/rss+xml" title="RSS-Feed" href=#{rssUrl}>
     <title>#{blogTitle lang t_append}
