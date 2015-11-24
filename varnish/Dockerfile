@@ -11,4 +11,6 @@ ADD default.vcl /etc/varnish/default.vcl
 
 CMD ulimit -n 131072 && \
     /usr/sbin/varnishd -F -f /etc/varnish/default.vcl \
-                       -a :6081 -T :6082 -a :6083,PROXY -t 120
+                       -a :6081 -T :6082 -a :6083,PROXY -t 120 \
+                       -p thread_pool_min=5 -p thread_pool_max=500\
+                       -p thread_pool_timeout=300
