@@ -130,8 +130,14 @@ insertEntry e =
 updateEntry :: Entry -> Update Blog Entry
 updateEntry e =
     do b@Blog{..} <- get
-       put $ b { blogEntries = IxSet.updateIx (entryId e) e blogEntries}
+       put $ b { blogEntries = IxSet.updateIx (entryId e) e blogEntries }
        return e
+
+deleteEntry :: EntryId -> Update Blog EntryId
+deleteEntry entry =
+    do b@Blog{..} <- get
+       put $ b { blogEntries = IxSet.deleteIx entry blogEntries }
+       return entry
 
 getEntry :: EntryId -> Query Blog (Maybe Entry)
 getEntry eId =
@@ -187,6 +193,7 @@ hashString = B64.encode .  SHA.hash . B.pack
 $(makeAcidic ''Blog
     [ 'insertEntry
     , 'updateEntry
+    , 'deleteEntry
     , 'getEntry
     , 'latestEntries
     , 'addSession
