@@ -8,7 +8,7 @@ import           Network.URI
 
 data BlogError = NotFound | UnknownError
 
-version = "5.1.1"
+version = "5.1.2"
 
 blogTitle :: BlogLang -> Text -> Text
 blogTitle DE s = T.concat ["Tazjins blog", s]
