@@ -1,11 +1,11 @@
 (require 'cider)
-(require 'ac-cider-compliment)
+;(require 'ac-cider-compliment)
 
 ;; Configure CIDER (Clojure REPL) and clojure-mode
 
 (defun cider-mode-setup ()
   "Activates paredit, rainbow delimiters and ac-nrepl"
-  (ac-cider-compliment-setup)
+ ; (ac-cider-compliment-setup)
   (ac-flyspell-workaround)
   (paredit-mode))
 

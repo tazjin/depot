@@ -1,5 +1,5 @@
 (require 'uniquify)
-(require 'smart-mode-line)
+; (require 'smart-mode-line)
 
 ; ## Generic settings ##
 
@@ -38,7 +38,8 @@
 
 (add-to-list 'exec-path "/usr/local/bin")
 (add-to-list 'exec-path (expand-file-name "~/bin"))
-
+;; Stack installs here:
+(add-to-list 'exec-path (expand-file-name "~/.local/bin"))
 
 (when window-system
   (setq frame-title-format '(buffer-file-name "%f" ("%b")))
@@ -148,16 +149,6 @@
                  line)
          'face 'linum)))
 
-(eval-after-load 'diff-mode
-  '(progn
-     (set-face-foreground 'diff-added "green4")
-     (set-face-foreground 'diff-removed "red3")))
-
-(eval-after-load 'magit
-  '(progn
-     (set-face-foreground 'magit-diff-add "green4")
-     (set-face-foreground 'magit-diff-del "red3")))
-
 ;; ## Mac specific settings ##
 
 ;; Enable mouse support on OS X
@@ -248,5 +239,7 @@
 ;; Use CUPS
 (setq lpr-command "xpp")
 
+;; Allow same window in two frames
+(setq ido-default-buffer-method 'selected-window)
 
 (provide 'settings)

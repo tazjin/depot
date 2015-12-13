@@ -6,7 +6,7 @@
 
 ;; ... and melpa. Melpa packages that exist on marmalade will have
 ;; precendence.
-; (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
+(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
 
 ;; And load things!
 (package-refresh-contents)
@@ -14,7 +14,6 @@
 
 (defvar my-pkgs
   '(;; All packages
-    ac-cider-compliment
     ace-jump-mode
     ag
     browse-kill-ring
@@ -36,8 +35,6 @@
     markdown-mode+
     multiple-cursors
     multi-term
-    mvn
-    nyan-mode
     paredit
     password-store
     pkgbuild-mode
@@ -85,6 +82,9 @@
 (setq custom-file (concat user-emacs-directory "init/custom.el"))
 (load custom-file)
 
+;; Local configuration
+(load-file-if-exists "~/.emacs.d/init/local.el")
+
 ;; Load magnars' string manipulation library
 (require 's)
 
@@ -92,5 +92,5 @@
 (random t)
 
 ;; SML should respect theme colours
-;; (setq sml/theme 'black)
+;; (setq sml/theme 'powerline)
 (sml/setup)
