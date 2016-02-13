@@ -42,6 +42,7 @@ tazBlog acid resDir = do
               , method POST >> processLogin acid ]
          , dir "static" $ staticHandler resDir
          , blogHandler acid EN
+         , staticHandler resDir
          , notFound $ toResponse $ showError NotFound DE
          ]
 
