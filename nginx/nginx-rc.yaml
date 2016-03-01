@@ -1,0 +1,42 @@
+---
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: nginx
+  labels:
+    app: nginx
+    version: 1.9.11
+    spec: v1
+spec:
+  replicas: 2
+  selector:
+    app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+        lb-target: nginx
+    spec:
+      containers:
+        - image: nginx:1.9.11
+          name: nginx
+          volumeMounts:
+            - name: tazj-in-tls
+              mountPath: /etc/nginx/ssl/tazj.in
+            - name: nginx-dhparam
+              mountPath: /etc/nginx/ssl/dhparam
+            - name: nginx-config
+              mountPath: /etc/nginx/conf.d
+          ports:
+            - containerPort: 80
+            - containerPort: 443
+      volumes:
+        - name: tazj-in-tls
+          secret:
+            secretName: tazj-in-tls
+        - name: nginx-dhparam
+          secret:
+            secretName: nginx-dhparam
+        - name: nginx-config
+          secret:
+            secretName: nginx-config
