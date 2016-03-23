@@ -7,6 +7,7 @@ metadata:
     app: nginx
 spec:
   type: LoadBalancer
+  loadBalancerIP: 104.155.119.229
   selector:
     lb-target: nginx
   ports:
