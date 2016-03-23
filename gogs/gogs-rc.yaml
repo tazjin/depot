@@ -21,24 +21,8 @@ spec:
           volumeMounts:
             - name: gogs-storage
               mountPath: /data
-        - image: nginx:1.9
-          name: nginx
-          ports:
-            - containerPort: 80
-            - containerPort: 443
-          volumeMounts:
-            - name: gogs-tls
-              mountPath: /etc/nginx/ssl
-            - name: gogs-nginx
-              mountPath: /etc/nginx/conf.d
       volumes:
         - name: gogs-storage
           gcePersistentDisk:
             pdName: gogs-storage
             fsType: ext4
-        - name: gogs-tls
-          secret:
-            secretName: gogs-tls
-        - name: gogs-nginx
-          secret:
-            secretName: gogs-nginx
