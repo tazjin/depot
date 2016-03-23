@@ -2,22 +2,22 @@
 apiVersion: v1
 kind: ReplicationController
 metadata:
-  name: nginx-v3
+  name: nginx-v4
   labels:
     app: nginx
-    version: 1.9.11
-    spec: v3
+    version: 1.9.12
+    spec: v4
 spec:
   replicas: 2
   selector:
     app: nginx
-    rcv: v3
+    rcv: v4
   template:
     metadata:
       labels:
         app: nginx
         lb-target: nginx
-        rcv: v3
+        rcv: v4
     spec:
       containers:
         - image: nginx:1.9.11
@@ -28,9 +28,13 @@ spec:
             - name: nginx-dhparam
               mountPath: /etc/nginx/ssl/dhparam
             - name: nginx-config
-              mountPath: /etc/nginx/conf.d
+              mountPath: /etc/nginx/conf
             - name: nginx-logs
               mountPath: /var/log/nginx
+          command:
+            - '/usr/sbin/nginx'
+            - '-c'
+            - '/etc/nginx/conf/main.conf'
           ports:
             - containerPort: 80
             - containerPort: 443
