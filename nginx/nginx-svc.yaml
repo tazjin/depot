@@ -17,3 +17,5 @@ spec:
       name: https
     - port: 22
       name: ssh
+    - port: 4242
+      name: quassel
