@@ -1,0 +1,29 @@
+;; Do not delete these
+tazj.in. 21600 IN NS ns-cloud-a1.googledomains.com.
+tazj.in. 21600 IN NS ns-cloud-a2.googledomains.com.
+tazj.in. 21600 IN NS ns-cloud-a3.googledomains.com.
+tazj.in. 21600 IN NS ns-cloud-a4.googledomains.com.
+tazj.in. 21600 IN SOA ns-cloud-a1.googledomains.com. cloud-dns-hostmaster.google.com. 89 21600 3600 1209600 300
+
+;; Email setup
+tazj.in. 300 IN MX 10 mx01.trekia.se.
+tazj.in. 300 IN MX 20 mx02.trekia.se.
+mail.tazj.in. 300 IN A 79.99.4.40
+
+;; Site verifications
+tazj.in. 3600 IN TXT "keybase-site-verification=gC4kzEmnLzY7F669PjN-pw2Cf__xHqcxQ08Gb-W9dhE"
+tazj.in. 3600 IN TXT "google-site-verification=8ila9SmLtwSOlciHpmst-RG_Z-peiV5PevEVyaeL0Z0"
+tazj.in. 3600 IN TXT "detectify-verification=b2eab87b05e615c13d8907d47eddfcad"
+
+;; Webpage records setup
+tazj.in. 300 IN A 104.155.119.229
+files.tazj.in. 300 IN CNAME c.storage.googleapis.com.
+git.tazj.in. 300 IN A 104.155.119.229
+ip.tazj.in. 300 IN A 104.155.119.229
+pacman-osx.tazj.in. 300 IN CNAME c.storage.googleapis.com.
+wow.tazj.in. 300 IN CNAME gce-tazserve-a1.gce.tazj.in.
+www.tazj.in. 300 IN A 104.155.119.229
+
+;; Other services
+bitlbee.tazj.in. 300 IN A 104.155.119.229
+irc.tazj.in. 300 IN A 104.155.119.229
