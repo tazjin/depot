@@ -5,11 +5,13 @@ metadata:
   name: nginx
   labels:
     app: nginx
+  annotations:
+    acme/certificate: "tazj.in"
 spec:
   type: LoadBalancer
   loadBalancerIP: 104.155.119.229
   selector:
-    lb-target: nginx
+    app: nginx
   ports:
     - port: 80
       name: http
