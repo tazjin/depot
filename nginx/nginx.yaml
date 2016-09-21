@@ -7,7 +7,7 @@ metadata:
     app: nginx
     spec: v4
 spec:
-  replicas: 1
+  replicas: 2
   template:
     metadata:
       labels:
@@ -21,6 +21,8 @@ spec:
               mountPath: /etc/nginx/ssl/tazj.in
             - name: www-tazj-in-tls
               mountPath: /etc/nginx/ssl/www.tazj.in
+            - name: git-tazj-in-tls
+              mountPath: /etc/nginx/ssl/git.tazj.in
             - name: nginx-dhparam
               mountPath: /etc/nginx/ssl/dhparam
             - name: nginx-config
@@ -46,6 +48,9 @@ spec:
         - name: www-tazj-in-tls
           secret:
             secretName: www-tazj-in-tls
+        - name: git-tazj-in-tls
+          secret:
+            secretName: git-tazj-in-tls
         - name: nginx-dhparam
           secret:
             secretName: nginx-dhparam
