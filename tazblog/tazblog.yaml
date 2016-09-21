@@ -1,0 +1,33 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: tazblog
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: tazblog
+    spec:
+      containers:
+        - image: eu.gcr.io/composite-watch-759/tazblog-haskell:f33723a
+          imagePullPolicy: Always
+          name: tazblog
+          command: ["tazblog", "--dbHost", "tazblog-db.default.svc.cluster.local"]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tazblog-priv
+  labels:
+    app: tazblog
+  annotations:
+    acme/certificate: "www.tazj.in"
+spec:
+  selector:
+    app: tazblog
+  ports:
+    - port: 80
+      targetPort: 8000
+      name: tazblog-http
