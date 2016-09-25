@@ -6,7 +6,8 @@ metadata:
   labels:
     app: nginx
   annotations:
-    acme/certificate: "tazj.in"
+    acme/certificate: '["tazj.in", "www.tazj.in", "ip.tazj.in", "git.tazj.in"]'
+    acme/secretName: tazj.in-tls
 spec:
   type: LoadBalancer
   loadBalancerIP: 104.155.119.229

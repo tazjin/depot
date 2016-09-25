@@ -19,10 +19,6 @@ spec:
           volumeMounts:
             - name: tazj-in-tls
               mountPath: /etc/nginx/ssl/tazj.in
-            - name: www-tazj-in-tls
-              mountPath: /etc/nginx/ssl/www.tazj.in
-            - name: git-tazj-in-tls
-              mountPath: /etc/nginx/ssl/git.tazj.in
             - name: nginx-dhparam
               mountPath: /etc/nginx/ssl/dhparam
             - name: nginx-config
@@ -44,13 +40,7 @@ spec:
       volumes:
         - name: tazj-in-tls
           secret:
-            secretName: tazj-in-tls
-        - name: www-tazj-in-tls
-          secret:
-            secretName: www-tazj-in-tls
-        - name: git-tazj-in-tls
-          secret:
-            secretName: git-tazj-in-tls
+            secretName: tazj.in-tls
         - name: nginx-dhparam
           secret:
             secretName: nginx-dhparam
