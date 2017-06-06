@@ -16,6 +16,9 @@
  '(ns-alternate-modifier (quote none))
  '(ns-command-modifier (quote control))
  '(ns-right-command-modifier (quote meta))
+ '(package-selected-packages
+   (quote
+    (fish-mode string-inflection groovy-mode swift-mode toml-mode nginx-mode elixir-mode terraform-mode uuidgen uuid yaml-mode undo-tree switch-window smex smart-mode-line rust-mode rainbow-mode rainbow-delimiters puppet-mode projectile pkgbuild-mode password-store paredit multi-term multiple-cursors markdown-mode+ magit iy-go-to-char ido-ubiquitous idle-highlight-mode hi2 haskell-mode go-mode flycheck flx-ido erlang dockerfile-mode confluence cider browse-kill-ring ag ace-jump-mode)))
  '(require-final-newline (quote visit-save))
  '(sml/theme (quote dark)))
 (custom-set-faces

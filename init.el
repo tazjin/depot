@@ -94,3 +94,4 @@
 ;; SML should respect theme colours
 ;; (setq sml/theme 'powerline)
 (sml/setup)
+(put 'upcase-region 'disabled nil)

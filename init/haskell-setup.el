@@ -11,8 +11,7 @@
   (interactive)
   (define-key haskell-mode-map (kbd "C-c C-l") 'haskell-process-load-or-reload)
   (define-key haskell-mode-map (kbd "C-c C-c") 'haskell-compile)
-  (define-key haskell-mode-map (kbd "C-r") 'haskell-interactive-bring)
-  (define-key haskell-mode-map (kbd "SPC") 'haskell-mode-contextual-space))
+  (define-key haskell-mode-map (kbd "C-r") 'haskell-interactive-bring))
 
 (eval-after-load "haskell-mode"
   '(haskell-mode-binding-setup))
