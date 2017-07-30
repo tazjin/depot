@@ -1,11 +1,11 @@
 (require 'uniquify)
-; (require 'smart-mode-line)
 
 ; ## Generic settings ##
 
 ; Hide those ugly tool bars
 (tool-bar-mode 0)
 (scroll-bar-mode 0)
+(menu-bar-mode 0)
 
 (defun disable-scroll-bar ()
   (scroll-bar-mode 0))
@@ -115,13 +115,8 @@
 
 ;; ## Look and feel ##
 
-;; Themes! I download and install the ones I like and default the one
-;; I currently like most. This changes a lot because I hate
-;; everything. (It's in my nature, don't judge)
-(custom-download-theme
- "https://raw.github.com/owainlewis/emacs-color-themes/master/themes/hickey-theme.el"
- "hickey-theme.el")
-
+;; Themes!
+;; I've pretty much settled on this Gruber darker theme
 (custom-download-theme
  "https://raw.github.com/rexim/gruber-darker-theme/master/gruber-darker-theme.el"
  "gruber-darker-theme.el")
@@ -135,12 +130,6 @@
 
 (set-default-font "Source Code Pro 12")
 
-;; Don't make the nyan cat too long ... I have other stuff in the mode
-;; bar as well!
-(set-variable 'nyan-bar-length 15)
-;; Not the real deal without this ...
-(set-variable 'nyan-wavy-trail t)
-
 ;; Style line numbers (shown with M-g g)
 (setq linum-format
       (lambda (line)
@@ -153,29 +142,8 @@
                  line)
          'face 'linum)))
 
-;; ## Mac specific settings ##
-
-;; Enable mouse support on OS X
-(unless window-system
-  (require 'mouse)
-  (xterm-mouse-mode t)
-  (global-set-key [mouse-4] '(lambda ()
-                              (interactive)
-                              (scroll-down 1)))
-  (global-set-key [mouse-5] '(lambda ()
-                              (interactive)
-                              (scroll-up 1)))
-  (defun track-mouse (e))
-
-  (setq mouse-sel-mode t)
-)
-
 ;; Use clipboard properly
 (setq x-select-enable-clipboard t)
-
-;; Settings for Emacs.app (Cocoa Emacs)
-;; Menu bar doesn't take up additional space, so lets use it.
-(menu-bar-mode 1)
 
 ;; Auto refresh buffers
 (global-auto-revert-mode 1)
@@ -206,7 +174,7 @@
 
 (define-key global-map [?] 'ace-jump-mode)
 
-;; Quick jump back 
+;; Quick jump back
 (autoload
   'ace-jump-mode-pop-mark
   "ace-jump-mode"

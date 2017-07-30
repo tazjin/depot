@@ -91,7 +91,7 @@
 ;; Seed RNG
 (random t)
 
-;; SML should respect theme colours
-;; (setq sml/theme 'powerline)
-(sml/setup)
 (put 'upcase-region 'disabled nil)
+
+;; Configure smart mode line
+(sml/setup)
