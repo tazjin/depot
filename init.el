@@ -29,7 +29,7 @@
     haskell-mode
     hi2
     idle-highlight-mode
-    ido-ubiquitous
+    ido-completing-read+
     iy-go-to-char
     magit
     markdown-mode+

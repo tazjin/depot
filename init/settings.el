@@ -84,7 +84,11 @@
 
 ;; ido-mode is like magic pixie dust!
 (ido-mode t)
-(ido-ubiquitous t)
+
+;; ido-completing-read+ enables ido everywhere, not just for buffers and files.
+(require 'ido-completing-read+)
+(ido-ubiquitous-mode 1)
+
 (setq ido-enable-prefix nil
       ido-enable-flex-matching t
       ido-auto-merge-work-directories-length nil
