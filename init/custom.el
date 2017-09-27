@@ -5,9 +5,10 @@
  ;; If there is more than one, they won't work right.
  '(ac-auto-show-menu 0.8)
  '(ac-delay 0.2)
+ '(custom-enabled-themes (quote (gruber-darker)))
  '(custom-safe-themes
    (quote
-    ("3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" default)))
+    ("3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" "d61fc0e6409f0c2a22e97162d7d151dee9e192a90fa623f8d6a071dbf49229c6" default)))
  '(frame-brackground-mode (quote dark))
  '(global-auto-complete-mode t)
  '(ido-use-filename-at-point nil)

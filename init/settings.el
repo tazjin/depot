@@ -116,13 +116,6 @@
 ;; ## Look and feel ##
 
 ;; Themes!
-;; I've pretty much settled on this Gruber darker theme
-(custom-download-theme
- "https://raw.github.com/rexim/gruber-darker-theme/master/gruber-darker-theme.el"
- "gruber-darker-theme.el")
-
-(load-theme 'gruber-darker t)
-
 (global-hl-line-mode -1)
 
 (setq default-frame-alist '((font-backend . "xft")

@@ -26,6 +26,7 @@
     flx-ido
     flycheck
     go-mode
+    gruber-darker-theme
     haskell-mode
     hi2
     idle-highlight-mode
