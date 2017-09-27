@@ -17,8 +17,6 @@
     ace-jump-mode
     ag
     browse-kill-ring
-    cider
-    clojure-mode
     confluence
     dash
     dockerfile-mode
@@ -74,7 +72,6 @@
                  modes
                  bindings
                  eshell-setup
-                 clojure
                  haskell-setup
                  ))
 
