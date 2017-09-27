@@ -1,5 +1,6 @@
 ;; Configure package manager
 (require 'package)
+(package-initialize)
 
 ;; Add Marmalade repo
 (add-to-list 'package-archives '("marmalade" . "https://marmalade-repo.org/packages/"))
@@ -10,7 +11,6 @@
 
 ;; And load things!
 (package-refresh-contents)
-(package-initialize)
 
 (defvar my-pkgs
   '(;; All packages
