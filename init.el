@@ -46,6 +46,7 @@
     smart-mode-line
     smex
     switch-window
+    terraform-mode
     undo-tree
     yaml-mode
     )
