@@ -19,10 +19,14 @@
 (global-set-key (kbd "C-x C-f") #'helm-find-files)
 (helm-mode 1)
 
-; Hide those ugly tool bars
+;; Hide those ugly tool bars
 (tool-bar-mode 0)
 (scroll-bar-mode 0)
 (menu-bar-mode 0)
+
+;; Now that I have nice wallpapers, let me see them.
+(set-frame-parameter (selected-frame) 'alpha '(97 . 95))
+(add-to-list 'default-frame-alist '(alpha . (97 . 95)))
 
 (defun disable-scroll-bar ()
   (scroll-bar-mode 0))
