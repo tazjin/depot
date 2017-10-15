@@ -1,5 +1,3 @@
-(require 'projectile)
-
 ;; Initializes modes I use.
 
 (add-hook 'prog-mode-hook 'esk-add-watchwords)
@@ -26,14 +24,10 @@
   ;; Don't indent after '>' while I'm writing
   (local-set-key ">" 'self-insert-command)
   ;;(local-set-key "RET" 'newline)
-  (projectile-mode 1)
   (rainbow-delimiters-mode 1)
   )
 
 (add-hook 'erlang-mode-hook 'erlang-mode-init-setup)
-
-;; Enable projectile for all things programming
-(add-hook 'prog-mode-hook 'projectile-mode)
 
 ;; Enable rainbow-delimiters for all things programming
 (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)

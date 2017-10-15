@@ -36,7 +36,6 @@
     paredit
     password-store
     pkgbuild-mode
-    projectile
     puppet-mode
     rainbow-delimiters
     rainbow-mode
