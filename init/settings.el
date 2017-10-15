@@ -100,9 +100,9 @@
 (global-hl-line-mode -1)
 
 (setq default-frame-alist '((font-backend . "xft")
-                            (font . "Source Code Pro-12")))
+                            (font . "Input Mono-12")))
 
-(set-default-font "Source Code Pro 12")
+(set-default-font "Input Mono 12")
 
 ;; Style line numbers (shown with M-g g)
 (setq linum-format
