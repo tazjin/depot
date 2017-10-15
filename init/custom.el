@@ -11,14 +11,10 @@
     ("3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" "d61fc0e6409f0c2a22e97162d7d151dee9e192a90fa623f8d6a071dbf49229c6" default)))
  '(frame-brackground-mode (quote dark))
  '(global-auto-complete-mode t)
- '(ido-use-filename-at-point nil)
  '(magit-log-show-gpg-status t)
  '(ns-alternate-modifier (quote none))
  '(ns-command-modifier (quote control))
  '(ns-right-command-modifier (quote meta))
- '(package-selected-packages
-   (quote
-    (fish-mode string-inflection groovy-mode swift-mode toml-mode nginx-mode elixir-mode terraform-mode uuidgen uuid yaml-mode undo-tree switch-window smex smart-mode-line rust-mode rainbow-mode rainbow-delimiters puppet-mode projectile pkgbuild-mode password-store paredit multi-term multiple-cursors markdown-mode+ magit iy-go-to-char ido-ubiquitous idle-highlight-mode hi2 haskell-mode go-mode flycheck flx-ido erlang dockerfile-mode confluence cider browse-kill-ring ag ace-jump-mode)))
  '(require-final-newline (quote visit-save)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
