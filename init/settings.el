@@ -4,6 +4,10 @@
 
 ;; Make Helm go!
 (require 'helm-config)
+
+;; Enable fuzzy matching in Helm
+(setq helm-mode-fuzzy-match t
+      helm-completion-in-region-fuzzy-match t)
 (global-set-key (kbd "M-x") #'helm-M-x)
 (global-set-key (kbd "C-x r b") #'helm-filtered-bookmarks)
 (global-set-key (kbd "C-x C-f") #'helm-find-files)
