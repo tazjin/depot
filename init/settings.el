@@ -2,6 +2,13 @@
 
 ; ## Generic settings ##
 
+;; Make Helm go!
+(require 'helm-config)
+(global-set-key (kbd "M-x") #'helm-M-x)
+(global-set-key (kbd "C-x r b") #'helm-filtered-bookmarks)
+(global-set-key (kbd "C-x C-f") #'helm-find-files)
+(helm-mode 1)
+
 ; Hide those ugly tool bars
 (tool-bar-mode 0)
 (scroll-bar-mode 0)
@@ -19,8 +26,6 @@
 ;; Go away go away
 (setq initial-scratch-message "")
 
-(flx-ido-mode 1)
-(setq ido-use-faces nil)
 (setq gc-cons-threshold 20000000)
 
 (setq uniquify-buffer-name-style 'forward)
@@ -72,34 +77,10 @@
     (setq x-super-keysym 'meta
           x-alt-keysym 'alt))
 
-(setq smex-save-file (concat user-emacs-directory ".smex-items"))
-(setq smex-key-advice-ignore-menu-bar t)
-(smex-initialize)
-(global-set-key (kbd "M-x") 'smex)
-
 (add-to-list 'safe-local-variable-values '(lexical-binding . t))
 (add-to-list 'safe-local-variable-values '(whitespace-line-column . 80))
 
 (set-default 'indent-tabs-mode nil)
-
-;; ido-mode is like magic pixie dust!
-(ido-mode t)
-
-;; ido-completing-read+ enables ido everywhere, not just for buffers and files.
-(require 'ido-completing-read+)
-(ido-ubiquitous-mode 1)
-
-(setq ido-enable-prefix nil
-      ido-enable-flex-matching t
-      ido-auto-merge-work-directories-length nil
-      ido-create-new-buffer 'always
-      ido-use-filename-at-point 'guess
-      ido-use-virtual-buffers t
-      ido-handle-duplicate-virtual-buffers 2
-      ido-max-prospects 10)
-
-;; Swedish!
-(set-language-environment 'Swedish)
 
 ;; UTF-8 please
 (setq locale-coding-system 'utf-8) ; pretty

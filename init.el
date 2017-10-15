@@ -21,14 +21,13 @@
     dash
     dockerfile-mode
     erlang
-    flx-ido
     flycheck
     go-mode
     gruber-darker-theme
     haskell-mode
+    helm
     hi2
     idle-highlight-mode
-    ido-completing-read+
     iy-go-to-char
     magit
     markdown-mode+
@@ -42,9 +41,7 @@
     rainbow-delimiters
     rainbow-mode
     rust-mode
-    s
     smart-mode-line
-    smex
     switch-window
     terraform-mode
     undo-tree
