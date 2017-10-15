@@ -33,6 +33,7 @@
     markdown-mode+
     multiple-cursors
     multi-term
+    nix-mode
     paredit
     password-store
     pkgbuild-mode

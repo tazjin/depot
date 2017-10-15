@@ -111,4 +111,9 @@ Including indent-buffer, which should not be called automatically on save."
   (interactive)
   (eww "https://blog.fefe.de/"))
 
+;; Open this machines NixOS config
+(defun nix-config ()
+  (interactive)
+  (find-file "/etc/nixos/configuration.nix"))
+
 (provide 'functions)
