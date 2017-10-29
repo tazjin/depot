@@ -3,12 +3,10 @@ tazj.in. 21600 IN NS ns-cloud-a1.googledomains.com.
 tazj.in. 21600 IN NS ns-cloud-a2.googledomains.com.
 tazj.in. 21600 IN NS ns-cloud-a3.googledomains.com.
 tazj.in. 21600 IN NS ns-cloud-a4.googledomains.com.
-tazj.in. 21600 IN SOA ns-cloud-a1.googledomains.com. cloud-dns-hostmaster.google.com. 89 21600 3600 1209600 300
+tazj.in. 21600 IN SOA ns-cloud-a1.googledomains.com. cloud-dns-hostmaster.google.com. 90 21600 3600 1209600 300
 
 ;; Email setup
-tazj.in. 300 IN MX 10 mx01.trekia.se.
-tazj.in. 300 IN MX 20 mx02.trekia.se.
-mail.tazj.in. 300 IN A 79.99.4.40
+tazj.in. 300 IN MX 10 mx.runbox.com.
 
 ;; Site verifications
 tazj.in. 3600 IN TXT "keybase-site-verification=gC4kzEmnLzY7F669PjN-pw2Cf__xHqcxQ08Gb-W9dhE"
