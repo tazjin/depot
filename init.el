@@ -32,21 +32,24 @@
     iy-go-to-char
     magit
     markdown-mode+
-    multiple-cursors
     multi-term
+    multiple-cursors
     nix-mode
     paredit
     password-store
+    pg
     pkgbuild-mode
     puppet-mode
     racer
     rainbow-delimiters
     rainbow-mode
+    restclient
     rust-mode
     smart-mode-line
     switch-window
     terraform-mode
     undo-tree
+    uuidgen
     yaml-mode
     )
   "A list of packages to install at launch.")
