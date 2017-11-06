@@ -17,6 +17,7 @@
     ace-jump-mode
     ag
     browse-kill-ring
+    cargo
     confluence
     dash
     dockerfile-mode
@@ -38,6 +39,7 @@
     password-store
     pkgbuild-mode
     puppet-mode
+    racer
     rainbow-delimiters
     rainbow-mode
     rust-mode
