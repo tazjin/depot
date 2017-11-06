@@ -76,6 +76,7 @@
                  bindings
                  eshell-setup
                  haskell-setup
+                 rust-setup
                  ))
 
 (add-to-list 'load-path (concat user-emacs-directory "scripts"))
