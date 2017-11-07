@@ -13,7 +13,13 @@
 (package-refresh-contents)
 
 (defvar my-pkgs
-  '(;; All packages
+  '(;; elisp libraries
+    dash
+    dash-functional
+    ht
+    s
+
+    ;; editor packages
     ace-jump-mode
     ag
     browse-kill-ring
