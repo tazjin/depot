@@ -116,4 +116,15 @@ Including indent-buffer, which should not be called automatically on save."
   (interactive)
   (find-file "/etc/nixos/configuration.nix"))
 
+;; Get the nix store path for a given derivation.
+;; If the derivation has not been built before, this will trigger a build.
+(defun nix-store-path (derivation)
+  (let ((expr (concat "with import <nixos> {}; " derivation)))
+    (s-chomp (shell-command-to-string (concat "nix-build -E '" expr "'")))))
+
+(defun insert-nix-store-path ()
+  (interactive)
+  (let ((derivation (read-string "Derivation name (in <nixos>): ")))
+    (insert-string (nix-store-path derivation))))
+
 (provide 'functions)
