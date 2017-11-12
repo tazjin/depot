@@ -1,3 +1,4 @@
+(require 's)
 ;; A few handy functions I use in init.el (or not, but they're nice to
 ;; have)
 
@@ -22,11 +23,11 @@
 
 (defun custom-download-script (url filename)
   "Downloads an Elisp script, places it in ~/.emacs/other and then loads it"
-  
+
   ;; Ensure the directory exists
   (unless (file-exists-p "~/.emacs.d/other")
     (make-directory "~/.emacs.d/other"))
-  
+
   ;; Download file if it doesn't exist.
   (let ((file
          (concat "~/.emacs.d/other/" filename)))
@@ -99,13 +100,6 @@ Including indent-buffer, which should not be called automatically on save."
       (find-file (concat "/sudo:root@localhost:" (read-file-name "File: ")))
     (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))))
 
-;; Evaluate sexp and replace it with result
-(defun replace-last-sexp ()
-    (interactive)
-    (let ((value (eval (preceding-sexp))))
-      (kill-sexp -1)
-      (insert (format "%S" value))))
-
 ;; Open Fefes blog
 (defun fefes-blog ()
   (interactive)
@@ -125,6 +119,6 @@ Including indent-buffer, which should not be called automatically on save."
 (defun insert-nix-store-path ()
   (interactive)
   (let ((derivation (read-string "Derivation name (in <nixos>): ")))
-    (insert-string (nix-store-path derivation))))
+    (insert (nix-store-path derivation))))
 
 (provide 'functions)

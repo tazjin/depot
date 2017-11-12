@@ -1,3 +1,4 @@
+(require 'company)
 (require 'rust-mode)
 
 ;; Enable cargo-related (C-c C-c C-...) commands.

@@ -13,7 +13,7 @@
 (package-initialize)
 
 ;; This variable controls all packages that should be installed.
-(setq-local desired-packages
+(defvar desired-packages
   '(;; elisp libraries
     dash
     dash-functional
@@ -25,6 +25,7 @@
     ag
     browse-kill-ring
     cargo
+    company
     confluence
     dash
     dockerfile-mode
