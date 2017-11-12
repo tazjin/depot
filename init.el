@@ -1,18 +1,18 @@
-;; Configure package manager
+;;; init.el --- Package bootstrapping. -*- lexical-binding: t; -*-
+
+;; This file bootstraps the Emacs setup by going through package installations.
+;; After all packages are installed, local configuration is loaded.
+
 (require 'package)
-(package-initialize)
+(require 'seq)
 
-;; Add Marmalade repo
+;; Configure Marmalade and MELPA repositories. Packages available on Marmalade
+;; will have precedence.
 (add-to-list 'package-archives '("marmalade" . "https://marmalade-repo.org/packages/"))
-
-;; ... and melpa. Melpa packages that exist on marmalade will have
-;; precendence.
 (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
 
-;; And load things!
-(package-refresh-contents)
-
-(defvar my-pkgs
+;; This variable controls all packages that should be installed.
+(setq-local desired-packages
   '(;; elisp libraries
     dash
     dash-functional
@@ -57,49 +57,49 @@
     undo-tree
     uuidgen
     yaml-mode
-    )
-  "A list of packages to install at launch.")
+    ))
 
-(dolist (p my-pkgs)
-  (when (not (package-installed-p p))
-    (package-install p)))
+(defun installable-packages (pkg-list)
+  "Filter out not-yet installed packages from package list."
+  (seq-filter (lambda (p) (not (package-installed-p p))) pkg-list))
 
-;; Are we on a mac?
-(setq is-mac (equal system-type 'darwin))
+(defun install-needed-packages (pkg-list)
+  (let ((to-install (installable-packages pkg-list)))
+    (if (< 0 (length to-install))
+        (progn (package-refresh-contents)
+               (mapcar #'package-install to-install))
+      (message "No new packages to install."))))
 
-;; Or on Linux?
-(setq is-linux (equal system-type 'gnu/linux))
+;; Run package installation!
+(install-needed-packages desired-packages)
 
-;; What's the home folder?
-(defvar home-dir)
-(setq home-dir (expand-file-name "~"))
-
-(add-to-list 'load-path (concat user-emacs-directory "init"))
-
-(mapc 'require '(functions
-                 settings
-                 modes
-                 bindings
-                 eshell-setup
-                 haskell-setup
-                 rust-setup
-                 ))
-
-(add-to-list 'load-path (concat user-emacs-directory "scripts"))
-
+;; Configure a few basics before moving on to package-specific initialisation.
 (setq custom-file (concat user-emacs-directory "init/custom.el"))
 (load custom-file)
 
-;; Local configuration
-(load-file-if-exists "~/.emacs.d/init/local.el")
-
-;; Load magnars' string manipulation library
-(require 's)
+(defvar home-dir)
+(setq home-dir (expand-file-name "~"))
 
 ;; Seed RNG
 (random t)
 
-(put 'upcase-region 'disabled nil)
+;; Add 'init' folder that contains other settings to load.
+(add-to-list 'load-path (concat user-emacs-directory "init"))
 
-;; Configure smart mode line
-(sml/setup)
+;; Load configuration that makes use of installed packages:
+
+
+;; Emacs will automatically initialise all installed packages.
+;; After initialisation, proceed to load configuration that requires packages:
+(defun load-other-settings ()
+  (mapc 'require '(theme
+                   functions
+                   settings
+                   modes
+                   bindings
+                   eshell-setup
+                   haskell-setup
+                   rust-setup
+                   )))
+
+(add-hook 'after-init-hook 'load-other-settings)
