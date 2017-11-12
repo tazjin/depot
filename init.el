@@ -53,6 +53,7 @@
     restclient
     rust-mode
     smart-mode-line
+    string-edit
     switch-window
     terraform-mode
     undo-tree
