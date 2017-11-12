@@ -6,21 +6,7 @@
 ;; Hide banner message ...
 (setq eshell-banner-message "")
 
-(defun eshell-mode-hook-setup ()
-  "Sets up EShell when it is loaded"
-  (setq eshell-path-env (concat
-			 "/usr/local/bin:"
-			 (concat home-dir "/bin:")
-			 "/usr/local/share/python:"
-                         "/opt/java/bin"
-			 eshell-path-env))
-
-  (setenv "PATH" eshell-path-env))
-
-(add-hook 'eshell-mode-hook 'eshell-mode-hook-setup)
-
 ;; Prompt configuration
-
 (defun clean-pwd (path)
   "Turns a path of the form /foo/bar/baz into /f/b/baz
    (inspired by fish shell)"
@@ -49,10 +35,9 @@
   `(propertize ,str 'face (list ,@properties)))
 
 (defun prompt-f ()
-  "My EShell prompt displaying VC info and such"
+  "EShell prompt displaying VC info and such"
   (concat
    (with-face (concat (clean-pwd (eshell/pwd)) " ") :foreground  "#96a6c8")
-   ;(with-face (vcprompt " -f \"(%s:%b%a%m) \"") :foreground "#5f627f")
    (if (= 0 (user-uid))
        (with-face "#" :foreground "#f43841")
      (with-face "$" :foreground "#73c936"))
@@ -79,14 +64,5 @@
      (add-to-list 'eshell-visual-commands "sl")))
 
 (setq eshell-directory-name "~/.config/eshell/")
-
-;; EShell functions that come in handy
-
-;; clear in eshell
-(defun eshell/clear ()
-  "clear the eshell buffer."
-  (interactive)
-  (let ((inhibit-read-only t))
-    (erase-buffer)))
 
 (provide 'eshell-setup)

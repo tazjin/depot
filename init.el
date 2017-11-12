@@ -10,6 +10,7 @@
 ;; will have precedence.
 (add-to-list 'package-archives '("marmalade" . "https://marmalade-repo.org/packages/"))
 (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
+(package-initialize)
 
 ;; This variable controls all packages that should be installed.
 (setq-local desired-packages
@@ -35,7 +36,6 @@
     helm
     hi2
     idle-highlight-mode
-    iy-go-to-char
     magit
     markdown-mode+
     multi-term
@@ -92,7 +92,7 @@
 ;; Emacs will automatically initialise all installed packages.
 ;; After initialisation, proceed to load configuration that requires packages:
 (defun load-other-settings ()
-  (mapc 'require '(theme
+  (mapc 'require '(look-and-feel
                    functions
                    settings
                    modes
