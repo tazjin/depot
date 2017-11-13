@@ -36,8 +36,7 @@
       whitespace-line-column 80
       default-directory "~"
       fill-column 80
-      ediff-split-window-function 'split-window-horizontally
-      backup-directory-alist `((,(concat user-emacs-directory "backups"))))
+      ediff-split-window-function 'split-window-horizontally)
 
 (add-to-list 'safe-local-variable-values '(lexical-binding . t))
 (add-to-list 'safe-local-variable-values '(whitespace-line-column . 80))
@@ -57,6 +56,8 @@
 ;; Keep your temporary files in tmp, emacs!
 (setq auto-save-file-name-transforms
       `((".*" ,temporary-file-directory t)))
+(setq backup-directory-alist
+      `((".*" . ,temporary-file-directory)))
 
 (remove-hook 'kill-buffer-query-functions 'server-kill-buffer-query-function)
 
