@@ -110,6 +110,11 @@ Including indent-buffer, which should not be called automatically on save."
   (interactive)
   (find-file "/etc/nixos/configuration.nix"))
 
+;; Open local emacs configuration
+(defun emacs-config ()
+  (interactive)
+  (dired "~/.emacs.d/"))
+
 ;; Get the nix store path for a given derivation.
 ;; If the derivation has not been built before, this will trigger a build.
 (defun nix-store-path (derivation)
