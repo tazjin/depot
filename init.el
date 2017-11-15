@@ -30,6 +30,7 @@
     dash
     dockerfile-mode
     erlang
+    exwm
     flycheck
     go-mode
     gruber-darker-theme
@@ -90,11 +91,11 @@
 
 ;; Load configuration that makes use of installed packages:
 
-
 ;; Emacs will automatically initialise all installed packages.
 ;; After initialisation, proceed to load configuration that requires packages:
 (defun load-other-settings ()
-  (mapc 'require '(look-and-feel
+  (mapc 'require '(nixos
+                   look-and-feel
                    functions
                    settings
                    modes
