@@ -58,4 +58,7 @@
 ;; Show available key chord completions
 (which-key-mode t)
 
+;; Show previews of ace-window numbers in the mode line for each window.
+(ace-window-display-mode)
+
 (provide 'modes)

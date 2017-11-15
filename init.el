@@ -22,6 +22,7 @@
 
     ;; editor packages
     ace-jump-mode
+    ace-window
     ag
     browse-kill-ring
     cargo

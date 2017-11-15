@@ -16,6 +16,9 @@
 (global-set-key (kbd "M-j") 'ace-jump-word-mode)
 (global-set-key (kbd "M-p") 'ace-jump-mode-pop-mark)
 
+(global-set-key (kbd "C-x o") ; Yes, I went there!
+                'ace-window)
+
 ;; Window switching. (C-x o goes to the next window)
 (windmove-default-keybindings) ;; Shift+direction
 
