@@ -11,6 +11,7 @@
     ("3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" "d61fc0e6409f0c2a22e97162d7d151dee9e192a90fa623f8d6a071dbf49229c6" default)))
  '(frame-brackground-mode (quote dark))
  '(global-auto-complete-mode t)
+ '(helm-split-window-in-side-p t)
  '(magit-log-show-gpg-status t)
  '(ns-alternate-modifier (quote none))
  '(ns-command-modifier (quote control))
