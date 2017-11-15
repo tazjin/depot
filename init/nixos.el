@@ -55,6 +55,10 @@
       (exwm-cm-enable)
 
       ;; Show time in the mode line
-      (display-time-mode)))
+      (display-time-mode)
+
+      ;; Let buffers move seamlessly between workspaces
+      (setq exwm-workspace-show-all-buffers t)
+      (setq exwm-layout-show-all-buffers t)))
 
 (provide 'nixos)
