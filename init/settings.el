@@ -61,4 +61,7 @@
 
 (remove-hook 'kill-buffer-query-functions 'server-kill-buffer-query-function)
 
+;; Show time in 24h format
+(setq display-time-24hr-format t)
+
 (provide 'settings)
