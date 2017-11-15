@@ -52,6 +52,9 @@
 
       ;; Configure compositor
       (setq exwm-cm-opacity 95)
-      (exwm-cm-enable)))
+      (exwm-cm-enable)
+
+      ;; Show time in the mode line
+      (display-time-mode)))
 
 (provide 'nixos)
