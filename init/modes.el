@@ -32,8 +32,9 @@
 ;; Enable rainbow-delimiters for all things programming
 (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
 
-;; Enable Paredit in Emacs Lisp mode
+;; Enable Paredit & Company in Emacs Lisp mode
 (add-hook 'emacs-lisp-mode-hook 'paredit-mode)
+(add-hook 'emacs-lisp-mode-hook 'company-mode)
 
 ;; Always highlight matching brackets
 (show-paren-mode 1)
