@@ -60,6 +60,7 @@
     undo-tree
     uuidgen
     yaml-mode
+    which-key
     ))
 
 (defun installable-packages (pkg-list)

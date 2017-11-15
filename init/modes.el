@@ -55,4 +55,7 @@
 ;; Transparently open compressed files
 (auto-compression-mode t)
 
+;; Show available key chord completions
+(which-key-mode t)
+
 (provide 'modes)
