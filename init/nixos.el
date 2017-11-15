@@ -16,8 +16,9 @@
       (require 'exwm)
       (require 'exwm-config)
 
-      ;; Start with one workspace (make more as needed)
-      (setq exwm-workspace-number 1)
+      (fringe-mode 3)
+
+      (setq exwm-workspace-number 2)
       ;; Make class name the buffer name
       (add-hook 'exwm-update-class-hook
                 (lambda ()
@@ -37,6 +38,9 @@
       ;; Launch applications with completion (dmenu style!)
       (exwm-input-set-key (kbd "s-p") #'helm-run-external-command)
 
+      ;; Toggle between line-mode / char-mode
+      (exwm-input-set-key (kbd "C-c C-t C-t") #'exwm-input-toggle-keyboard)
+
       ;; Line-editing shortcuts
       (exwm-input-set-simulation-keys
        '(([?\C-b] . left)
@@ -52,6 +56,5 @@
 
       ;; Enable EXWM
       (exwm-enable)
-      (fringe-mode 1)))
 
 (provide 'nixos)
