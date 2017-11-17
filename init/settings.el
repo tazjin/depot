@@ -64,4 +64,8 @@
 ;; Show time in 24h format
 (setq display-time-24hr-format t)
 
+;; Make ace-window behave in a sane way:
+(setq aw-keys '(?f ?j ?d ?k ?s ?l ?a)) ; Homerow keys in sensible order!
+(setq aw-scope 'frame) ; There are many frames in exwm, I don't care!
+
 (provide 'settings)
