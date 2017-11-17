@@ -10,6 +10,14 @@
     (s-contains?
      "NixOS" (if (f-file? os-f) (f-read os-f)))))
 
+(defun brightness-up ()
+  (interactive)
+  (shell-command "exec light -A 10"))
+
+(defun brightness-down ()
+  (interactive)
+  (shell-command "exec light -U 10"))
+
 (if is-nixos
     (progn
       (message "Running on NixOS, configuring ExWM.")
@@ -41,6 +49,10 @@
 
       ;; Toggle between line-mode / char-mode
       (exwm-input-set-key (kbd "C-c C-t C-t") #'exwm-input-toggle-keyboard)
+
+      ;; Brightness keys
+      (exwm-input-set-key (kbd "<XF86MonBrightnessDown>") #'brightness-down)
+      (exwm-input-set-key (kbd "<XF86MonBrightnessUp>") #'brightness-up)
 
       ;; Line-editing shortcuts
       (exwm-input-set-simulation-keys
