@@ -18,6 +18,10 @@
   (interactive)
   (shell-command "exec light -U 10"))
 
+(defun lock-screen ()
+  (interactive)
+  (shell-command "i3lock"))
+
 (if is-nixos
     (progn
       (message "Running on NixOS, configuring ExWM.")
@@ -53,6 +57,7 @@
       ;; Brightness keys
       (exwm-input-set-key (kbd "<XF86MonBrightnessDown>") #'brightness-down)
       (exwm-input-set-key (kbd "<XF86MonBrightnessUp>") #'brightness-up)
+      (exwm-input-set-key (kbd "<XF86Display>") #'lock-screen)
 
       ;; Line-editing shortcuts
       (exwm-input-set-simulation-keys
