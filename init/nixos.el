@@ -10,13 +10,23 @@
     (s-contains?
      "NixOS" (if (f-file? os-f) (f-read os-f)))))
 
+(defun pulseaudio-ctl (cmd)
+  (shell-command (concat "pulseaudio-ctl " cmd))
+  (message "Volume command: %s" cmd))
+
+(defun volume-mute () (interactive) (pulseaudio-ctl "mute"))
+(defun volume-up () (interactive) (pulseaudio-ctl "up"))
+(defun volume-down () (interactive) (pulseaudio-ctl "down"))
+
 (defun brightness-up ()
   (interactive)
-  (shell-command "exec light -A 10"))
+  (shell-command "exec light -A 10")
+  (message "Brightness increased"))
 
 (defun brightness-down ()
   (interactive)
-  (shell-command "exec light -U 10"))
+  (shell-command "exec light -U 10")
+  (message "Brightness decreased"))
 
 (defun lock-screen ()
   (interactive)
@@ -53,6 +63,11 @@
 
       ;; Toggle between line-mode / char-mode
       (exwm-input-set-key (kbd "C-c C-t C-t") #'exwm-input-toggle-keyboard)
+
+      ;; Volume keys
+      (exwm-input-set-key (kbd "<XF86AudioMute>") #'volume-mute)
+      (exwm-input-set-key (kbd "<XF86AudioRaiseVolume>") #'volume-up)
+      (exwm-input-set-key (kbd "<XF86AudioLowerVolume>") #'volume-down)
 
       ;; Brightness keys
       (exwm-input-set-key (kbd "<XF86MonBrightnessDown>") #'brightness-down)
