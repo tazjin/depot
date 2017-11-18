@@ -23,12 +23,9 @@
     ;; editor packages
     ace-jump-mode
     ace-window
-    ag
     browse-kill-ring
     cargo
     company
-    confluence
-    dash
     dockerfile-mode
     erlang
     exwm
@@ -47,7 +44,6 @@
     paredit
     password-store
     pg
-    pkgbuild-mode
     puppet-mode
     racer
     rainbow-delimiters
