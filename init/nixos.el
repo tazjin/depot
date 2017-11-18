@@ -59,7 +59,8 @@
                                (exwm-workspace-switch-create ,i))))
 
       ;; Launch applications with completion (dmenu style!)
-      (exwm-input-set-key (kbd "s-p") #'helm-run-external-command)
+      (exwm-input-set-key (kbd "s-d") #'helm-run-external-command)
+      (exwm-input-set-key (kbd "s-p") #'helm-pass)
 
       ;; Toggle between line-mode / char-mode
       (exwm-input-set-key (kbd "C-c C-t C-t") #'exwm-input-toggle-keyboard)
