@@ -24,8 +24,7 @@
 
 (defun configure-new-frame (frame)
   "Configuration settings to run whenever a new frame is created."
-  (scroll-bar-mode 0) ; Disable visual scroll bar (ugh!)
-  (set-frame-parameter frame 'alpha '(97 . 95))) ; Transparent emacs!
+  (scroll-bar-mode 0)) ; Disable visual scroll bar (ugh!)
 
 (add-hook 'after-make-frame-functions 'configure-new-frame)
 
