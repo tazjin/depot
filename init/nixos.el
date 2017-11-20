@@ -37,7 +37,6 @@
       (message "Running on NixOS, configuring ExWM.")
       (require 'exwm)
       (require 'exwm-config)
-      (require 'exwm-cm)
 
       (fringe-mode 3)
 
@@ -82,10 +81,6 @@
 
       ;; Enable EXWM
       (exwm-enable)
-
-      ;; Configure compositor
-      (setq exwm-cm-opacity 95)
-      (exwm-cm-enable)
 
       ;; Show time in the mode line
       (display-time-mode)
