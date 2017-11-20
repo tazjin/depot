@@ -30,10 +30,13 @@
     erlang
     exwm
     flycheck
+    geiser
     go-mode
     gruber-darker-theme
     haskell-mode
     helm
+    helm-exwm
+    helm-pass
     hi2
     idle-highlight-mode
     magit
