@@ -12,6 +12,7 @@
  '(frame-brackground-mode (quote dark))
  '(global-auto-complete-mode t)
  '(helm-split-window-in-side-p t)
+ '(helm-split-window-inside-p t)
  '(magit-log-show-gpg-status t)
  '(ns-alternate-modifier (quote none))
  '(ns-command-modifier (quote control))
