@@ -49,6 +49,7 @@
     pg
     puppet-mode
     racer
+    racket-mode
     rainbow-delimiters
     rainbow-mode
     restclient
