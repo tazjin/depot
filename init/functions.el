@@ -126,4 +126,12 @@ Including indent-buffer, which should not be called automatically on save."
   (let ((derivation (read-string "Derivation name (in <nixos>): ")))
     (insert (nix-store-path derivation))))
 
+(defun toggle-force-newline ()
+  "Buffer-local toggle for enforcing final newline on save."
+  (interactive)
+  (setq-local require-final-newline (not require-final-newline))
+  (message "require-final-newline in buffer %s is now %s"
+           (buffer-name)
+           require-final-newline))
+
 (provide 'functions)
