@@ -56,6 +56,7 @@
     rust-mode
     smart-mode-line
     string-edit
+    slime
     switch-window
     terraform-mode
     undo-tree
