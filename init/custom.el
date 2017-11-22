@@ -14,6 +14,7 @@
  '(global-auto-complete-mode t)
  '(helm-split-window-in-side-p t)
  '(helm-split-window-inside-p t)
+ '(kubernetes-commands-display-buffer-function (quote display-buffer))
  '(magit-log-show-gpg-status t)
  '(ns-alternate-modifier (quote none))
  '(ns-command-modifier (quote control))
