@@ -106,6 +106,7 @@
                    eshell-setup
                    haskell-setup
                    rust-setup
+                   lisp-setup
                    )))
 
 (add-hook 'after-init-hook 'load-other-settings)
