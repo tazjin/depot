@@ -17,10 +17,14 @@
   (blink-cursor-mode -1))
 
 ;; Configure editor fonts
-(setq default-frame-alist '((font-backend . "xft")
-                            (font . "Input Mono-12")))
 
-(set-frame-font "Input Mono 12" t t)
+;; Determine fontsize based on machine (4K display on stallo):
+(letrec ((hostname (s-trim (f-read "/etc/hostname")))
+         (font-size (if (equal hostname "stallo") 38 12))
+         (font (format "Input Mono-%d" font-size)))
+  (setq default-frame-alist `((font-backend . "xft")
+                              (font . ,font)))
+  (set-frame-font font t t))
 
 (defun configure-new-frame (frame)
   "Configuration settings to run whenever a new frame is created."
