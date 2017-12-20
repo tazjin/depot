@@ -62,7 +62,7 @@ maximum interval."
 (defun sort-tasks (tasks)
   "Sorts TASKS in descending order by number of days remaining."
   (sort (copy-list tasks)
-        (lambda (t1 t2) (> (days-remaining t1)
+        (lambda (t1 t2) (< (days-remaining t1)
                            (days-remaining t2)))))
 
 (defun complete-task (name &optional at)
