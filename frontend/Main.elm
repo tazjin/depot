@@ -4,6 +4,7 @@ import Html exposing (Html, text, div, span)
 import Html.Attributes exposing (style)
 import Json.Decode exposing (..)
 import Http
+import Time
 
 
 --  Material design imports
@@ -182,6 +183,17 @@ view model =
     gemmaView model |> Scheme.top
 
 
+
+-- subscriptions : Model -> Sub Msg
+
+
+subscriptions model =
+    Sub.batch
+        [ Material.subscriptions Mdl model
+        , Time.every (15 * Time.second) (\_ -> LoadTasks)
+        ]
+
+
 main : Program Never Model Msg
 main =
     let
@@ -195,5 +207,5 @@ main =
             { init = ( model, Cmd.batch [ loadTasks, Material.init Mdl ] )
             , view = view
             , update = update
-            , subscriptions = Material.subscriptions Mdl
+            , subscriptions = subscriptions
             }
