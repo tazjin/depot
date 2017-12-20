@@ -126,12 +126,22 @@ taskColor task =
         Color.Yellow
 
 
+within : Task -> String
 within task =
-    String.concat
-        [ "This task should be completed within "
-        , toString task.remaining
-        , " days."
-        ]
+    if task.remaining < 0 then
+        "This task is overdue!"
+    else if task.remaining > 2 then
+        String.concat
+            [ "Relax, this task has "
+            , toString task.remaining
+            , " days left before it is due."
+            ]
+    else
+        String.concat
+            [ "This task should be completed within "
+            , toString task.remaining
+            , " days. Consider doing it now!"
+            ]
 
 
 renderTask : Task -> Html Msg
@@ -141,6 +151,7 @@ renderTask task =
         [ Card.title [] [ Card.head [ white ] [ text task.name ] ]
         , Card.text [ white ]
             [ text (Maybe.withDefault "" task.description)
+            , Html.br [] []
             , text (within task)
             ]
         , Card.actions
