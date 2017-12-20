@@ -74,11 +74,19 @@ maximum interval."
 ;; Define web API
 ;;
 
+(defun response-for (task)
+  "Create a response object to be JSON encoded for TASK."
+  `((:name . ,(name-of task))
+    (:description . ,(description-of task))
+    (:remaining . ,(days-remaining task))))
+
 (defun start-gemma ()
   ;; Set up web server
   (hunchentoot:start (make-instance 'hunchentoot:easy-acceptor :port 4242))
 
   ;; ... and register all handlers.
+
+  ;; Task listing handler
   (hunchentoot:define-easy-handler
    (get-tasks :uri "/tasks") ()
 
@@ -86,11 +94,16 @@ maximum interval."
    (setf (hunchentoot:header-out "Access-Control-Allow-Origin") "*")
    (json:encode-json-to-string
     ;; Construct a frontend-friendly representation of the tasks.
-    (mapcar
-     (lambda (task) `((:name . ,(name-of task))
-                      (:description . ,(description-of task))
-                      (:remaining . ,(days-remaining task))))
-     (sort-tasks (list-tasks))))))
+    (mapcar #'response-for (sort-tasks (list-tasks)))))
+
+  ;; Task completion handler
+  (hunchentoot:define-easy-handler
+   (complete-task-handler :uri "/complete") (task)
+   (setf (hunchentoot:content-type*) "application/json")
+   (let* ((key (intern (json:camel-case-to-lisp task) "GEMMA")))
+     (format t "Marking task ~A as completed" key)
+     (complete-task key)
+     (json:encode-json-to-string (response-for (get-task key))))))
 
 ;; (not-so) example tasks
 
