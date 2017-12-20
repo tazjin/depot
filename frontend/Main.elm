@@ -14,6 +14,7 @@ import Material.Color as Color
 import Material.Grid exposing (grid, cell, size, Device(..))
 import Material.Layout as Layout
 import Material.Scheme as Scheme
+import Material.Options as Options
 
 
 -- API interface to Gemma
@@ -55,6 +56,20 @@ loadTasks =
         Http.send NewTasks request
 
 
+completeTask : Task -> Cmd Msg
+completeTask task =
+    let
+        request =
+            Http.getString
+                (String.concat
+                    [ "http://localhost:4242/complete?task="
+                    , task.name
+                    ]
+                )
+    in
+        Http.send (\_ -> LoadTasks) request
+
+
 
 -- Elm architecture implementation
 
@@ -64,6 +79,7 @@ type Msg
     | LoadTasks
     | NewTasks (Result Http.Error (List Task))
     | Mdl (Material.Msg Msg)
+    | Complete Task
 
 
 type alias Model =
@@ -78,6 +94,9 @@ update msg model =
     case msg of
         LoadTasks ->
             ( model, loadTasks )
+
+        Complete task ->
+            ( model, completeTask task )
 
         NewTasks (Ok tasks) ->
             ( { model | tasks = tasks, error = Nothing }, Cmd.none )
@@ -107,15 +126,30 @@ taskColor task =
         Color.Yellow
 
 
+within task =
+    String.concat
+        [ "This task should be completed within "
+        , toString task.remaining
+        , " days."
+        ]
+
+
 renderTask : Task -> Html Msg
 renderTask task =
     Card.view
         [ Color.background (Color.color (taskColor task) Color.S800) ]
-        [ Card.title [] [ Card.head [ white ] [ text task.name ] ] ]
-
-
-
---    div [] [ span [] [  ] ]
+        [ Card.title [] [ Card.head [ white ] [ text task.name ] ]
+        , Card.text [ white ]
+            [ text (Maybe.withDefault "" task.description)
+            , text (within task)
+            ]
+        , Card.actions
+            [ Card.border
+            , white
+            , Options.onClick (Complete task)
+            ]
+            [ text "Done!" ]
+        ]
 
 
 gemmaView : Model -> Html Msg
@@ -129,12 +163,6 @@ gemmaView model =
 view : Model -> Html Msg
 view model =
     gemmaView model |> Scheme.top
-
-
-
--- div [ style [ ( "padding", "2rem" ) ] ]
---
---     |> Scheme.top
 
 
 main : Program Never Model Msg
