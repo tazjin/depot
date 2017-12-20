@@ -15,6 +15,8 @@ import Material.Grid exposing (grid, cell, size, Device(..))
 import Material.Layout as Layout
 import Material.Scheme as Scheme
 import Material.Options as Options
+import Material.Elevation as Elevation
+import Material.Button as Button
 
 
 -- API interface to Gemma
@@ -144,10 +146,12 @@ within task =
             ]
 
 
-renderTask : Task -> Html Msg
-renderTask task =
+renderTask : Model -> Task -> Html Msg
+renderTask model task =
     Card.view
-        [ Color.background (Color.color (taskColor task) Color.S800) ]
+        [ Color.background (Color.color (taskColor task) Color.S800)
+        , Elevation.e3
+        ]
         [ Card.title [] [ Card.head [ white ] [ text task.name ] ]
         , Card.text [ white ]
             [ text (Maybe.withDefault "" task.description)
@@ -155,18 +159,20 @@ renderTask task =
             , text (within task)
             ]
         , Card.actions
-            [ Card.border
-            , white
-            , Options.onClick (Complete task)
+            [ Card.border ]
+            [ Button.render Mdl
+                [ 0 ]
+                model.mdl
+                [ white, Button.ripple, Button.accent, Options.onClick (Complete task) ]
+                [ text "Completed" ]
             ]
-            [ text "Done!" ]
         ]
 
 
 gemmaView : Model -> Html Msg
 gemmaView model =
     grid []
-        (List.map (\t -> cell [ size All 3 ] [ renderTask t ])
+        (List.map (\t -> cell [ size All 4 ] [ renderTask model t ])
             model.tasks
         )
 
