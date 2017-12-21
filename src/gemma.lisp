@@ -44,6 +44,10 @@
             :initarg :done-at
             :accessor last-done-at)))
 
+(defvar *gemma-port*
+  (parse-integer (or (sb-posix:getenv "GEMMA_PORT") "4242"))
+  "Port on which the Gemma web server should listen.")
+
 (defvar *gemma-data-dir*
   (pathname (or (sb-posix:getenv "GEMMA_DATA_DIR")
                 (sb-posix:getcwd)))
@@ -107,7 +111,7 @@ maximum interval."
 
 (defun start-gemma ()
   ;; Set up web server
-  (hunchentoot:start (make-instance 'hunchentoot:easy-acceptor :port 4242))
+  (hunchentoot:start (make-instance 'hunchentoot:easy-acceptor :port *gemma-port*))
 
   ;; ... and register all handlers.
 
