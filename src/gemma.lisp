@@ -9,7 +9,6 @@
 
 (defpackage gemma
   (:use :cl
-        :hunchentoot
         :local-time
         :cl-json))
 (in-package :gemma)
@@ -41,7 +40,7 @@
                 :accessor description-of)
 
    ;; Last completion time
-   (done-at :type local-time:timestamp
+   (done-at :type timestamp
             :initarg :done-at
             :accessor last-done-at)))
 
@@ -66,7 +65,7 @@
              (quote ((name ,task-name)
                      (days ,days)
                      (description ,(or description ""))
-                     (done-at ,(local-time:now)))))
+                     (done-at ,(now)))))
             (cl-prevalence:snapshot *p-tasks*))))
 
 (defun get-task (name)
@@ -78,10 +77,9 @@
 (defun days-remaining (task)
   "Returns the number of days remaining before the supplied TASK reaches its
 maximum interval."
-  (let* ((expires-at (local-time:timestamp+ (last-done-at task)
-                                            (days-of task) :day))
-         (secs-until-expiry (local-time:timestamp-difference expires-at
-                                                             (local-time:now))))
+  (let* ((expires-at (timestamp+ (last-done-at task)
+                                 (days-of task) :day))
+         (secs-until-expiry (timestamp-difference expires-at (now))))
     (round (/ secs-until-expiry 60 60 24))))
 
 (defun sort-tasks (tasks)
@@ -94,7 +92,7 @@ maximum interval."
   "Mark the task with NAME as completed, either now or AT specified time."
   (cl-prevalence:tx-change-object-slots *p-tasks* 'task
                                         (id (get-task name))
-                                        `((done-at ,(or at (local-time:now)))))
+                                        `((done-at ,(or at (now)))))
   (cl-prevalence:snapshot *p-tasks*))
 
 ;;
@@ -119,7 +117,7 @@ maximum interval."
 
    (setf (hunchentoot:content-type*) "application/json")
    (setf (hunchentoot:header-out "Access-Control-Allow-Origin") "*")
-   (json:encode-json-to-string
+   (encode-json-to-string
     ;; Construct a frontend-friendly representation of the tasks.
     (mapcar #'response-for (sort-tasks (list-tasks)))))
 
@@ -127,10 +125,10 @@ maximum interval."
   (hunchentoot:define-easy-handler
    (complete-task-handler :uri "/complete") (task)
    (setf (hunchentoot:content-type*) "application/json")
-   (let* ((key (intern (json:camel-case-to-lisp task) "GEMMA")))
+   (let* ((key (intern (camel-case-to-lisp task) "GEMMA")))
      (format t "Marking task ~A as completed" key)
      (complete-task key)
-     (json:encode-json-to-string (response-for (get-task key))))))
+     (encode-json-to-string (response-for (get-task key))))))
 
 ;; (not-so) example tasks
 
@@ -159,9 +157,9 @@ maximum interval."
   (mapcar
    (lambda (task)
      (complete-task (name-of task)
-                    (local-time:timestamp- (local-time:now)
-                                           (random 14)
-                                           :day)))
+                    (timestamp- (now)
+                                (random 14)
+                                :day)))
    (cl-prevalence:find-all-objects *p-tasks* 'task)))
 
 (defun clear-all-tasks ()
