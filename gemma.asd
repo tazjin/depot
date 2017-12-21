@@ -13,7 +13,10 @@
   :version "0.1.0"
   :author "Vincent Ambo"
   :license "GPLv3"
-  :depends-on (alexandria local-time hunchentoot yason)
+  :depends-on (local-time
+               hunchentoot
+               cl-json
+               cl-prevalence)
   :components ((:module "src"
                 :components
                 ((:file "gemma"))))

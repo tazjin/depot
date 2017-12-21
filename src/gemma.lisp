@@ -9,7 +9,6 @@
 
 (defpackage gemma
   (:use :cl
-        :alexandria
         :hunchentoot
         :local-time
         :cl-json))
@@ -23,7 +22,10 @@
 ;; Define task management system
 ;;
 (defclass task ()
-  (;; (Unique) name of the task
+  ((id :reader id
+       :initarg :id)
+
+   ;; (Unique) name of the task
    (name :type symbol
          :initarg :name
          :accessor name-of)
@@ -40,24 +42,38 @@
 
    ;; Last completion time
    (done-at :type local-time:timestamp
+            :initarg :done-at
             :accessor last-done-at)))
 
-(defvar *tasks*
-  (make-hash-table)
-  "List of all tasks registered in this Gemma instance.")
+(defvar *gemma-data-dir*
+  (pathname (or (sb-posix:getenv "GEMMA_DATA_DIR")
+                (sb-posix:getcwd)))
+  "Directory in which to store Gemma data.")
+
+(defvar *p-tasks*
+  (cl-prevalence:make-prevalence-system *gemma-data-dir*)
+  "All tasks registered in this Gemma instance.")
+
+;; Initialise database ID counter
+(or (> (length (cl-prevalence:find-all-objects *p-tasks* 'task)) 0)
+    (cl-prevalence:tx-create-id-counter *p-tasks*))
 
 (defmacro deftask (task-name days &optional description)
-  `(setf (gethash (quote ,task-name) *tasks*)
-         (make-instance (quote task)
-                        :name (quote ,task-name)
-                        :days ,days
-                        :description (or ,description ""))))
+  (unless (get-task task-name)
+    `(progn (cl-prevalence:tx-create-object
+             *p-tasks*
+             'task
+             (quote ((name ,task-name)
+                     (days ,days)
+                     (description ,(or description ""))
+                     (done-at ,(local-time:now)))))
+            (cl-prevalence:snapshot *p-tasks*))))
 
 (defun get-task (name)
-  (gethash name *tasks*))
+  (cl-prevalence:find-object-with-slot *p-tasks* 'task 'name name))
 
 (defun list-tasks ()
-  (alexandria:hash-table-values *tasks*))
+  (cl-prevalence:find-all-objects *p-tasks* 'task))
 
 (defun days-remaining (task)
   "Returns the number of days remaining before the supplied TASK reaches its
@@ -76,8 +92,9 @@ maximum interval."
 
 (defun complete-task (name &optional at)
   "Mark the task with NAME as completed, either now or AT specified time."
-  (setf (last-done-at (get-task name))
-        (or at (local-time:now))))
+  (cl-prevalence:tx-change-object-slots *p-tasks* 'task
+                                        (id (get-task name))
+                                        `((done-at ,(or at (local-time:now))))))
 
 ;;
 ;; Define web API
@@ -139,9 +156,15 @@ maximum interval."
 (defun randomise-completion-times ()
   "Set some random completion timestamps for all tasks"
   (mapcar
-   (lambda (key) (complete-task key (local-time:timestamp- (local-time:now)
-                                                           (random 14)
-                                                           :day)))
-   (alexandria:hash-table-keys *tasks*)))
+   (lambda (task)
+     (complete-task (name-of task)
+                    (local-time:timestamp- (local-time:now)
+                                           (random 14)
+                                           :day)))
+   (cl-prevalence:find-all-objects *p-tasks* 'task)))
+
+(defun clear-all-tasks ()
+  (mapcar (lambda (task) (cl-prevalence:tx-delete-object *p-tasks* 'task (id task)))
+          (cl-prevalence:find-all-objects *p-tasks* 'task)))
 
 ;; (randomise-completion-times)
