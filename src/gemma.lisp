@@ -94,7 +94,8 @@ maximum interval."
   "Mark the task with NAME as completed, either now or AT specified time."
   (cl-prevalence:tx-change-object-slots *p-tasks* 'task
                                         (id (get-task name))
-                                        `((done-at ,(or at (local-time:now))))))
+                                        `((done-at ,(or at (local-time:now)))))
+  (cl-prevalence:snapshot *p-tasks*))
 
 ;;
 ;; Define web API
