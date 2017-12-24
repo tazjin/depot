@@ -129,7 +129,7 @@ maximum interval."
   (hunchentoot:define-easy-handler
    (complete-task-handler :uri "/complete") (task)
    (setf (hunchentoot:content-type*) "application/json")
-   (let* ((key (intern (camel-case-to-lisp task) "GEMMA")))
+   (let* ((key (find-symbol (camel-case-to-lisp task) "GEMMA")))
      (format t "Marking task ~A as completed" key)
      (complete-task key)
      (encode-json-to-string (response-for (get-task key))))))
