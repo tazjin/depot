@@ -20,6 +20,8 @@
   :components ((:module "src"
                 :components
                 ((:file "gemma"))))
+  :build-operation program-op
+  :entry-point "gemma::entrypoint"
   :description "Gemma is a household task management system"
   :long-description
   #.(read-file-string

@@ -12,7 +12,8 @@
         :local-time
         :cl-json)
   (:import-from :sb-posix :getenv)
-  (:shadowing-import-from :sb-posix :getcwd))
+  (:shadowing-import-from :sb-posix :getcwd)
+  (:export :start-gemma :config :entrypoint))
 (in-package :gemma)
 
 ;; TODO: Store an average of how many days it was between task
@@ -121,6 +122,8 @@ maximum interval."
     (:remaining . ,(days-remaining task))))
 
 (defun start-gemma ()
+  (in-package :gemma)
+
   ;; Load configuration
   (load (pathname (or (getenv "GEMMA_CONFIG")
                       "/etc/gemma/config.lisp")))
@@ -149,6 +152,18 @@ maximum interval."
      (complete-task key)
      (encode-json-to-string (response-for (get-task key))))))
 
+(defun entrypoint ()
+  "This function serves as the entrypoint for ASDF-built executables.
+  It joins the Hunchentoot server thread to keep the process running
+  for as long as the server is alive."
+
+  (start-gemma)
+  (sb-thread:join-thread
+   (find-if (lambda (th)
+              (string= (sb-thread:thread-name th)
+                       (format nil "hunchentoot-listener-*:~A" *gemma-port*)))
+            (sb-thread:list-all-threads))))
+
 ;; Experimentation / testing stuff
 
 (defun randomise-completion-times ()
@@ -166,4 +181,3 @@ maximum interval."
           (cl-prevalence:find-all-objects *p-tasks* 'task)))
 
 ;; (randomise-completion-times)
-
