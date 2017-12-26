@@ -10,16 +10,44 @@
 (defpackage gemma
   (:use :cl
         :local-time
-        :cl-json))
+        :cl-json)
+  (:import-from :sb-posix :getenv)
+  (:shadowing-import-from :sb-posix :getcwd))
 (in-package :gemma)
 
 ;; TODO: Store an average of how many days it was between task
 ;; completions. Some of the current numbers are just guesses
 ;; anyways.
 
+(defmacro in-case-of (x &body body)
+  "Evaluate BODY if X is non-nil, binding the value of X to IT."
+  `(let ((it ,x))
+     (when it ,@body)))
+
+;; Set default configuration parameters
+(defvar *gemma-port* 4242
+  "Port on which the Gemma web server listens.")
+
+(defun initialise-persistence (data-dir)
+  (defvar *p-tasks*
+    (cl-prevalence:make-prevalence-system data-dir)
+    "All tasks registered in this Gemma instance.")
+
+  ;; Initialise database ID counter
+  (or (> (length (cl-prevalence:find-all-objects *p-tasks* 'task)) 0)
+      (cl-prevalence:tx-create-id-counter *p-tasks*)))
+
+(defun config (&key port data-dir)
+  "Configuration function for use in the Gemma configuration file."
+
+  (in-package :gemma)
+  (in-case-of port (defparameter *gemma-port* it))
+  (initialise-persistence (or data-dir "data/")))
+
 ;;
 ;; Define task management system
 ;;
+
 (defclass task ()
   ((id :reader id
        :initarg :id)
@@ -43,23 +71,6 @@
    (done-at :type timestamp
             :initarg :done-at
             :accessor last-done-at)))
-
-(defvar *gemma-port*
-  (parse-integer (or (sb-posix:getenv "GEMMA_PORT") "4242"))
-  "Port on which the Gemma web server should listen.")
-
-(defvar *gemma-data-dir*
-  (pathname (or (sb-posix:getenv "GEMMA_DATA_DIR")
-                (sb-posix:getcwd)))
-  "Directory in which to store Gemma data.")
-
-(defvar *p-tasks*
-  (cl-prevalence:make-prevalence-system *gemma-data-dir*)
-  "All tasks registered in this Gemma instance.")
-
-;; Initialise database ID counter
-(or (> (length (cl-prevalence:find-all-objects *p-tasks* 'task)) 0)
-    (cl-prevalence:tx-create-id-counter *p-tasks*))
 
 (defmacro deftask (task-name days &optional description)
   (unless (get-task task-name)
@@ -110,6 +121,10 @@ maximum interval."
     (:remaining . ,(days-remaining task))))
 
 (defun start-gemma ()
+  ;; Load configuration
+  (load (pathname (or (getenv "GEMMA_CONFIG")
+                      "/etc/gemma/config.lisp")))
+
   ;; Set up web server
   (hunchentoot:start (make-instance 'hunchentoot:easy-acceptor :port *gemma-port*))
 
