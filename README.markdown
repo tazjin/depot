@@ -32,9 +32,9 @@ aids with reminding users of recurring tasks. Some basic ideas:
 * It should work mostly passively without much user interaction.
 
 I believe that the basic (*very* simple) idea behind Gemma solves these issues.
-Unfortunately my previous relationship fell apart before I actually got to test
-this out in a real-life situation involving multiple people, but feedback from
-other potential test subjects would be welcome! :)
+Unfortunately my living situation changed before I actually got to test this out
+in a real-life situation involving multiple people, but feedback from other
+potential test subjects would be welcome! :)
 
 ## Overview
 
@@ -87,5 +87,10 @@ Right now using this is non-trivial, but I'll eventually make a better
 distribution. Basically you need to know Common Lisp (in which case you'll know
 how to get the backend running) and have `elm-reactor` installed to run the
 development version of the frontend application.
+
+Gemma is configured via a configuration file that should be located either at
+`/etc/gemma/config.lisp` or at a custom location specified via the environment
+variable `GEMMA_CONFIG`. Have a look at the `config.lisp` file in the repository
+root for an example.
 
 [wrote an article]: http://www.harpersbazaar.com/culture/features/a12063822/emotional-labor-gender-equality/
