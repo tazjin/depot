@@ -28,10 +28,4 @@
 ;; cl-prevalence is not in the current Quicklisp -> Nix snapshot
 (ql:quickload "cl-prevalence")
 
-;; the $out path should be set in the application to let Hunchentoot serve the
-;; correct static files.
-
-(if (sb-posix:getenv "out")
-    (defvar *gemma-nix-out-dir* (sb-posix:getenv "out")))
-
 (asdf:operate 'asdf:program-op :gemma)

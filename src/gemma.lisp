@@ -29,6 +29,14 @@
 (defvar *gemma-port* 4242
   "Port on which the Gemma web server listens.")
 
+(defvar *static-file-location*
+  (or (in-case-of (sb-posix:getenv "out")
+        (concatenate 'string it "/share/gemma/"))
+      "frontend/")
+  "Folder from which to serve static assets. If built inside of Nix,
+  the folder is concatenated with the output path at which the files
+  are expected to be.")
+
 (defun initialise-persistence (data-dir)
   (defvar *p-tasks*
     (cl-prevalence:make-prevalence-system data-dir)
@@ -129,9 +137,10 @@ maximum interval."
                       "/etc/gemma/config.lisp")))
 
   ;; Set up web server
-  (hunchentoot:start (make-instance 'hunchentoot:easy-acceptor :port *gemma-port*))
-
-  ;; ... and register all handlers.
+  (hunchentoot:start
+   (make-instance 'hunchentoot:easy-acceptor
+                  :port *gemma-port*
+                  :document-root *static-file-location*))
 
   ;; Task listing handler
   (hunchentoot:define-easy-handler
