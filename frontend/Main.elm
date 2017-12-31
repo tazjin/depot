@@ -64,7 +64,7 @@ loadTasks : Cmd Msg
 loadTasks =
     let
         request =
-            Http.get "http://localhost:4242/tasks" (list decodeTask)
+            Http.get "/tasks" (list decodeTask)
     in
         Http.send NewTasks request
 
@@ -75,7 +75,7 @@ completeTask task =
         request =
             Http.getString
                 (String.concat
-                    [ "http://localhost:4242/complete?task="
+                    [ "/complete?task="
                     , task.name
                     ]
                 )
