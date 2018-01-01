@@ -13,10 +13,10 @@
     curl emacs htop
   ];
 
-
   services.openssh.enable = true;
 
-  networking.firewall.allowedTCPPorts = [ 22 ];
+  networking.firewall.enable = true;
+  networking.firewall.allowedTCPPorts = [ 22 80 443 ];
 
   users.extraUsers.vincent = {
     isNormalUser = true;
