@@ -7,11 +7,21 @@
   boot.loader.grub.version = 2;
   boot.loader.grub.device = "/dev/sda";
 
+  boot.initrd.availableKernelModules = [
+    "ata_piix"
+    "mptspi"
+    "sd_mod"
+    "sr_mod"
+  ];
+
   # Configure root disk
   fileSystems."/" = {
     device = "/dev/disk/by-label/nixos";
     fsType = "ext4";
   };
+
+  services.vmwareGuest.enable = true;
+  services.vmwareGuest.headless = true;
 
   time.timeZone = "Europe/Oslo";
 
