@@ -9,7 +9,7 @@ tazblog = import ./tazblog { inherit blogSource; };
 blog = tazblog.tazblog;
 blogConfig = {
   enableACME = true;
-  addSSL = true;
+  forceSSL = true;
   locations."/" = {
     proxyPass = "http://127.0.0.1:8000";
   };
@@ -38,13 +38,32 @@ in {
     wantedBy              = [ "multi-user.target" ];
   };
 
+  # Set up Gogs
+  services.gogs = {
+    enable       = true;
+    appName      = "Gogs: tazjin's private code";
+    cookieSecure = true;
+    domain       = "git.tazj.in";
+    rootUrl      = "https://git.tazj.in/";
+  };
+
   # Set up reverse proxy
   services.nginx = {
     enable = true;
     recommendedTlsSettings = true;
     recommendedProxySettings = true;
 
+    # Blog!
     virtualHosts."tazj.in" = blogConfig;
     virtualHosts."www.tazj.in" = blogConfig;
+
+    # Git!
+    virtualHosts."git.tazj.in" = {
+      enableACME = true;
+      forceSSL   = true;
+      locations."/" = {
+        proxyPass = "http://127.0.0.1:3000";
+      };
+    };
   };
 }
