@@ -1,6 +1,0 @@
-Welcome to tazjin's bitlbee server!
-
-While this server may appear as if it's open to the public, you are in no way
-safe from me reading your communication or randomly terminating the service.
-
-Use at your own peril, unless you are me.
