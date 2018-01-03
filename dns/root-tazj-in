@@ -16,9 +16,9 @@ tazj.in. 3600 IN TXT "detectify-verification=b2eab87b05e615c13d8907d47eddfcad"
 www.tazj.in. 3600 IN TXT "keybase-site-verification=ER8m_byyqAhzeIy9TyzkAU1H2p2yHtpvImuB_XrRF2U"
 
 ;; Webpage records setup
-tazj.in. 60 IN A 46.21.106.241
-www.tazj.in. 60 IN A 46.21.106.241
-git.tazj.in. 60 IN A 46.21.106.241
+tazj.in. 300 IN A 46.21.106.241
+www.tazj.in. 300 IN A 46.21.106.241
+git.tazj.in. 300 IN A 46.21.106.241
 
 files.tazj.in. 300 IN CNAME c.storage.googleapis.com.
 ip.tazj.in. 300 IN A 104.155.119.229
