@@ -14,6 +14,11 @@ blogConfig = {
     proxyPass = "http://127.0.0.1:8000";
   };
 };
+gemma = import ./pkgs/gemma.nix { inherit pkgs; };
+gemmaConfig = writeTextFile {
+  name = "config.lisp";
+  text = builtins.readFile ./gemma-config.lisp;
+};
 in {
   # Ensure that blog software is installed
   environment.systemPackages = [
@@ -47,6 +52,18 @@ in {
     rootUrl      = "https://git.tazj.in/";
   };
 
+  # Set up Gemma
+  systemd.services.gemma = {
+    description           = "Recurring task tracking app";
+    script                = "${gemma}/bin/gemma";
+    serviceConfig.Restart = "always";
+    wantedBy              = [ "multi-user.target" ];
+
+    environment = {
+      GEMMA_CONFIG = "${gemmaConfig}";
+    };
+  };
+
   # Set up reverse proxy
   services.nginx = {
     enable = true;
@@ -71,6 +88,15 @@ in {
       enableACME = true;
       forceSSL   = true;
       extraConfig = "return 302 https://www.google.com/maps/d/viewer?mid=1pJIYY9cuEdt9DuMTbb4etBVq7hs;";
+    };
+
+    # Gemma demo instance!
+    virtualHosts."gemma.tazj.in" = {
+      enableACME = true;
+      forceSSL   = true;
+      locations."/" = {
+        proxyPass = "http://127.0.0.1:4242";
+      };
     };
   };
 }
