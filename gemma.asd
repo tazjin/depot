@@ -9,6 +9,8 @@
   Copyright (c) 2017 Vincent Ambo
 |#
 
+(require 'sb-posix)
+
 (defsystem "gemma"
   :version "0.1.0"
   :author "Vincent Ambo"
@@ -21,7 +23,8 @@
                 :components
                 ((:file "gemma"))))
   :build-operation program-op
-  :build-pathname "gemma"
+  :build-pathname #.(or (pathname  (sb-posix:getenv "GEMMA_BIN_TARGET"))
+                        "gemma")
   :entry-point "gemma::entrypoint"
   :description "Gemma is a household task management system"
   :long-description

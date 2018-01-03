@@ -33,10 +33,7 @@ stdenv.mkDerivation rec {
     # Build Lisp
     cd $src
     quicklisp init
-    sbcl --load build.lisp
-
-    # "Install" result
-    cp $src/gemma $out/bin/gemma
+    env GEMMA_BIN_TARGET=$out/bin/gemma sbcl --load build.lisp
   '';
 
   installPhase = "true";
