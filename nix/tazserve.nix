@@ -65,5 +65,12 @@ in {
         proxyPass = "http://127.0.0.1:3000";
       };
     };
+
+    # oslo.pub redirect
+    virtualHosts."oslo.pub" = {
+      enableACME = true;
+      forceSSL   = true;
+      extraConfig = "return 302 https://www.google.com/maps/d/viewer?mid=1pJIYY9cuEdt9DuMTbb4etBVq7hs;";
+    };
   };
 }
