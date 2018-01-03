@@ -21,7 +21,7 @@
                 :components
                 ((:file "gemma"))))
   :build-operation program-op
-  :output-files (program-op (c o) '("build/gemma"))
+  :build-pathname "gemma"
   :entry-point "gemma::entrypoint"
   :description "Gemma is a household task management system"
   :long-description

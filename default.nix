@@ -23,7 +23,7 @@ stdenv.mkDerivation rec {
   #
   # 3. Build (and don't strip!) an executable out of the Lisp backend.
   buildPhase = ''
-    mkdir -p $out/share/gemma $out/bin $src/build
+    mkdir -p $out/share/gemma $out/bin
     mkdir .home && export HOME="$PWD/.home"
 
     # Build Elm
@@ -35,9 +35,8 @@ stdenv.mkDerivation rec {
     quicklisp init
     sbcl --load build.lisp
 
-    # ASDF writes this output into an extremely annoying path, but I also can't
-    # be bothered to figure out the output-translation definition for it.
-    mv $HOME/.cache/common-lisp/sbcl-*/$PWD/build/gemma $out/bin/gemma
+    # "Install" result
+    cp $src/gemma $out/bin/gemma
   '';
 
   installPhase = "true";
