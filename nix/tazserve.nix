@@ -50,6 +50,10 @@ in {
     cookieSecure = true;
     domain       = "git.tazj.in";
     rootUrl      = "https://git.tazj.in/";
+    extraConfig = ''
+      [log]
+      ROOT_PATH = /var/lib/gogs/log
+    '';
   };
 
   # Set up Gemma
