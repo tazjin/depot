@@ -4,6 +4,7 @@
 
 (require 's)
 (require 'f)
+(require 'dash)
 
 (defvar is-nixos
   (let ((os-f "/etc/os-release"))
@@ -32,11 +33,17 @@
   (interactive)
   (shell-command "i3lock"))
 
+(defun generate-randr-config ()
+  (-flatten `(,(-map (lambda (n) (list n "DP2")) (number-sequence 1 5))
+              (0 "eDP1")
+              ,(-map (lambda (n) (list n "eDP1")) (number-sequence 6 9)))))
+
 (if is-nixos
     (progn
       (message "Running on NixOS, configuring ExWM.")
       (require 'exwm)
       (require 'exwm-config)
+      (require 'exwm-randr)
 
       (fringe-mode 3)
 
@@ -84,6 +91,10 @@
 
       ;; Show time in the mode line
       (display-time-mode)
+
+      ;; Another attempt at xrandr configuration
+      (setq exwm-randr-workspace-output-plist (generate-randr-config))
+      (exwm-randr-enable)
 
       ;; Let buffers move seamlessly between workspaces
       (setq exwm-workspace-show-all-buffers t)
