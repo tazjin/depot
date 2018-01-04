@@ -37,6 +37,7 @@
     helm
     helm-exwm
     helm-pass
+    helm-swoop
     hi2
     idle-highlight-mode
     magit
@@ -56,7 +57,9 @@
     rust-mode
     smart-mode-line
     string-edit
-    slime
+    sly
+    sly-company
+    sly-quicklisp
     switch-window
     terraform-mode
     undo-tree
