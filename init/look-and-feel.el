@@ -19,8 +19,7 @@
 ;; Configure editor fonts
 
 ;; Determine fontsize based on machine (4K display on stallo):
-(letrec ((hostname (s-trim (f-read "/etc/hostname")))
-         (font-size (if (equal hostname "stallo") 38 12))
+(letrec ((font-size 12)
          (font (format "Input Mono-%d" font-size)))
   (setq default-frame-alist `((font-backend . "xft")
                               (font . ,font)))
