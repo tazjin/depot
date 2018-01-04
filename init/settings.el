@@ -68,4 +68,8 @@
 (setq aw-keys '(?f ?j ?d ?k ?s ?l ?a)) ; Homerow keys in sensible order!
 (setq aw-scope 'frame) ; There are many frames in exwm, I don't care!
 
+;; Configure pinentry for use with GPG
+(setq epa-pinentry-mode 'loopback)
+(pinentry-start)
+
 (provide 'settings)
