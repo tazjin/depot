@@ -12,9 +12,9 @@
 (global-set-key (kbd "C-M-r") 'isearch-backward)
 (global-set-key (kbd "C-M-%") 'query-replace)
 
-;; Ace-jump-mode
-(global-set-key (kbd "M-j") 'ace-jump-word-mode)
-(global-set-key (kbd "M-p") 'ace-jump-mode-pop-mark)
+;; Avy mode
+(global-set-key (kbd "M-j") 'avy-goto-char)
+(global-set-key (kbd "M-p") 'avy-pop-mark)
 
 (global-set-key (kbd "C-x o") ; Yes, I went there!
                 'ace-window)
