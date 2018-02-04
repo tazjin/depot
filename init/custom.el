@@ -5,6 +5,7 @@
  ;; If there is more than one, they won't work right.
  '(ac-auto-show-menu 0.8)
  '(ac-delay 0.2)
+ '(avy-background t)
  '(cargo-process--enable-rust-backtrace 1)
  '(custom-enabled-themes (quote (gruber-darker)))
  '(custom-safe-themes
