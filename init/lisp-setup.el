@@ -5,6 +5,7 @@
 
 (add-to-list 'lisp-mode-hook #'company-mode)
 (add-to-list 'lisp-mode-hook #'paredit-mode)
+(add-to-list 'lisp-mode-hook #'adjust-parens-mode)
 
 (define-key lisp-mode-map (kbd "TAB")
   #'company-indent-or-complete-common)

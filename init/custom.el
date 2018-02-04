@@ -22,7 +22,7 @@
  '(ns-right-command-modifier (quote meta))
  '(package-selected-packages
    (quote
-    (ace-window exwm which-key pandoc elnode fish-mode nix-mode yaml-mode undo-tree terraform-mode switch-window smart-mode-line rust-mode rainbow-mode rainbow-delimiters puppet-mode pkgbuild-mode password-store paredit multi-term multiple-cursors markdown-mode+ magit iy-go-to-char idle-highlight-mode hi2 helm haskell-mode gruber-darker-theme go-mode flycheck erlang dockerfile-mode confluence browse-kill-ring ag ace-jump-mode)))
+    (adjust-parens parinfer pdf-tools groovy-mode ace-window exwm which-key pandoc elnode fish-mode nix-mode yaml-mode undo-tree terraform-mode switch-window smart-mode-line rust-mode rainbow-mode rainbow-delimiters puppet-mode pkgbuild-mode password-store paredit multi-term multiple-cursors markdown-mode+ magit iy-go-to-char idle-highlight-mode hi2 helm haskell-mode gruber-darker-theme go-mode flycheck erlang dockerfile-mode confluence browse-kill-ring ag ace-jump-mode)))
  '(require-final-newline (quote visit-save)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.

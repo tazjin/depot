@@ -23,6 +23,7 @@
     ;; editor packages
     ace-jump-mode
     ace-window
+    adjust-parens
     browse-kill-ring
     cargo
     company
