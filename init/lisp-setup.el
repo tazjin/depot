@@ -1,6 +1,7 @@
 ;; lisp-settings.el - settings for various Lisp dialects
 ;; -*- lexical-binding: t; -*-
 
+(require 'adjust-parens)
 (require 'sly)
 
 ;; All the lisps:
