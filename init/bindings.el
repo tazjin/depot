@@ -16,6 +16,9 @@
 (global-set-key (kbd "M-j") 'avy-goto-char)
 (global-set-key (kbd "M-p") 'avy-pop-mark)
 
+;; imenu instead of insert-file
+(global-set-key (kbd "C-x i") 'imenu)
+
 (global-set-key (kbd "C-x o") ; Yes, I went there!
                 'ace-window)
 
