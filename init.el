@@ -38,7 +38,6 @@
     helm
     helm-exwm
     helm-pass
-    helm-swoop
     hi2
     idle-highlight-mode
     magit
@@ -114,3 +113,4 @@
                    )))
 
 (add-hook 'after-init-hook 'load-other-settings)
+(put 'narrow-to-region 'disabled nil)
