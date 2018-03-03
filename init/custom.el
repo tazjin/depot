@@ -10,7 +10,7 @@
  '(custom-enabled-themes (quote (gruber-darker)))
  '(custom-safe-themes
    (quote
-    ("3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" "d61fc0e6409f0c2a22e97162d7d151dee9e192a90fa623f8d6a071dbf49229c6" default)))
+    ("3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" "89336ca71dae5068c165d932418a368a394848c3b8881b2f96807405d8c6b5b6" default)))
  '(elnode-send-file-program "/run/current-system/sw/bin/cat")
  '(frame-brackground-mode (quote dark))
  '(global-auto-complete-mode t)
@@ -20,9 +20,6 @@
  '(ns-alternate-modifier (quote none))
  '(ns-command-modifier (quote control))
  '(ns-right-command-modifier (quote meta))
- '(package-selected-packages
-   (quote
-    (adjust-parens parinfer pdf-tools groovy-mode ace-window exwm which-key pandoc elnode fish-mode nix-mode yaml-mode undo-tree terraform-mode switch-window smart-mode-line rust-mode rainbow-mode rainbow-delimiters puppet-mode pkgbuild-mode password-store paredit multi-term multiple-cursors markdown-mode+ magit iy-go-to-char idle-highlight-mode hi2 helm haskell-mode gruber-darker-theme go-mode flycheck erlang dockerfile-mode confluence browse-kill-ring ag ace-jump-mode)))
  '(require-final-newline (quote visit-save)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
