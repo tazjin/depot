@@ -38,8 +38,12 @@
 (global-set-key (kbd "M-g g") 'ace-jump-line-mode)
 (global-set-key (kbd "M-g M-g") 'goto-line-with-feedback)
 
-;; Bind whitespace cleanup to a key
 (global-set-key (kbd "C-c w") 'whitespace-cleanup)
+(global-set-key (kbd "C-c a") 'align-regexp)
+
+;; Browse URLs (very useful for Gitlab's SSH output!)
+(global-set-key (kbd "C-c b p") 'browse-url-at-point)
+(global-set-key (kbd "C-c b b") 'browse-url)
 
 ;; Goodness from @magnars
 ;; I don't need to kill emacs that easily
