@@ -16,6 +16,6 @@
 
 ;; I don't use rustup and I'm not sure which derivation would normally place
 ;; Rust sources in the nix-store, so I'll continue using my local Rust checkout.
-(setq racer-rust-src-path "~/source/rust")
+(setq racer-rust-src-path "~/source/rust/src")
 
 (provide 'rust-setup)
