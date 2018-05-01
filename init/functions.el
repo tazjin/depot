@@ -134,4 +134,40 @@ Including indent-buffer, which should not be called automatically on save."
            (buffer-name)
            require-final-newline))
 
+;; Helm includes a command to run external applications, which does
+;; not seem to exist in ivy. This implementation uses some of the
+;; logic from Helm to provide similar functionality using ivy.
+(defun list-external-commands ()
+  "Creates a list of all external commands available on $PATH
+  while filtering NixOS wrappers."
+  (cl-loop
+   for dir in (split-string (getenv "PATH") path-separator)
+   when (and (file-exists-p dir) (file-accessible-directory-p dir))
+   for lsdir = (cl-loop for i in (directory-files dir t)
+                        for bn = (file-name-nondirectory i)
+                        when (and (not (s-contains? "-wrapped" i))
+                                  (not (member bn completions))
+                                  (not (file-directory-p i))
+                                  (file-executable-p i))
+                        collect bn)
+   append lsdir into completions
+   finally return (sort completions 'string-lessp)))
+
+(defun ivy-run-external-command ()
+  "Prompts the user with a list of all installed applications and
+  lets them select one to launch."
+
+  (interactive)
+  (let ((external-commands-list (list-external-commands)))
+    (ivy-read "Command:" external-commands-list
+              :require-match t
+              :history 'external-commands-history
+              :action (lambda (cmd)
+                        (message "Starting %s..." cmd)
+                        (set-process-sentinel
+                         (start-process-shell-command cmd nil cmd)
+                         (lambda (process event)
+                           (when (string= event "finished\n")
+                             (message "%s process finished." process))))))))
+
 (provide 'functions)
