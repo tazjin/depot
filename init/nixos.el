@@ -31,7 +31,7 @@
 
 (defun lock-screen ()
   (interactive)
-  (shell-command "i3lock"))
+  (shell-command "screen-lock"))
 
 (defun generate-randr-config ()
   (-flatten `(,(-map (lambda (n) (list n "DP2")) (number-sequence 1 5))
