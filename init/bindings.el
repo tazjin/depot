@@ -57,7 +57,7 @@
 ;; Open a file in project:
 (global-set-key (kbd "C-c f") 'project-find-file)
 
-;; Interactively filter lines in current buffer:
-(global-set-key (kbd "C-c o") 'helm-occur)
+;; Use swiper instead of isearch
+(global-set-key "\C-s" 'swiper)
 
 (provide 'bindings)
