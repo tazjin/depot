@@ -41,3 +41,4 @@
 (add-hook 'after-init-hook 'load-other-settings)
 (put 'narrow-to-region 'disabled nil)
 (edit-server-start)
+(put 'upcase-region 'disabled nil)
