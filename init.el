@@ -32,6 +32,7 @@
                    settings
                    modes
                    bindings
+                   term-setup
                    eshell-setup
                    haskell-setup
                    rust-setup
