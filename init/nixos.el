@@ -47,7 +47,7 @@
 
       (fringe-mode 3)
 
-      (setq exwm-workspace-number 2)
+      (setq exwm-workspace-number 10)
       ;; Make class name the buffer name
       (add-hook 'exwm-update-class-hook
                 (lambda ()
