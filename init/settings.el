@@ -1,4 +1,5 @@
 (require 'uniquify)
+(require 'notmuch)
 
 ;; Make ivy go!
 (ivy-mode 1)
@@ -65,5 +66,8 @@
 ;; Configure pinentry for use with GPG
 (setq epa-pinentry-mode 'loopback)
 (pinentry-start)
+
+;; Close mail buffers after sending mail
+(setq message-kill-buffer-on-exit t)
 
 (provide 'settings)
