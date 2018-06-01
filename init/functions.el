@@ -59,16 +59,16 @@
   (if (file-exists-p filename)
       (load filename)))
 
-;; These come from magnars, he's got some awesome things.
-
 (defun goto-line-with-feedback ()
   "Show line numbers temporarily, while prompting for the line number input"
   (interactive)
   (unwind-protect
       (progn
-        (linum-mode 1)
-        (call-interactively 'goto-line))
-    (linum-mode -1)))
+        (setq-local display-line-numbers t)
+        (let ((target (read-number "Goto line: ")))
+          (avy-push-mark)
+          (goto-line target)))
+    (setq-local display-line-numbers nil)))
 
 
 (defun untabify-buffer ()
