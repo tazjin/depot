@@ -37,7 +37,7 @@
 (global-set-key (kbd "C-c g") 'magit-status)
 
 ;; Replace standard goto-line with ace-jump-line-mode
-(global-set-key (kbd "M-g g") 'ace-jump-line-mode)
+(global-set-key (kbd "M-g g") 'avy-goto-line)
 (global-set-key (kbd "M-g M-g") 'goto-line-with-feedback)
 
 (global-set-key (kbd "C-c w") 'whitespace-cleanup)
