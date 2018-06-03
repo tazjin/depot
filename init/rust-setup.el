@@ -1,22 +1,20 @@
 (require 'company)
+(require 'eglot)
 (require 'flycheck)
-(require 'lsp-mode)
-(require 'lsp-rust)
-(require 'lsp-ui)
 (require 'rust-mode)
 
 ;; LSP configuration:
-(setq lsp-ui-sideline-delay 0.5)
-(add-hook 'lsp-mode-hook 'lsp-ui-mode)
-(add-hook 'rust-mode-hook #'lsp-rust-enable)
-(add-hook 'rust-mode-hook 'flycheck-mode)
-(add-hook 'rust-mode-hook 'company-mode)
-(push 'company-lsp company-backends)
+(defvar rust-eglot-initialized nil)
+(add-hook 'rust-mode-hook (lambda ()
+                            (unless rust-eglot-initialized
+                              (call-interactively #'eglot)
+                              (setq rust-eglot-initialized t))))
 
 ;; Enable cargo-related (C-c C-c C-...) commands.
 (add-hook 'rust-mode-hook #'cargo-minor-mode)
 
 ;; Configure autocompletion for rust
+(add-hook 'rust-mode-hook #'company-mode)
 (define-key rust-mode-map (kbd "TAB") #'company-indent-or-complete-common)
 (setq company-tooltip-align-annotations t)
 
