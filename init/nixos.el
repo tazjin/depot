@@ -43,7 +43,6 @@
       (message "Running on NixOS, configuring ExWM.")
       (require 'exwm)
       (require 'exwm-config)
-      (require 'exwm-randr)
 
       (fringe-mode 3)
 
@@ -92,9 +91,11 @@
       ;; Show time in the mode line
       (display-time-mode)
 
-      ;; Another attempt at xrandr configuration
-      (setq exwm-randr-workspace-output-plist (generate-randr-config))
-      (exwm-randr-enable)
+      ;; Configure xrandr when running on laptop
+      (when (equal (shell-command-to-string "hostname") "adho\n")
+        (require 'exwm-randr)
+        (setq exwm-randr-workspace-output-plist (generate-randr-config))
+        (exwm-randr-enable))
 
       ;; Let buffers move seamlessly between workspaces
       (setq exwm-workspace-show-all-buffers t)
