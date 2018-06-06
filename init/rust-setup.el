@@ -1,6 +1,5 @@
 (require 'company)
 (require 'eglot)
-(require 'flycheck)
 (require 'rust-mode)
 
 ;; LSP configuration:
