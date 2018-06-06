@@ -66,6 +66,11 @@
 (setq epa-pinentry-mode 'loopback)
 (pinentry-start)
 
+;; Configure password-store as an auth-source
+;; (this requires emacs 26)
+(require 'auth-source-pass)
+(auth-source-pass-enable)
+
 ;; Close mail buffers after sending mail
 (setq message-kill-buffer-on-exit t)
 
