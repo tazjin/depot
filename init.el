@@ -37,6 +37,7 @@
                    haskell-setup
                    rust-setup
                    lisp-setup
+                   mail-setup
                    )))
 
 (add-hook 'after-init-hook 'load-other-settings)

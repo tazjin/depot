@@ -1,5 +1,4 @@
 (require 'uniquify)
-(require 'notmuch)
 
 ;; Make ivy go!
 (ivy-mode 1)

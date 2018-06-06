@@ -1,0 +1,45 @@
+(require 'notmuch)
+
+(global-set-key (kbd "C-c m") 'notmuch-hello)
+(global-set-key (kbd "C-c C-e n") 'notmuch-mua-new-mail)
+
+(setq notmuch-cache-dir "~/.cache/notmuch")
+(make-directory notmuch-cache-dir t)
+
+;; Mark things as read when archiving them:
+(setq notmuch-archive-tags '("-inbox" "-unread" "+archive"))
+
+;; Cache addresses for completion:
+(setq notmuch-address-save-filename (concat notmuch-cache-dir "/addresses"))
+
+;; Don't spam my home folder with drafts:
+(setq notmuch-draft-folder notmuch-cache-dir)
+
+;; Show me saved searches that I care about:
+(setq notmuch-saved-searches
+      '((:name "inbox" :query "tag:inbox" :key "i")
+        (:name "gitlab" :query "tag:gitlab" :key "g")
+        (:name "sent" :query "tag:sent" :key "t")
+        (:name "drafts" :query "tag:draft" :key "d")))
+(setq notmuch-show-empty-saved-searches t)
+
+;; Mail sending configuration
+(setq notmuch-always-prompt-for-sender t)
+(setq notmuch-mua-user-agent-function
+      (lambda () (format "Emacs %s; notmuch.el %s" emacs-version notmuch-emacs-version)))
+
+;; Ensure sender is correctly passed to msmtp
+(setq mail-specify-envelope-from t
+      message-sendmail-envelope-from 'header
+      mail-envelope-from 'header)
+
+;; Store sent mail in the correct folder per account
+(setq notmuch-maildir-use-notmuch-insert nil)
+(setq notmuch-fcc-dirs '(("mail@tazj.in" . "tazjin/Sent")
+                         ;; Not a mistake, Office365 apparently
+                         ;; renames IMAP folders (!) to your local
+                         ;; language instead of providing translations
+                         ;; in the UI m(
+                         ("vincent@aprila.no" . "aprila/Sende element")))
+
+(provide 'mail-setup)
