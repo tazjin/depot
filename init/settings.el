@@ -1,4 +1,6 @@
 (require 'uniquify)
+(require 'password-store)
+(require 'ivy-pass)
 
 ;; Make ivy go!
 (ivy-mode 1)
