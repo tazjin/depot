@@ -24,6 +24,7 @@
 (setq notmuch-show-empty-saved-searches t)
 
 ;; Mail sending configuration
+(setq send-mail-function 'sendmail-send-it) ;; sendmail provided by MSMTP
 (setq notmuch-always-prompt-for-sender t)
 (setq notmuch-mua-user-agent-function
       (lambda () (format "Emacs %s; notmuch.el %s" emacs-version notmuch-emacs-version)))
