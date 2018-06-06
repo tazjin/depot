@@ -42,4 +42,12 @@
                          ;; in the UI m(
                          ("vincent@aprila.no" . "aprila/Sende element")))
 
+;; MSMTP decrypts passwords using pass, but pinentry doesn't work
+;; correctly in that setup. This forces a warmup of the GPG agent
+;; before sending the message.
+;;
+;; Note that the sending function is advised because the provided hook
+;; for this seems to run at the wrong time.
+(advice-add 'notmuch-mua-send-common :before 'warmup-gpg-agent)
+
 (provide 'mail-setup)

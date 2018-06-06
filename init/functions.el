@@ -190,4 +190,13 @@ Including indent-buffer, which should not be called automatically on save."
                               (run-at-time (password-store-timeout)
                                            nil 'password-store-clear))))))
 
+(defun warmup-gpg-agent (arg &optional exit)
+  "Function used to warm up the GPG agent before use. This is
+   useful in cases where there is no easy way to make pinentry run
+   in the correct context (such as when sending email)."
+  (interactive)
+  (message "Warming up GPG agent")
+  (epg-sign-string (epg-make-context) "dummy")
+  nil)
+
 (provide 'functions)
