@@ -17,7 +17,7 @@
 
 ;; Show me saved searches that I care about:
 (setq notmuch-saved-searches
-      '((:name "inbox" :query "tag:inbox" :key "i")
+      '((:name "inbox" :query "tag:inbox" :count-query "tag:inbox AND tag:unread" :key "i")
         (:name "gitlab" :query "tag:gitlab" :key "g")
         (:name "sent" :query "tag:sent" :key "t")
         (:name "drafts" :query "tag:draft" :key "d")))
