@@ -65,7 +65,10 @@
 
       ;; Launch applications with completion (dmenu style!)
       (exwm-input-set-key (kbd "s-d") #'ivy-run-external-command)
-      (exwm-input-set-key (kbd "s-p") #'ivy-pass)
+      (exwm-input-set-key (kbd "s-p") #'ivy-password-store)
+      (exwm-input-set-key (kbd "C-s-p") '(lambda ()
+                                           (interactive)
+                                           (ivy-password-store "~/.aprila-secrets")))
 
       ;; Toggle between line-mode / char-mode
       (exwm-input-set-key (kbd "C-c C-t C-t") #'exwm-input-toggle-keyboard)

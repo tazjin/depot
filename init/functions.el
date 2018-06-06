@@ -170,4 +170,24 @@ Including indent-buffer, which should not be called automatically on save."
                            (when (string= event "finished\n")
                              (message "%s process finished." process))))))))
 
+(defun ivy-password-store (&optional password-store-dir)
+  "Custom version of password-store integration with ivy that
+  actually uses the GPG agent correctly."
+
+  (interactive)
+  (ivy-read "Copy password of entry: "
+            (password-store-list (or password-store-dir (password-store-dir)))
+            :require-match t
+            :keymap ivy-pass-map
+            :action (lambda (entry)
+                      (let ((password (auth-source-pass-get 'secret entry)))
+                        (password-store-clear)
+                        (kill-new password)
+                        (setq password-store-kill-ring-pointer kill-ring-yank-pointer)
+                        (message "Copied %s to the kill ring. Will clear in %s seconds."
+                                 entry (password-store-timeout))
+                        (setq password-store-timeout-timer
+                              (run-at-time (password-store-timeout)
+                                           nil 'password-store-clear))))))
+
 (provide 'functions)
