@@ -18,9 +18,10 @@
 ;; Show me saved searches that I care about:
 (setq notmuch-saved-searches
       '((:name "inbox" :query "tag:inbox" :count-query "tag:inbox AND tag:unread" :key "i")
+        (:name "aprila-dev" :query "tag:aprila-dev" :count-query "tag:aprila-dev AND tag:unread" :key "d")
         (:name "gitlab" :query "tag:gitlab" :key "g")
         (:name "sent" :query "tag:sent" :key "t")
-        (:name "drafts" :query "tag:draft" :key "d")))
+        (:name "drafts" :query "tag:draft")))
 (setq notmuch-show-empty-saved-searches t)
 
 ;; Mail sending configuration
