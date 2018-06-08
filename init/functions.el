@@ -110,6 +110,11 @@ Including indent-buffer, which should not be called automatically on save."
   (interactive)
   (find-file "/etc/nixos/configuration.nix"))
 
+;; Open the NixOS man page
+(defun nixos-man ()
+  (interactive)
+  (man "configuration.nix"))
+
 ;; Open local emacs configuration
 (defun emacs-config ()
   (interactive)
