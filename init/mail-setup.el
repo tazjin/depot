@@ -34,6 +34,7 @@
 (setq mail-specify-envelope-from t
       message-sendmail-envelope-from 'header
       mail-envelope-from 'header)
+(setq mail-host-address (system-name))
 
 ;; Store sent mail in the correct folder per account
 (setq notmuch-maildir-use-notmuch-insert nil)
