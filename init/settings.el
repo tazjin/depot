@@ -1,3 +1,5 @@
+(require 'prescient)
+(require 'ivy-prescient)
 (require 'uniquify)
 (require 'password-store)
 (require 'ivy-pass)
@@ -9,9 +11,9 @@
 (setq ivy-use-virtual-buffers t)
 (setq enable-recursive-minibuffers t)
 
-;; Enable fuzzy matching in ivy (requires flx installed for sane
-;; ordering)
-(setq ivy-re-builders-alist '((t . ivy--regex-fuzzy)))
+;; Enable support for prescient in ivy
+(ivy-prescient-mode)
+(prescient-persist-mode)
 
 ;; Move files to trash when deleting
 (setq delete-by-moving-to-trash t)
