@@ -29,12 +29,13 @@
 (setq notmuch-always-prompt-for-sender t)
 (setq notmuch-mua-user-agent-function
       (lambda () (format "Emacs %s; notmuch.el %s" emacs-version notmuch-emacs-version)))
+(setq mail-host-address (system-name))
+(setq notmuch-mua-cite-function #'message-cite-original-without-signature)
 
 ;; Ensure sender is correctly passed to msmtp
 (setq mail-specify-envelope-from t
       message-sendmail-envelope-from 'header
       mail-envelope-from 'header)
-(setq mail-host-address (system-name))
 
 ;; Store sent mail in the correct folder per account
 (setq notmuch-maildir-use-notmuch-insert nil)
