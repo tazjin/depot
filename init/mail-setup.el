@@ -3,17 +3,17 @@
 (global-set-key (kbd "C-c m") 'notmuch-hello)
 (global-set-key (kbd "C-c C-e n") 'notmuch-mua-new-mail)
 
-(setq notmuch-cache-dir "~/.cache/notmuch")
+(setq notmuch-cache-dir (format "%s/.cache/notmuch" (getenv "HOME")))
 (make-directory notmuch-cache-dir t)
-
-;; Mark things as read when archiving them:
-(setq notmuch-archive-tags '("-inbox" "-unread" "+archive"))
 
 ;; Cache addresses for completion:
 (setq notmuch-address-save-filename (concat notmuch-cache-dir "/addresses"))
 
 ;; Don't spam my home folder with drafts:
-(setq notmuch-draft-folder notmuch-cache-dir)
+(setq notmuch-draft-folder "drafts") ;; relative to notmuch database
+
+;; Mark things as read when archiving them:
+(setq notmuch-archive-tags '("-inbox" "-unread" "+archive"))
 
 ;; Show me saved searches that I care about:
 (setq notmuch-saved-searches
