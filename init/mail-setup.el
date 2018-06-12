@@ -45,6 +45,10 @@
                          ;; in the UI m(
                          ("vincent@aprila.no" . "aprila/Sende element")))
 
+;; I don't use drafts but I instinctively hit C-x C-s constantly, lets
+;; handle that gracefully.
+(define-key notmuch-message-mode-map (kbd "C-x C-s") #'ignore)
+
 ;; MSMTP decrypts passwords using pass, but pinentry doesn't work
 ;; correctly in that setup. This forces a warmup of the GPG agent
 ;; before sending the message.
