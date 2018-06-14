@@ -31,6 +31,7 @@
 
 ;; Display battery in mode-line's misc section on adho:
 (when (equal "adho" (system-name))
+  (setq battery-mode-line-format " %b%p%%")
   (display-battery-mode))
 
 ;; Configure telephone-line
