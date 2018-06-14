@@ -11,9 +11,10 @@
 (setq ivy-use-virtual-buffers t)
 (setq enable-recursive-minibuffers t)
 
-;; Enable support for prescient in ivy
+;; Enable support for prescient in ivy & configure it
 (ivy-prescient-mode)
 (prescient-persist-mode)
+(add-to-list 'ivy-prescient-excluded-commands 'counsel-rg)
 
 ;; Move files to trash when deleting
 (setq delete-by-moving-to-trash t)
