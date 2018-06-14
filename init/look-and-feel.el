@@ -29,6 +29,10 @@
                               (font . ,font)))
   (set-frame-font font t t))
 
+;; Display battery in mode-line's misc section on adho:
+(when (equal "adho" (system-name))
+  (display-battery-mode))
+
 ;; Configure telephone-line
 (defun telephone-misc-if-last-window ()
   "Renders the mode-line-misc-info string for display in the
