@@ -42,12 +42,17 @@
   The idea is to not display information like the current time,
   load, battery levels in all buffers."
 
-  (if (bottom-right-window-p)
-      (telephone-line-raw mode-line-misc-info t)
-    ""))
+  (when (bottom-right-window-p)
+      (telephone-line-raw mode-line-misc-info t)))
 
 (telephone-line-defsegment telephone-line-last-window-segment ()
   (telephone-misc-if-last-window))
+
+;; Define a highlight font for ~ important ~ information in the last
+;; window.
+(defface special-highlight '((t (:foreground "white" :background "#5f627f"))) "")
+(add-to-list 'telephone-line-faces
+             '(highlight . (special-highlight . special-highlight)))
 
 (setq telephone-line-lhs
       '((nil . (telephone-line-position-segment))
@@ -55,7 +60,8 @@
 
 (setq telephone-line-rhs
       '((accent . (telephone-line-major-mode-segment))
-        (nil . (telephone-line-last-window-segment))))
+        (nil . (telephone-line-last-window-segment))
+        (highlight . (telephone-line-notmuch-counts))))
 
 (setq telephone-line-primary-left-separator 'telephone-line-tan-left
       telephone-line-primary-right-separator 'telephone-line-tan-right

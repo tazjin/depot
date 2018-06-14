@@ -27,6 +27,7 @@
 ;; After initialisation, proceed to load configuration that requires packages:
 (defun load-other-settings ()
   (mapc 'require '(nixos
+		   mail-setup
                    look-and-feel
                    functions
                    settings
@@ -37,7 +38,6 @@
                    haskell-setup
                    rust-setup
                    lisp-setup
-                   mail-setup
                    )))
 
 (add-hook 'after-init-hook 'load-other-settings)
