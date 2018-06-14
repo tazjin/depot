@@ -1,5 +1,7 @@
 ;;; -*- lexical-binding: t; -*-
 
+(require 'telephone-line)
+
 ;; Hide those ugly tool bars:
 (tool-bar-mode 0)
 (scroll-bar-mode 0)
@@ -34,8 +36,30 @@
 ;; If this file is evaluating there may also be a new (initial) frame:
 (configure-new-frame (selected-frame))
 
-;; Configure smart mode line
-(sml/setup)
+;; Configure telephone-line
+(defun telephone-misc-if-last-window ()
+  "Renders the mode-line-misc-info string for display in the
+  mode-line if the currently active window is the last one in the
+  frame.
+
+  The idea is to not display information like the current time,
+  load, battery levels in all buffers."
+
+  (if (bottom-right-window-p)
+      (telephone-line-raw mode-line-misc-info t)
+    ""))
+
+(telephone-line-defsegment telephone-line-last-window-segment ()
+  (telephone-misc-if-last-window))
+
+(setq telephone-line-lhs
+      '((nil . (telephone-line-position-segment))
+        (accent . (telephone-line-buffer-segment))))
+
+(setq telephone-line-rhs
+      '((accent . (telephone-line-major-mode-segment))
+        (nil . (telephone-line-last-window-segment))))
+(telephone-line-mode 1)
 
 ;; Auto refresh buffers
 (global-auto-revert-mode 1)
