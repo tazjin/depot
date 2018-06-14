@@ -11,6 +11,9 @@
 (setq ring-bell-function 'ignore)
 (setq initial-scratch-message "")
 
+;; Remember layout changes
+(winner-mode 1)
+
 ;; Usually emacs will run as a proper GUI application, in which case a few
 ;; extra settings are nice-to-have:
 (when window-system
