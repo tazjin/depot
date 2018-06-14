@@ -58,4 +58,36 @@
 ;; for this seems to run at the wrong time.
 (advice-add 'notmuch-mua-send-common :before 'warmup-gpg-agent)
 
+;; Define a telephone-line segment for displaying the count of unread,
+;; important mails in the last window's mode-line:
+(defvar *last-notmuch-count-redraw* 0)
+(defvar *current-notmuch-count* nil)
+
+(defun update-display-notmuch-counts ()
+  "Update and render the current state of the notmuch unread
+  count for display in the mode-line.
+
+  The offlineimap-timer runs every 2 minutes, so it does not make
+  sense to refresh this much more often than that."
+
+  (when (> (- (float-time) *last-notmuch-count-redraw*) 90)
+    (setq *last-notmuch-count-redraw* (float-time))
+    (let* ((inbox-unread (notmuch-saved-search-count "tag:inbox and tag:unread"))
+           (devel-unread (notmuch-saved-search-count "tag:aprila-dev and tag:unread"))
+           (notmuch-count (format "I: %s; D: %s" inbox-unread devel-unread)))
+      (setq *current-notmuch-count* notmuch-count)))
+
+  (when (and (bottom-right-window-p)
+             ;; Only render if the initial update is done and there
+             ;; are unread mails:
+             *current-notmuch-count*
+             (not (equal *current-notmuch-count* "I: 0; D: 0")))
+    *current-notmuch-count*))
+
+(telephone-line-defsegment telephone-line-notmuch-counts ()
+  "This segment displays the count of unread notmuch messages in
+  the last window's mode-line (if unread messages are present)."
+
+  (update-display-notmuch-counts))
+
 (provide 'mail-setup)
