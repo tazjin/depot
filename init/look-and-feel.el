@@ -56,6 +56,12 @@
 (setq telephone-line-rhs
       '((accent . (telephone-line-major-mode-segment))
         (nil . (telephone-line-last-window-segment))))
+
+(setq telephone-line-primary-left-separator 'telephone-line-tan-left
+      telephone-line-primary-right-separator 'telephone-line-tan-right
+      telephone-line-secondary-left-separator 'telephone-line-tan-hollow-left
+      telephone-line-secondary-right-separator 'telephone-line-tan-hollow-right)
+
 (telephone-line-mode 1)
 
 ;; Auto refresh buffers
