@@ -6,6 +6,8 @@
 (tool-bar-mode 0)
 (scroll-bar-mode 0)
 (menu-bar-mode 0)
+(add-hook 'after-make-frame-functions
+          (lambda (frame) (scroll-bar-mode 0)))
 
 ;; Don't do any annoying things:
 (setq ring-bell-function 'ignore)
@@ -22,22 +24,10 @@
   (blink-cursor-mode -1))
 
 ;; Configure editor fonts
-
-;; Determine fontsize based on machine (4K display on stallo):
-(letrec ((font-size 12)
-         (font (format "Input Mono-%d" font-size)))
+(let ((font (format "Input Mono-%d" 12)))
   (setq default-frame-alist `((font-backend . "xft")
                               (font . ,font)))
   (set-frame-font font t t))
-
-(defun configure-new-frame (frame)
-  "Configuration settings to run whenever a new frame is created."
-  (scroll-bar-mode 0)) ; Disable visual scroll bar (ugh!)
-
-(add-hook 'after-make-frame-functions 'configure-new-frame)
-
-;; If this file is evaluating there may also be a new (initial) frame:
-(configure-new-frame (selected-frame))
 
 ;; Configure telephone-line
 (defun telephone-misc-if-last-window ()
@@ -101,4 +91,3 @@
 (setq windmove-wrap-around nil)
 
 (provide 'look-and-feel)
-
