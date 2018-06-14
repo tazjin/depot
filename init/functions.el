@@ -204,4 +204,14 @@ Including indent-buffer, which should not be called automatically on save."
   (epg-sign-string (epg-make-context) "dummy")
   nil)
 
+(defun bottom-right-window-p ()
+  "Determines whether the last (i.e. bottom-right) window of the
+  active frame is showing the buffer in which this function is
+  executed."
+  (let* ((frame (selected-frame))
+         (right-windows (window-at-side-list frame 'right))
+         (bottom-windows (window-at-side-list frame 'bottom))
+         (last-window (car (seq-intersection right-windows bottom-windows))))
+    (eq (current-buffer) (window-buffer last-window))))
+
 (provide 'functions)
