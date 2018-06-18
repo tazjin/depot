@@ -76,7 +76,7 @@
 (require 'auth-source-pass)
 (auth-source-pass-enable)
 
-;; Close mail buffers after sending mail
-(setq message-kill-buffer-on-exit t)
+;; Configure magit-repository-list
+(setq magit-repository-directories '(("/home/vincent/projects" . 2)))
 
 (provide 'settings)

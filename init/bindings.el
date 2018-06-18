@@ -35,6 +35,7 @@
 
 ;; Magit!
 (global-set-key (kbd "C-c g") 'magit-status)
+(global-set-key (kbd "C-x p") 'ivy-browse-repositories)
 
 ;; Replace standard goto-line with ace-jump-line-mode
 (global-set-key (kbd "M-g g") 'avy-goto-line)

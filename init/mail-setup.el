@@ -32,6 +32,9 @@
 (setq mail-host-address (system-name))
 (setq notmuch-mua-cite-function #'message-cite-original-without-signature)
 
+;; Close mail buffers after sending mail
+(setq message-kill-buffer-on-exit t)
+
 ;; Ensure sender is correctly passed to msmtp
 (setq mail-specify-envelope-from t
       message-sendmail-envelope-from 'header

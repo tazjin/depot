@@ -195,6 +195,16 @@ Including indent-buffer, which should not be called automatically on save."
                               (run-at-time (password-store-timeout)
                                            nil 'password-store-clear))))))
 
+(defun ivy-browse-repositories ()
+  "Select a git repository and open its associated magit buffer."
+
+  (interactive)
+  (ivy-read "Repository: "
+            (magit-list-repos)
+            :require-match t
+            :sort t
+            :action #'magit-status))
+
 (defun warmup-gpg-agent (arg &optional exit)
   "Function used to warm up the GPG agent before use. This is
    useful in cases where there is no easy way to make pinentry run
