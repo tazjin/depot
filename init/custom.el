@@ -5,6 +5,9 @@
  ;; If there is more than one, they won't work right.
  '(ac-auto-show-menu 0.8)
  '(ac-delay 0.2)
+ '(aprila-nixops-path "/home/vincent/projects/langler/nixops")
+ '(aprila-release-author "Vincent Ambo <vincent@aprila.no>")
+ '(aprila-releases-path "/home/vincent/projects/langler/docs/releases")
  '(avy-background t)
  '(cargo-process--custom-path-to-bin "env CARGO_INCREMENTAL=1 cargo")
  '(cargo-process--enable-rust-backtrace 1)
