@@ -1,7 +1,6 @@
 (require 'prescient)
 (require 'ivy-prescient)
 (require 'uniquify)
-(require 'password-store)
 (require 'ivy-pass)
 
 ;; Make ivy go!
@@ -62,21 +61,5 @@
 
 ;; Show time in 24h format
 (setq display-time-24hr-format t)
-
-;; Make ace-window behave in a sane way:
-(setq aw-keys '(?f ?j ?d ?k ?s ?l ?a)) ; Homerow keys in sensible order!
-(setq aw-scope 'frame) ; There are many frames in exwm, I don't care!
-
-;; Configure pinentry for use with GPG
-(setq epa-pinentry-mode 'loopback)
-(pinentry-start)
-
-;; Configure password-store as an auth-source
-;; (this requires emacs 26)
-(require 'auth-source-pass)
-(auth-source-pass-enable)
-
-;; Configure magit-repository-list
-(setq magit-repository-directories '(("/home/vincent/projects" . 2)))
 
 (provide 'settings)

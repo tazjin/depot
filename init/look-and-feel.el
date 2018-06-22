@@ -1,7 +1,5 @@
 ;;; -*- lexical-binding: t; -*-
 
-(require 'telephone-line)
-
 ;; Hide those ugly tool bars:
 (tool-bar-mode 0)
 (scroll-bar-mode 0)
@@ -46,36 +44,37 @@
   (when (bottom-right-window-p)
       (telephone-line-raw mode-line-misc-info t)))
 
-(telephone-line-defsegment telephone-line-last-window-segment ()
-  (telephone-misc-if-last-window))
+(defun telephone-line-setup ()
+  (telephone-line-defsegment telephone-line-last-window-segment ()
+    (telephone-misc-if-last-window))
 
-;; Display the current EXWM workspace index in the mode-line
-(telephone-line-defsegment telephone-line-exwm-workspace-index ()
-  (when (bottom-right-window-p)
-    (format "[%s]" exwm-workspace-current-index)))
+  ;; Display the current EXWM workspace index in the mode-line
+  (telephone-line-defsegment telephone-line-exwm-workspace-index ()
+    (when (bottom-right-window-p)
+      (format "[%s]" exwm-workspace-current-index)))
 
-;; Define a highlight font for ~ important ~ information in the last
-;; window.
-(defface special-highlight '((t (:foreground "white" :background "#5f627f"))) "")
-(add-to-list 'telephone-line-faces
-             '(highlight . (special-highlight . special-highlight)))
+  ;; Define a highlight font for ~ important ~ information in the last
+  ;; window.
+  (defface special-highlight '((t (:foreground "white" :background "#5f627f"))) "")
+  (add-to-list 'telephone-line-faces
+               '(highlight . (special-highlight . special-highlight)))
 
-(setq telephone-line-lhs
-      '((nil . (telephone-line-position-segment))
-        (accent . (telephone-line-buffer-segment))))
+  (setq telephone-line-lhs
+        '((nil . (telephone-line-position-segment))
+          (accent . (telephone-line-buffer-segment))))
 
-(setq telephone-line-rhs
-      '((accent . (telephone-line-major-mode-segment))
-        (nil . (telephone-line-last-window-segment
-                telephone-line-exwm-workspace-index))
-        (highlight . (telephone-line-notmuch-counts))))
+  (setq telephone-line-rhs
+        '((accent . (telephone-line-major-mode-segment))
+          (nil . (telephone-line-last-window-segment
+                  telephone-line-exwm-workspace-index))
+          (highlight . (telephone-line-notmuch-counts))))
 
-(setq telephone-line-primary-left-separator 'telephone-line-tan-left
-      telephone-line-primary-right-separator 'telephone-line-tan-right
-      telephone-line-secondary-left-separator 'telephone-line-tan-hollow-left
-      telephone-line-secondary-right-separator 'telephone-line-tan-hollow-right)
+  (setq telephone-line-primary-left-separator 'telephone-line-tan-left
+        telephone-line-primary-right-separator 'telephone-line-tan-right
+        telephone-line-secondary-left-separator 'telephone-line-tan-hollow-left
+        telephone-line-secondary-right-separator 'telephone-line-tan-hollow-right)
 
-(telephone-line-mode 1)
+  (telephone-line-mode 1))
 
 ;; Auto refresh buffers
 (global-auto-revert-mode 1)

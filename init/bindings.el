@@ -14,15 +14,8 @@
 ;; Counsel stuff:
 (global-set-key (kbd "C-c r g") 'counsel-rg)
 
-;; Avy mode
-(global-set-key (kbd "M-j") 'avy-goto-char)
-(global-set-key (kbd "M-p") 'avy-pop-mark)
-
 ;; imenu instead of insert-file
 (global-set-key (kbd "C-x i") 'imenu)
-
-(global-set-key (kbd "C-x o") ; Yes, I went there!
-                'ace-window)
 
 ;; Window switching. (C-x o goes to the next window)
 (windmove-default-keybindings) ;; Shift+direction
@@ -33,12 +26,7 @@
 ;; Start a new eshell even if one is active.
 (global-set-key (kbd "C-x M") (lambda () (interactive) (eshell t)))
 
-;; Magit!
-(global-set-key (kbd "C-c g") 'magit-status)
 (global-set-key (kbd "C-x p") 'ivy-browse-repositories)
-
-;; Replace standard goto-line with ace-jump-line-mode
-(global-set-key (kbd "M-g g") 'avy-goto-line)
 (global-set-key (kbd "M-g M-g") 'goto-line-with-feedback)
 
 (global-set-key (kbd "C-c w") 'whitespace-cleanup)
