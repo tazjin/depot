@@ -28,7 +28,8 @@
           ;; Show previews of ace-window numbers in the mode line for each window.
           (ace-window-display-mode)))
 
-(use-package adjust-parens :hook ((lisp-mode . adjust-parens-hook)))
+(use-package adjust-parens :hook ((lisp-mode . adjust-parens-mode)
+                                  (emacs-lisp-mode . adjust-parens-mode)))
 (use-package auth-source-pass :init (auth-source-pass-enable))
 
 (use-package avy
@@ -51,7 +52,8 @@
 (use-package ht)
 (use-package hydra)
 (use-package idle-highlight-mode :hook ((prog-mode . idle-highlight-mode)))
-(use-package paredit :hook ((lisp-mode . paredit-mode)))
+(use-package paredit :hook ((lisp-mode . paredit-mode)
+                            (emacs-lisp-mode . paredit-mode)))
 (use-package multiple-cursors)
 
 (use-package pinentry
