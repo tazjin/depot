@@ -66,7 +66,7 @@
 (use-package s)
 (use-package smartparens :init (smartparens-global-mode))
 (use-package string-edit)
-(use-package telephone-line :init (telephone-line-setup))
+(use-package telephone-line) ;; configuration happens outside of use-package
 (use-package undo-tree :init (global-undo-tree-mode))
 (use-package uuidgen)
 (use-package which-key :init (which-key-mode t))
@@ -139,11 +139,6 @@
 (use-package web-mode)
 (use-package yaml-mode)
 
-;; (use-package sly
-;;   :init
-;;   (setq inferior-lisp-program (concat (nix-store-path "sbcl") "/bin/sbcl"))
-;;   (add-to-list 'company-backends 'sly-company))
-
 ;;
 ;; EXWM / NixOS related packages
 ;;
@@ -152,16 +147,11 @@
 (setq custom-file (concat user-emacs-directory "init/custom.el"))
 (load custom-file)
 
-(defvar home-dir)
-(setq home-dir (expand-file-name "~"))
+(defvar home-dir (expand-file-name "~"))
 
 ;; Seed RNG
 (random t)
 
-;; Load configuration that makes use of installed packages:
-
-;; Emacs will automatically initialise all installed packages.
-;; After initialisation, proceed to load configuration that requires packages:
 (defun load-other-settings ()
   (mapc 'require '(nixos
 		   mail-setup
@@ -172,7 +162,17 @@
                    bindings
                    term-setup
                    eshell-setup
-                   )))
+                   ))
+  (telephone-line-setup)
+
+  (use-package sly
+    :init (setq inferior-lisp-program (concat (nix-store-path "sbcl") "/bin/sbcl"))
+    ;;(add-to-list 'company-backends 'sly-company)
+    ))
+
+;; Some packages can only be initialised after the rest of the
+;; settings has been applied:
+
 
 (add-hook 'after-init-hook 'load-other-settings)
 (put 'narrow-to-region 'disabled nil)
