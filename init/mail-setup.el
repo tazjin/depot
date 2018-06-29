@@ -1,6 +1,8 @@
 (require 'notmuch)
+(require 'counsel-notmuch)
 
 (global-set-key (kbd "C-c m") 'notmuch-hello)
+(global-set-key (kbd "C-c C-m") 'counsel-notmuch)
 (global-set-key (kbd "C-c C-e n") 'notmuch-mua-new-mail)
 
 (setq notmuch-cache-dir (format "%s/.cache/notmuch" (getenv "HOME")))
