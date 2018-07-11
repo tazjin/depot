@@ -224,4 +224,11 @@ Including indent-buffer, which should not be called automatically on save."
          (last-window (car (seq-intersection right-windows bottom-windows))))
     (eq (current-buffer) (window-buffer last-window))))
 
+(defun inferior-erlang-nix-shell ()
+  "Start an inferior Erlang process from the root of the current
+  project."
+  (interactive)
+  (inferior-erlang
+   (format "nix-shell --command erl %s" (cdr (project-current)))))
+
 (provide 'functions)
