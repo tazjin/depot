@@ -18,6 +18,7 @@
  '(elnode-send-file-program "/run/current-system/sw/bin/cat")
  '(frame-brackground-mode (quote dark))
  '(global-auto-complete-mode t)
+ '(intero-package-version "0.1.31")
  '(kubernetes-commands-display-buffer-function (quote display-buffer))
  '(magit-log-show-gpg-status t)
  '(ns-alternate-modifier (quote none))
