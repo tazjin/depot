@@ -100,8 +100,10 @@
 ;; Packages providing language-specific functionality
 ;;
 
-(use-package cargo :hook ((rust-mode . cargo-minor-mode)
-                          (cargo-process-mode . visual-line-mode)))
+(use-package cargo
+  :hook ((rust-mode . cargo-minor-mode)
+         (cargo-process-mode . visual-line-mode))
+  :bind (:map cargo-minor-mode-map ("C-c C-c C-l" . ignore)))
 
 (use-package dockerfile-mode)
 
