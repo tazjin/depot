@@ -231,4 +231,32 @@ Including indent-buffer, which should not be called automatically on save."
   (inferior-erlang
    (format "nix-shell --command erl %s" (cdr (project-current)))))
 
+(defun intero-fix-ghci-panic ()
+  "Disable deferring of out of scope variable errors, which
+  triggers a bug in the interactive Emacs REPL printing a panic
+  under certain conditions."
+
+  (interactive)
+  (let* ((root (intero-project-root))
+         (package-name (intero-package-name))
+         (backend-buffer (intero-buffer 'backend))
+         (name (format "*intero:%s:%s:repl*"
+                       (file-name-nondirectory root)
+                       package-name))
+         (setting ":set -fno-defer-out-of-scope-variables\n"))
+    (when (get-buffer name)
+      (with-current-buffer (get-buffer name)
+        (goto-char (point-max))
+        (let ((process (get-buffer-process (current-buffer))))
+          (when process (process-send-string process setting)))))))
+
+;; Brute-force fix: Ensure the setting is injected every time the REPL
+;; is selected.
+;;
+;; Upstream issue: https://github.com/commercialhaskell/intero/issues/569
+(advice-add 'intero-repl :before (lambda (&rest r) (intero-fix-ghci-panic))
+            '((name . intero-panic-fix)))
+(advice-add 'intero-repl-load :before (lambda (&rest r) (intero-fix-ghci-panic))
+            '((name . intero-panic-fix)))
+
 (provide 'functions)
