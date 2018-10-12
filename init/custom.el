@@ -18,6 +18,8 @@
  '(elnode-send-file-program "/run/current-system/sw/bin/cat")
  '(frame-brackground-mode (quote dark))
  '(global-auto-complete-mode t)
+ '(intero-debug nil)
+ '(intero-global-mode t nil (intero))
  '(intero-package-version "0.1.31")
  '(kubernetes-commands-display-buffer-function (quote display-buffer))
  '(magit-log-show-gpg-status t)
@@ -30,6 +32,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(default ((t (:foreground "#e4e4ef" :background "#181818"))))
  '(rainbow-delimiters-depth-1-face ((t (:foreground "#2aa198"))))
  '(rainbow-delimiters-depth-2-face ((t (:foreground "#b58900"))))
  '(rainbow-delimiters-depth-3-face ((t (:foreground "#268bd2"))))
