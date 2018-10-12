@@ -55,7 +55,6 @@
 (use-package paredit :hook ((lisp-mode . paredit-mode)
                             (emacs-lisp-mode . paredit-mode)))
 (use-package multiple-cursors)
-
 (use-package pinentry
   :init
   (setq epa-pinentry-mode 'loopback)
@@ -125,7 +124,8 @@
 (use-package jq-mode
   :init (add-to-list 'auto-mode-alist '("\\.jq\\'" . jq-mode)))
 
-(use-package kotlin-mode)
+(use-package kotlin-mode
+  :bind (:map kotlin-mode-map ("<tab>" . indent-relative)))
 
 (use-package markdown-mode
   :init
@@ -174,7 +174,6 @@
 
 ;; Some packages can only be initialised after the rest of the
 ;; settings has been applied:
-
 
 (add-hook 'after-init-hook 'load-other-settings)
 (put 'narrow-to-region 'disabled nil)
