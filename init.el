@@ -134,6 +134,10 @@
   (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode)))
 
 (use-package markdown-toc)
+
+(use-package nix-mode
+  :bind (:map nix-mode-map ("<tab>" . nix-indent-line)))
+
 (use-package nginx-mode)
 (use-package rust-mode)
 (use-package terraform-mode)
