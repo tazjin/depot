@@ -29,9 +29,9 @@
   (shell-command "screen-lock"))
 
 (defun generate-randr-config ()
-  (-flatten `(,(-map (lambda (n) (list n "DP2")) (number-sequence 1 5))
+  (-flatten `(,(-map (lambda (n) (list n "DP2")) (number-sequence 1 7))
               (0 "eDP1")
-              ,(-map (lambda (n) (list n "eDP1")) (number-sequence 6 9)))))
+              ,(-map (lambda (n) (list n "eDP1")) (number-sequence 8 9)))))
 
 (use-package exwm
   :hook ((exwm-update-class . (lambda ()
