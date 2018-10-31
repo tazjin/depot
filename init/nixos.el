@@ -63,6 +63,9 @@
                                          (interactive)
                                          (ivy-password-store "~/.aprila-secrets")))
 
+    ;; Add Alacritty selector to a key
+    (exwm-input-set-key (kbd "C-x t") #'counsel-switch-to-alacritty)
+
     ;; Toggle between line-mode / char-mode
     (exwm-input-set-key (kbd "C-c C-t C-t") #'exwm-input-toggle-keyboard)
 

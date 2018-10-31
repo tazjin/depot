@@ -158,6 +158,16 @@ Including indent-buffer, which should not be called automatically on save."
    append lsdir into completions
    finally return (sort completions 'string-lessp)))
 
+(defun run-external-command (cmd)
+    "Execute the specified command and notify the user when it
+  finishes."
+    (message "Starting %s..." cmd)
+    (set-process-sentinel
+     (start-process-shell-command cmd nil cmd)
+     (lambda (process event)
+       (when (string= event "finished\n")
+         (message "%s process finished." process)))))
+
 (defun ivy-run-external-command ()
   "Prompts the user with a list of all installed applications and
   lets them select one to launch."
@@ -167,13 +177,7 @@ Including indent-buffer, which should not be called automatically on save."
     (ivy-read "Command:" external-commands-list
               :require-match t
               :history 'external-commands-history
-              :action (lambda (cmd)
-                        (message "Starting %s..." cmd)
-                        (set-process-sentinel
-                         (start-process-shell-command cmd nil cmd)
-                         (lambda (process event)
-                           (when (string= event "finished\n")
-                             (message "%s process finished." process))))))))
+              :action #'run-external-command)))
 
 (defun ivy-password-store (&optional password-store-dir)
   "Custom version of password-store integration with ivy that

@@ -78,19 +78,6 @@
   :bind ("C-c g" . magit-status)
   :init (setq magit-repository-directories '(("/home/vincent/projects" . 2))))
 
-;; (use-package multi-term
-;;   :bind ("C-x t" . counsel-switch-to-term)
-;;   :init (progn
-;;           ;; term-mode's attempt to use isearch is not my favourite thing in the
-;;           ;; world.
-;;           (delete '("C-r" . isearch-backward) term-bind-key-alist)
-;;           (delete '("C-s" . isearch-forward) term-bind-key-alist)
-
-;;           (add-to-list 'term-bind-key-alist '("C-r" . term-send-reverse-search-history))
-;;           (add-to-list 'term-bind-key-alist '("C-c C-l" . term-line-mode))
-;;           (add-to-list 'term-bind-key-alist '("C-s" . swiper))
-;;           (add-to-list 'term-bind-key-alist '("C-c C-r" . term-rename))))
-
 (use-package password-store)
 (use-package pg)
 (use-package restclient)
