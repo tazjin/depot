@@ -23,10 +23,8 @@
 (use-package ace-window
   :bind (("C-x o" . ace-window))
   :init
-  (progn  (setq aw-keys '(?f ?j ?d ?k ?s ?l ?a)
-                aw-scope 'frame)
-          ;; Show previews of ace-window numbers in the mode line for each window.
-          (ace-window-display-mode)))
+  (setq aw-keys '(?f ?j ?d ?k ?s ?l ?a)
+        aw-scope 'frame))
 
 (use-package adjust-parens :hook ((lisp-mode . adjust-parens-mode)
                                   (emacs-lisp-mode . adjust-parens-mode)))
@@ -162,6 +160,11 @@
     :init (setq inferior-lisp-program (concat (nix-store-path "sbcl") "/bin/sbcl"))
     ;;(add-to-list 'company-backends 'sly-company)
     ))
+
+;; Show previews of ace-window numbers in the mode line for each
+;; window. Initialising this in the package configuration does not
+;; work.
+(ace-window-display-mode)
 
 ;; Some packages can only be initialised after the rest of the
 ;; settings has been applied:
