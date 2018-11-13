@@ -75,7 +75,7 @@
   The offlineimap-timer runs every 2 minutes, so it does not make
   sense to refresh this much more often than that."
 
-  (when (> (- (float-time) *last-notmuch-count-redraw*) 90)
+  (when (> (- (float-time) *last-notmuch-count-redraw*) 30)
     (setq *last-notmuch-count-redraw* (float-time))
     (let* ((inbox-unread (notmuch-saved-search-count "tag:inbox and tag:unread"))
            (devel-unread (notmuch-saved-search-count "tag:aprila-dev and tag:unread"))
