@@ -26,8 +26,6 @@
   (setq aw-keys '(?f ?j ?d ?k ?s ?l ?a)
         aw-scope 'frame))
 
-(use-package adjust-parens :hook ((lisp-mode . adjust-parens-mode)
-                                  (emacs-lisp-mode . adjust-parens-mode)))
 (use-package auth-source-pass :init (auth-source-pass-enable))
 
 (use-package avy
