@@ -152,19 +152,15 @@
                    modes
                    bindings
                    term-setup
-                   eshell-setup
-                   ))
+                   eshell-setup))
   (telephone-line-setup)
+  (ace-window-display-mode)
 
   (use-package sly
     :init (setq inferior-lisp-program (concat (nix-store-path "sbcl") "/bin/sbcl"))
     ;;(add-to-list 'company-backends 'sly-company)
     ))
 
-;; Show previews of ace-window numbers in the mode line for each
-;; window. Initialising this in the package configuration does not
-;; work.
-(ace-window-display-mode)
 
 ;; Some packages can only be initialised after the rest of the
 ;; settings has been applied:
