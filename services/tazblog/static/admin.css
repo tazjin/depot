@@ -1,0 +1,49 @@
+@charset "UTF-8";
+/* CSS Document */
+
+body {
+	padding-top: 20px;
+	font-family: 'PT Sans', sans-serif;
+	background-image: linear-gradient(bottom, rgb(245,245,245) 66%, rgb(239,239,239) 83%);
+	background-image: -o-linear-gradient(bottom, rgb(245,245,245) 66%, rgb(239,239,239) 83%);
+	background-image: -webkit-linear-gradient(bottom, rgb(245,245,245) 66%, rgb(239,239,239) 83%);
+	background-image: -webkit-gradient(
+		linear,
+		left bottom,
+		left top,
+		color-stop(0.66, rgb(245,245,245)),
+		color-stop(0.83, rgb(239,239,239))
+	);
+	background-repeat: no-repeat;
+	background-color: rgb(245,245,245);
+}
+
+.loginBox {
+	width: 400px;
+	margin: 0 auto;
+}
+
+.loginBoxTop {
+	width: 380px;
+	height: 28px;
+	color: #FFFFFF;
+	font-size: 12px;
+	padding-left: 20px;
+	padding-top: 11px;
+	background: url(/static/loginBoxTop.png);
+}
+
+.loginBoxMiddle {
+    background-color: #F3F3F3;
+    border-top: 0px hidden;
+    border:1px solid #D2D2D2;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+	text-align: center;
+    font-size:12px;
+    height:auto;
+    padding-left: 10px;
+    padding-right: 10px;
+    min-height:200px;
+    width:378px;
+}

@@ -1,0 +1,7 @@
+*.o
+*.hi
+BlogState/
+dist/
+.cabal-sandbox/
+*.tar.gz
+.stack-work/
