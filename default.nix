@@ -4,6 +4,7 @@
 let
   localPkgs = super: pkgs: {
     tazjin.tazblog = import ./services/tazblog { inherit pkgs; };
+    tazjin.gemma = import ./services/gemma { inherit pkgs; };
   };
 
   # TODO(tazjin): It might be preferable to pin a specific commit of
