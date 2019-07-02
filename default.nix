@@ -5,6 +5,8 @@ let
   localPkgs = super: pkgs: {
     tazjin.tazblog = import ./services/tazblog { inherit pkgs; };
     tazjin.gemma = import ./services/gemma { inherit pkgs; };
+
+    thirdParty.gitAppraise = pkgs.callPackage ./third_party/go/git-appraise/git-appraise {};
   };
 
   # TODO(tazjin): It might be preferable to pin a specific commit of
