@@ -13,6 +13,7 @@ import           Data.Text              (Text)
 import qualified Data.Text              as T
 import           Data.Time
 import           Happstack.Server       hiding (Session)
+import Data.Maybe (fromJust)
 
 import Blog
 import BlogDB  hiding (updateEntry)
@@ -136,21 +137,22 @@ entryList acid lang = do
 
 editEntry :: AcidState Blog -> Integer -> ServerPart Response
 editEntry acid entryId = do
-    (Just entry) <- query' acid (GetEntry $ EntryId entryId)
-    ok $ toResponse $ editPage entry
+    entry <- query' acid (GetEntry $ EntryId entryId)
+    ok $ toResponse $ editPage $ fromJust entry
 
 updateEntry :: AcidState Blog -> Integer -> ServerPart Response
 updateEntry acid entryId = do
     decodeBody tmpPolicy
-    (Just entry) <- query' acid (GetEntry $ EntryId entryId)
+    entry <- query' acid (GetEntry $ EntryId entryId)
     nTitle <- lookText' "title"
     nBtext <- lookText' "btext"
     nMtext <- lookText' "mtext"
-    let newEntry = entry { title = nTitle
-                         , btext = nBtext
-                         , mtext = nMtext}
+    let newEntry = (fromJust entry)
+          { title = nTitle
+          , btext = nBtext
+          , mtext = nMtext}
     update' acid (UpdateEntry newEntry)
-    seeOther (concat $ ["/", show $ lang entry, "/", show entryId])
+    seeOther (concat $ ["/", show $ lang newEntry, "/", show entryId])
              (toResponse ())
 
 guardSession :: AcidState Blog -> ServerPartT IO ()
@@ -183,7 +185,7 @@ processLogin acid = do
       let sId = hashString $ show now
       addCookie (MaxAge 43200) (mkCookie "session" $ unpack sId)
       addCookie (MaxAge 43200) (mkCookie "sUser" $ T.unpack account)
-      (Just user) <- query' acid (GetUser $ Username account)
-      let nSession = Session (T.pack $ unpack sId) user now
+      user <- query' acid (GetUser $ Username account)
+      let nSession = Session (T.pack $ unpack sId) (fromJust user) now
       update' acid (AddSession nSession)
       seeOther ("/admin?do=login" :: Text) (toResponse())
