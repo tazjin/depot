@@ -1,0 +1,5 @@
+# Ignore various bazel output folders
+bazel-*
+
+# Ignore Nix result symlinks
+result
