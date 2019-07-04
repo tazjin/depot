@@ -1,0 +1,16 @@
+package(default_visibility = ["//visibility:public"])
+
+filegroup(
+    name = "bin",
+    srcs = glob(["bin/*"]),
+)
+
+filegroup(
+    name = "lib",
+    srcs = glob(["lib/**/*.so*", "lib/**/*.dylib", "lib/**/*.a"]),
+)
+
+filegroup(
+    name = "include",
+    srcs = glob(["include/**/*.h"]),
+)
