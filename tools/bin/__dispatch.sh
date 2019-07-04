@@ -19,6 +19,9 @@ case "${TARGET_TOOL}" in
   stylish-haskell)
     attr="haskellPackages.stylish-haskell"
     ;;
+  ghc)
+    attr="thirdParty.ghc"
+    ;;
   *)
     echo "The tool '${TARGET_TOOL}' is currently not installed in this repository."
     exit 1
