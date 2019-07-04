@@ -2,30 +2,30 @@
 # This script dispatches invocations transparently to programs instantiated from
 # Nix.
 #
-# To add a new tool, in
+# To add a new tool, insert it into the case statement below by setting `attr`
+# to the key in nixpkgs which represents the program you want to run.
 set -ueo pipefail
 
 readonly REPO_ROOT=$(git rev-parse --show-toplevel)
-readonly ARGS="$@"
 readonly TARGET_TOOL=$(basename $0)
-
-function nix_dispatch() {
-  local attr="${1}"
-  local result=$(nix-build --no-out-link --attr "${attr}" "${REPO_ROOT}")
-
-  PATH="${result}/bin:$PATH"
-  if [ -z "${ARGS}" ]; then
-    exec "${TARGET_TOOL}"
-  else
-    exec "${TARGET_TOOL}" "${ARGS}"
-  fi
-}
 
 case "${TARGET_TOOL}" in
   git-appraise)
-    nix_dispatch "thirdParty.gitAppraise"
+    attr="thirdParty.gitAppraise"
+    ;;
+  bazel)
+    attr="bazel"
+    ;;
+  stylish-haskell)
+    attr="haskellPackages.stylish-haskell"
     ;;
   *)
     echo "The tool '${TARGET_TOOL}' is currently not installed in this repository."
+    exit 1
     ;;
 esac
+
+result=$(nix-build --no-out-link --attr "${attr}" "${REPO_ROOT}")
+PATH="${result}/bin:$PATH"
+
+exec "${TARGET_TOOL}" "${@}"
