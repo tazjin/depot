@@ -12,7 +12,15 @@ local_repository(
   path = "third_party/bazel/rules_nixpkgs",
 )
 
-load("@io_tweag_rules_nixpkgs//nixpkgs:nixpkgs.bzl", "nixpkgs_local_repository", "nixpkgs_package")
+load(
+  "@io_tweag_rules_nixpkgs//nixpkgs:nixpkgs.bzl",
+  "nixpkgs_cc_configure",
+  "nixpkgs_package",
+)
+
+nixpkgs_cc_configure(
+  repositories = { "nixpkgs": "default.nix" },
+)
 
 # SECTION: Haskell
 
