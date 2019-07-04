@@ -1,16 +1,27 @@
+{-# LANGUAGE DeriveDataTypeable         #-}
+{-# LANGUAGE FlexibleContexts           #-}
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE MultiParamTypeClasses      #-}
+{-# LANGUAGE OverloadedStrings          #-}
+{-# LANGUAGE QuasiQuotes                #-}
+{-# LANGUAGE RecordWildCards            #-}
+{-# LANGUAGE ScopedTypeVariables        #-}
+{-# LANGUAGE TemplateHaskell            #-}
+{-# LANGUAGE TypeFamilies               #-}
+
 module Blog where
 
-import BlogDB
-import Data.Maybe      (fromJust)
-import Data.Text       (Text, append, empty, pack)
-import Data.Text.Lazy  (fromStrict)
-import Data.Time
-import Locales
-import Text.Blaze.Html (preEscapedToHtml)
-import Text.Hamlet
-import Text.Markdown
+import           BlogDB
+import           Data.Maybe      (fromJust)
+import           Data.Text       (Text, append, empty, pack)
+import           Data.Text.Lazy  (fromStrict)
+import           Data.Time
+import           Locales
+import           Text.Blaze.Html (preEscapedToHtml)
+import           Text.Hamlet
+import           Text.Markdown
 
-import qualified Data.Text as T
+import qualified Data.Text       as T
 
 replace :: Eq a => a -> a -> [a] -> [a]
 replace x y = map (\z -> if z == x then y else z)

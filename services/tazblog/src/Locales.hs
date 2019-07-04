@@ -1,3 +1,4 @@
+{-# LANGUAGE ScopedTypeVariables, OverloadedStrings #-}
 module Locales where
 
 import           BlogDB      (BlogLang (..))

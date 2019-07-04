@@ -1,5 +1,4 @@
--- Server implementation based on Happstack
-
+{-# LANGUAGE RecordWildCards, ScopedTypeVariables, OverloadedStrings, FlexibleContexts #-}
 module Server where
 
 import           Control.Applicative    (optional)

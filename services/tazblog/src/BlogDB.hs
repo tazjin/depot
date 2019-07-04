@@ -1,18 +1,30 @@
+{-# LANGUAGE DeriveDataTypeable         #-}
+{-# LANGUAGE FlexibleContexts           #-}
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE MultiParamTypeClasses      #-}
+{-# LANGUAGE OverloadedStrings          #-}
+{-# LANGUAGE QuasiQuotes                #-}
+{-# LANGUAGE RecordWildCards            #-}
+{-# LANGUAGE ScopedTypeVariables        #-}
+{-# LANGUAGE TemplateHaskell            #-}
+{-# LANGUAGE TypeFamilies               #-}
+
 module BlogDB where
 
-import Control.Monad.Reader (ask)
-import Control.Monad.State  (get, put)
-import Data.Acid
-import Data.Acid.Advanced
-import Data.Acid.Remote
-import Data.ByteString      (ByteString)
-import Data.Data            (Data, Typeable)
-import Data.IxSet           (Indexable (..), IxSet, Proxy (..), getOne, ixFun, ixSet, (@=))
-import Data.SafeCopy        (base, deriveSafeCopy)
-import Data.Text            (Text, pack)
-import Data.Time
-import Network              (PortID (..))
-import System.Environment   (getEnv)
+import           Control.Monad.Reader   (ask)
+import           Control.Monad.State    (get, put)
+import           Data.Acid
+import           Data.Acid.Advanced
+import           Data.Acid.Remote
+import           Data.ByteString        (ByteString)
+import           Data.Data              (Data, Typeable)
+import           Data.IxSet             (Indexable (..), IxSet, Proxy (..),
+                                         getOne, ixFun, ixSet, (@=))
+import           Data.SafeCopy          (base, deriveSafeCopy)
+import           Data.Text              (Text, pack)
+import           Data.Time
+import           Network                (PortID (..))
+import           System.Environment     (getEnv)
 
 import qualified Crypto.Hash.SHA512     as SHA (hash)
 import qualified Data.ByteString.Base64 as B64 (encode)
