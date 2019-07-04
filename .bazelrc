@@ -1,0 +1,2 @@
+# Ensure that GHC is always selected from nixpkgs:
+build --host_platform=@io_tweag_rules_haskell//haskell/platforms:linux_x86_64_nixpkgs
