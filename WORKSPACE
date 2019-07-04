@@ -41,7 +41,12 @@ load(
     "haskell_register_ghc_nixpkgs",
 )
 
+# Register a Haskell toolchain with all required external
+# dependencies.
+#
+# All dependencies need to be set up in thirdParty.ghc in default.nix
 haskell_register_ghc_nixpkgs(
-    version = "8.6.4",
-    repositories = { "nixpkgs": "default.nix" }
+    version = "8.6.5",
+    repositories = { "nixpkgs": "default.nix" },
+    attribute_path = "thirdParty.ghc",
 )
