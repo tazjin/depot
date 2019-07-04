@@ -15,6 +15,6 @@ let
   nixpkgsVersion = "nixos-19.03";
   nixpkgs = "https://github.com/NixOS/nixpkgs-channels/archive/${nixpkgsVersion}.tar.gz";
 
-in import (builtins.fetchTarball nixpkgs) {
+in { ... } @ args: import (builtins.fetchTarball nixpkgs) (args // {
     overlays = [ localPkgs ];
-}
+})
