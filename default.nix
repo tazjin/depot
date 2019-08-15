@@ -12,6 +12,7 @@ let
 
     # Third-party projects (either vendored or modified from nixpkgs) go here:
     gitAppraise = pkgs.callPackage ./third_party/go/git-appraise/git-appraise {};
+    terraform-gcp = pkgs.terraform_0_12.withPlugins(p: [ p.google ]);
   };
 
   # The pinned commit here is identical to the public nixery.dev
