@@ -1,40 +1,25 @@
-# This file sets up the top-level package set by merging all local
-# packages into the nixpkgs top-level.
+# This file sets up the top-level package set by merging all local packages into
+# the nixpkgs top-level.
+#
+# This makes packages accessible via the Nixery instance that is configured to
+# use this repository as its nixpkgs source.
 
 let
   localPkgs = super: pkgs: {
     # Local projects should be added here:
-    tazjin.tazblog = import ./services/tazblog { inherit pkgs; };
-    tazjin.gemma = import ./services/gemma { inherit pkgs; };
+    tazblog = import ./services/tazblog { inherit pkgs; };
+    gemma = import ./services/gemma { inherit pkgs; };
 
-    # Third-party projects (either vendored or modified from nixpkgs)
-    # should be added here:
-    thirdParty.gitAppraise = pkgs.callPackage ./third_party/go/git-appraise/git-appraise {};
-    thirdParty.ghc = pkgs.haskell.packages.ghc865.ghcWithPackages(p: with p; [
-      acid-state
-      base64-bytestring
-      blaze-html
-      containers
-      cryptohash
-      hamlet
-      happstack-server
-      ixset
-      markdown
-      mtl
-      network
-      network-uri
-      options
-      rss
-      safecopy
-    ]);
+    # Third-party projects (either vendored or modified from nixpkgs) go here:
+    gitAppraise = pkgs.callPackage ./third_party/go/git-appraise/git-appraise {};
   };
 
-  # TODO(tazjin): It might be preferable to pin a specific commit of
-  # nixpkgs, but for now the assumption will be that a single release
-  # channel is reasonably stable.
-  nixpkgsVersion = "nixos-19.03";
+  # The pinned commit here is identical to the public nixery.dev
+  # version, since popularity data has been generated for that.
+  nixpkgsVersion = "88d9f776091896cfe57dc6fbdf246e7d27d5f105";
   nixpkgs = "https://github.com/NixOS/nixpkgs-channels/archive/${nixpkgsVersion}.tar.gz";
 
 in { ... } @ args: import (builtins.fetchTarball nixpkgs) (args // {
     overlays = [ localPkgs ];
+    config.allowUnfree = true;
 })
