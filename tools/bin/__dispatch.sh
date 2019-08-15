@@ -13,14 +13,8 @@ case "${TARGET_TOOL}" in
   git-appraise)
     attr="thirdParty.gitAppraise"
     ;;
-  bazel)
-    attr="bazel"
-    ;;
   stylish-haskell)
     attr="haskellPackages.stylish-haskell"
-    ;;
-  ghc)
-    attr="thirdParty.ghc"
     ;;
   *)
     echo "The tool '${TARGET_TOOL}' is currently not installed in this repository."
