@@ -5,6 +5,11 @@ stdenv.mkDerivation rec {
 
   src = ./.;
 
+  # For the time being, Gemma can not be built because it requires an
+  # older version of Elm than what is available and Elm upgrade paths
+  # are painful.
+  broken = true;
+
   buildInputs = with lispPackages; [
     sbcl
     quicklisp
