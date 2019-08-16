@@ -28,6 +28,7 @@ spec:
       containers:
       - name: nixery
         image: eu.gcr.io/tazjins-infrastructure/nixery:demo
+        imagePullPolicy: Always
         volumeMounts:
           - name: nixery-secrets
             mountPath: /var/nixery
