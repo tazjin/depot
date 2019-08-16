@@ -19,6 +19,9 @@ case "${TARGET_TOOL}" in
   terraform)
     attr="terraform-gcp"
     ;;
+  kontemplate)
+    attr="kontemplate"
+    ;;
   *)
     echo "The tool '${TARGET_TOOL}' is currently not installed in this repository."
     exit 1

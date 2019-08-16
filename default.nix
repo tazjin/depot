@@ -7,8 +7,10 @@
 let
   localPkgs = super: pkgs: {
     # Local projects should be added here:
-    tazblog = import ./services/tazblog { inherit pkgs; };
-    gemma = import ./services/gemma { inherit pkgs; };
+    tazjin = {
+      blog = import ./services/tazblog { inherit pkgs; };
+      gemma = import ./services/gemma { inherit pkgs; };
+    };
 
     # Third-party projects (either vendored or modified from nixpkgs) go here:
     gitAppraise = pkgs.callPackage ./third_party/go/git-appraise/git-appraise {};
