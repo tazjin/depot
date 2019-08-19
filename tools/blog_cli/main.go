@@ -50,20 +50,23 @@ type post struct {
 }
 
 func (p *post) writeToDNS() error {
-	metaRecord := dns.ResourceRecordSet{
+	var additions []*dns.ResourceRecordSet
+	additions = append(additions, &dns.ResourceRecordSet{
 		Name: fmt.Sprintf("_meta.%s.blog.tazj.in.", p.ID),
 		Type: "TXT",
 		Ttl:  1200,
 		Rrdatas: []string{
 			encodeJSON(p.Meta),
 		},
-	}
+	})
 
-	chunkRecord := dns.ResourceRecordSet{
-		Name:    fmt.Sprintf("_chunks.%s.blog.tazj.in.", p.ID),
-		Type:    "TXT",
-		Ttl:     1200,
-		Rrdatas: p.Chunks,
+	for i, c := range p.Chunks {
+		additions = append(additions, &dns.ResourceRecordSet{
+			Name:    fmt.Sprintf("_%v.%s.blog.tazj.in.", i, p.ID),
+			Type:    "TXT",
+			Ttl:     1200,
+			Rrdatas: []string{c},
+		})
 	}
 
 	ctx := context.Background()
@@ -73,7 +76,7 @@ func (p *post) writeToDNS() error {
 	}
 
 	change := dns.Change{
-		Additions: []*dns.ResourceRecordSet{&metaRecord, &chunkRecord},
+		Additions: additions,
 	}
 
 	_, err = dnsSvc.Changes.Create(*project, *zone, &change).Do()
@@ -93,14 +96,13 @@ func encodeJSON(v interface{}) string {
 // Encode a chunk and check whether it is too large
 func encodeChunk(c chunk) (string, bool) {
 	tooLarge := false
+	s := base64.RawStdEncoding.EncodeToString([]byte(c.Text))
 
-	j := encodeJSON(c)
-
-	if len(j) >= 255 {
+	if len(s) >= 255 {
 		tooLarge = true
 	}
 
-	return j, tooLarge
+	return s, tooLarge
 }
 
 func createPost(id, title, text string, date time.Time) post {
@@ -111,8 +113,6 @@ func createPost(id, title, text string, date time.Time) post {
 	var chunks []string
 
 	for chunkSize < len(runes) {
-		n++
-
 		c, l := encodeChunk(chunk{
 			Chunk: n,
 			Text:  string(runes[0:chunkSize:chunkSize]),
@@ -121,11 +121,10 @@ func createPost(id, title, text string, date time.Time) post {
 		tooLarge = tooLarge || l
 		chunks = append(chunks, c)
 		runes = runes[chunkSize:]
+		n++
 	}
 
 	if len(runes) > 0 {
-		n++
-
 		c, l := encodeChunk(chunk{
 			Chunk: n,
 			Text:  string(runes),
@@ -133,6 +132,7 @@ func createPost(id, title, text string, date time.Time) post {
 
 		tooLarge = tooLarge || l
 		chunks = append(chunks, c)
+		n++
 	}
 
 	if tooLarge {
