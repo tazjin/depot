@@ -4,6 +4,8 @@
 # This makes packages accessible via the Nixery instance that is configured to
 # use this repository as its nixpkgs source.
 
+with builtins;
+
 let
   localPkgs = super: pkgs: {
     # Local projects should be added here:
@@ -14,6 +16,7 @@ let
 
     # Third-party projects (either vendored or modified from nixpkgs) go here:
     gitAppraise = pkgs.callPackage ./third_party/go/git-appraise/git-appraise {};
+    nixery = import ./third_party/nixery.nix { pkgs = super; };
     terraform-gcp = pkgs.terraform_0_12.withPlugins(p: [ p.google ]);
   };
 
@@ -22,7 +25,7 @@ let
   nixpkgsVersion = "88d9f776091896cfe57dc6fbdf246e7d27d5f105";
   nixpkgs = "https://github.com/NixOS/nixpkgs-channels/archive/${nixpkgsVersion}.tar.gz";
 
-in { ... } @ args: import (builtins.fetchTarball nixpkgs) (args // {
+in { ... } @ args: import (fetchTarball nixpkgs) (args // {
     overlays = [ localPkgs ];
     config.allowUnfree = true;
 })
