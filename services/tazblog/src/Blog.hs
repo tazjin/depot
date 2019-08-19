@@ -11,9 +11,9 @@
 
 module Blog where
 
-import           BlogDB
+import BlogStore
 import           Data.Maybe      (fromJust)
-import           Data.Text       (Text, append, empty, pack)
+import           Data.Text       (Text, empty, pack)
 import           Data.Text.Lazy  (fromStrict)
 import           Data.Time
 import           Locales
@@ -75,9 +75,9 @@ isEntryMarkdown e = edate e > markdownCutoff
 renderEntryMarkdown :: Text -> Html
 renderEntryMarkdown = markdown def {msXssProtect = False} . fromStrict
 
-renderEntries :: Bool -> [Entry] -> Maybe Html -> Html
-renderEntries showAll entries pageLinks = [shamlet|
-$forall entry <- toDisplay
+renderEntries :: [Entry] -> Maybe Html -> Html
+renderEntries entries pageLinks = [shamlet|
+$forall entry <- entries
   <article>
     <h2 .inline>
       <a href=#{linkElems entry} .unstyled-link>
@@ -97,10 +97,9 @@ $maybe links <- pageLinks
   ^{links}
 |]
   where
-   toDisplay = if showAll then entries else (take 6 entries)
    linkElems Entry{..} = concat $ ["/", show lang, "/", show entryId]
 
-showLinks :: Maybe Int -> BlogLang -> Html
+showLinks :: Maybe Integer -> BlogLang -> Html
 showLinks (Just i) lang = [shamlet|
   $if ((>) i 1)
     <div .navigation>
@@ -133,103 +132,6 @@ renderEntry e@Entry{..} = [shamlet|
     ^{preEscapedToHtml $ btext}
     <p>^{preEscapedToHtml $ mtext}
 <hr>
-|]
-
-{- Administration pages -}
-
-adminTemplate :: Text -> Html -> Html
-adminTemplate title body = [shamlet|
-$doctype 5
-<head>
- <link rel="stylesheet" type="text/css" href="/static/admin.css" media="all">
- <meta http-equiv="content-type" content="text/html;charset=UTF-8">
- <title>#{append "TazBlog Admin: " title}
-<body>
- ^{body}
-|]
-
-adminLogin :: Html
-adminLogin = adminTemplate "Login" $ [shamlet|
-<div class="loginBox">
- <div class="loginBoxTop">TazBlog Admin: Login
- <div class="loginBoxMiddle">
-  <form action="/admin" method="POST">
-   <p>Account ID
-   <p><input type="text" style="font-size:2;" name="account" value="tazjin" readonly="1">
-   <p>Passwort
-   <p><input type="password" style="font-size:2;" name="password">
-   <p><input alt="Anmelden" type="image" src="/static/signin.gif">
-|]
-
-adminIndex :: Text -> Html
-adminIndex sUser = adminTemplate "Index" $ [shamlet|
-<div style="float:center;">
- <form action="/admin/entry" method="POST">
-  <table>
-   <tr>
-    <thead><td>Title:
-    <td><input type="text" name="title">
-   <tr>
-    <thead><td>Language:
-    <td><select name="lang">
-     <option value="en">English
-     <option value="de">Deutsch
-   <tr>
-    <thead><td>Text:
-    <td>
-     <textarea name="btext" cols="100" rows="15">
-   <tr>
-    <thead>
-     <td style="vertical-align:top;">Read more:
-    <td>
-     <textarea name="mtext" cols="100" rows="15">
-  <input type="hidden" name="author" value=#{sUser}>
-  <input style="margin-left:20px;" type="submit" value="Submit">
- ^{adminFooter}
-|]
-
-adminFooter :: Html
-adminFooter = [shamlet|
-<a href="/">Front page
-\ -- #
-  <a href="/admin">New article
-\ -- Entry list: #
-  <a href="/admin/entrylist/en">EN
-\ & #
-<a href="/admin/entrylist/de">DE
-|]
-
-adminEntryList :: [Entry] -> Html
-adminEntryList entries = adminTemplate "EntryList" $ [shamlet|
-<div style="float: center;">
- <table>
-  $forall entry <- entries
-   <tr>
-    <td><a href=#{append "/admin/entry/" (show' $ entryId entry)}>#{title entry}
-    <td>#{formatPostDate $ edate entry}
-|]
- where
-  formatPostDate = formatTime defaultTimeLocale "[On %D at %H:%M]"
-
-editPage :: Entry -> Html
-editPage (Entry{..}) = adminTemplate "Index" $ [shamlet|
-<div style="float:center;">
- <form action=#{append "/admin/entry/" (show' entryId)} method="POST">
-  <table>
-   <tr>
-    <td>Title:
-    <td>
-     <input type="text" name="title" value=#{title}>
-   <tr>
-    <td style="vertical-align:top;">Text:
-    <td>
-     <textarea name="btext" cols="100" rows="15">#{btext}
-   <tr>
-    <td style="vertical-align:top;">Read more:
-    <td>
-     <textarea name="mtext" cols="100" rows="15">#{mtext}
-  <input type="submit" style="margin-left:20px;" value="Submit">
-  <p>^{adminFooter}
 |]
 
 showError :: BlogError -> BlogLang -> Html

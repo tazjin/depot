@@ -1,15 +1,21 @@
 {-# LANGUAGE ScopedTypeVariables, OverloadedStrings #-}
 module Locales where
 
-import           BlogDB      (BlogLang (..))
 import           Data.Maybe  (fromMaybe)
 import           Data.Text   (Text)
 import qualified Data.Text   as T
 import           Network.URI
 
+data BlogLang = EN | DE
+    deriving (Eq, Ord)
+
+instance Show BlogLang where
+    show DE = "de"
+    show EN = "en"
+
 data BlogError = NotFound | UnknownError
 
-version = "5.1.2"
+version = "6.0.0"
 
 blogTitle :: BlogLang -> Text -> Text
 blogTitle DE s = T.concat ["Tazjins blog", s]

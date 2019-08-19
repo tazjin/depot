@@ -2,20 +2,15 @@
 module Server where
 
 import           Control.Applicative    (optional)
-import           Control.Monad          (msum, mzero, unless)
+import Control.Monad (msum)
 import           Control.Monad.IO.Class (liftIO)
-import           Data.Acid
-import           Data.Acid.Advanced
-import           Data.ByteString.Char8  (unpack)
 import           Data.Char              (toLower)
-import           Data.Text              (Text)
 import qualified Data.Text              as T
-import           Data.Time
 import           Happstack.Server       hiding (Session)
-import Data.Maybe (fromJust)
+import Data.Maybe (maybe)
 
 import Blog
-import BlogDB  hiding (updateEntry)
+import BlogStore
 import Locales
 import RSS
 
@@ -26,32 +21,32 @@ instance FromReqURI BlogLang where
       "en" -> Just EN
       _    -> Nothing
 
+pageSize :: Integer
+pageSize = 3
+
 tmpPolicy :: BodyPolicy
 tmpPolicy = defaultBodyPolicy "/tmp" 0 200000 1000
 
-runBlog :: AcidState Blog -> Int -> String -> IO ()
-runBlog acid port respath =
-  simpleHTTP nullConf {port = port} $ tazBlog acid respath
+runBlog :: Int -> String -> IO ()
+runBlog port respath = do
+  cache <- newCache "blog.tazj.in."
+  simpleHTTP nullConf {port = port} $ tazBlog cache respath
 
-tazBlog :: AcidState Blog -> String -> ServerPart Response
-tazBlog acid resDir = do
-    msum [ path $ \(lang :: BlogLang) -> blogHandler acid lang
-         , dir "admin" $ msum [
-                adminHandler acid -- this checks auth
-              , method GET >> (ok $ toResponse adminLogin)
-              , method POST >> processLogin acid ]
+tazBlog :: BlogCache -> String -> ServerPart Response
+tazBlog cache resDir = do
+    msum [ path $ \(lang :: BlogLang) -> blogHandler cache lang
          , dir "static" $ staticHandler resDir
-         , blogHandler acid EN
+         , blogHandler cache EN
          , staticHandler resDir
          , notFound $ toResponse $ showError NotFound DE
          ]
 
-blogHandler :: AcidState Blog -> BlogLang -> ServerPart Response
-blogHandler acid lang =
-    msum [ path $ \(eId :: Integer) -> showEntry acid lang $ EntryId eId
-         , nullDir >> showIndex acid lang
-         , dir "rss" $ nullDir >> showRSS acid lang
-         , dir "rss.xml" $ nullDir >> showRSS acid lang
+blogHandler :: BlogCache -> BlogLang -> ServerPart Response
+blogHandler cache lang =
+    msum [ path $ \(eId :: Integer) -> showEntry cache lang $ EntryId eId
+         , nullDir >> showIndex cache lang
+         , dir "rss" $ nullDir >> showRSS cache lang
+         , dir "rss.xml" $ nullDir >> showRSS cache lang
          , notFound $ toResponse $ showError NotFound lang
          ]
 
@@ -61,20 +56,9 @@ staticHandler resDir = do
   setHeaderM "expires" "Tue, 20 Jan 2037 04:20:42 GMT"
   serveDirectory DisableBrowsing [] resDir
 
-adminHandler :: AcidState Blog -> ServerPart Response
-adminHandler acid = do
-  guardSession acid
-  msum [ dir "entry" $ method POST >> postEntry acid
-       , dir "entry" $ path $ \(entry :: Integer) -> msum [
-              method GET >> editEntry acid entry
-            , method POST >> updateEntry acid entry ]
-       , dir "entrylist" $ path $ \(lang :: BlogLang) -> entryList acid lang
-       , ok $ toResponse $ adminIndex "tazjin"
-       ]
-
-showEntry :: AcidState Blog -> BlogLang -> EntryId -> ServerPart Response
-showEntry acid lang eId = do
-    entry <- query' acid (GetEntry eId)
+showEntry :: BlogCache -> BlogLang -> EntryId -> ServerPart Response
+showEntry cache lang eId = do
+    entry <- getEntry cache eId
     tryEntry entry lang
 
 tryEntry :: Maybe Entry -> BlogLang -> ServerPart Response
@@ -84,107 +68,19 @@ tryEntry (Just entry) _ = ok $ toResponse $ blogTemplate eLang eTitle $ renderEn
         eTitle = T.append ": " (title entry)
         eLang = lang entry
 
-showIndex :: AcidState Blog -> BlogLang -> ServerPart Response
-showIndex acid lang = do
-    entries <- query' acid (LatestEntries lang)
-    (page :: Maybe Int) <- optional $ lookRead "page"
-    ok $ toResponse $ blogTemplate lang "" $
-        renderEntries False (eDrop page entries) (Just $ showLinks page lang)
-  where
-    eDrop :: Maybe Int -> [a] -> [a]
-    eDrop (Just i) = drop ((i-1) * 6)
-    eDrop Nothing = drop 0
+offset :: Maybe Integer -> Integer
+offset = maybe 0 ((*) pageSize)
 
-showRSS :: AcidState Blog -> BlogLang -> ServerPart Response
-showRSS acid lang = do
-    entries <- query' acid (LatestEntries lang)
-    feed <- liftIO $ renderFeed lang $ take 6 entries
+showIndex :: BlogCache -> BlogLang -> ServerPart Response
+showIndex cache lang = do
+    (page :: Maybe Integer) <- optional $ lookRead "page"
+    entries <- listEntries cache (offset page) pageSize
+    ok $ toResponse $ blogTemplate lang "" $
+        renderEntries entries (Just $ showLinks page lang)
+
+showRSS :: BlogCache -> BlogLang -> ServerPart Response
+showRSS cache lang = do
+    entries <- listEntries cache 0 4
+    feed <- liftIO $ renderFeed lang entries
     setHeaderM "content-type" "text/xml"
     ok $ toResponse feed
-
-{- ADMIN stuff -}
-
-postEntry :: AcidState Blog -> ServerPart Response
-postEntry acid = do
-    nullDir
-    decodeBody tmpPolicy
-    now <- liftIO getCurrentTime
-    let eId = timeToId now
-    lang <- look "lang"
-    nBtext <- lookText' "btext"
-    nMtext <- lookText' "mtext"
-    nEntry <- Entry <$> pure eId
-                    <*> getLang lang
-                    <*> readCookieValue "sUser"
-                    <*> lookText' "title"
-                    <*> pure nBtext
-                    <*> pure nMtext
-                    <*> pure now
-    update' acid (InsertEntry nEntry)
-    seeOther ("/" ++ lang ++ "/" ++ show eId) (toResponse())
-  where
-    timeToId :: UTCTime -> EntryId
-    timeToId t = EntryId . read $ formatTime defaultTimeLocale "%s" t
-    getLang :: String -> ServerPart BlogLang
-    getLang "de" = return DE
-    getLang _ = return EN -- English is default
-
-entryList :: AcidState Blog -> BlogLang -> ServerPart Response
-entryList acid lang = do
-    entries <- query' acid (LatestEntries lang)
-    ok $ toResponse $ adminEntryList entries
-
-editEntry :: AcidState Blog -> Integer -> ServerPart Response
-editEntry acid entryId = do
-    entry <- query' acid (GetEntry $ EntryId entryId)
-    ok $ toResponse $ editPage $ fromJust entry
-
-updateEntry :: AcidState Blog -> Integer -> ServerPart Response
-updateEntry acid entryId = do
-    decodeBody tmpPolicy
-    entry <- query' acid (GetEntry $ EntryId entryId)
-    nTitle <- lookText' "title"
-    nBtext <- lookText' "btext"
-    nMtext <- lookText' "mtext"
-    let newEntry = (fromJust entry)
-          { title = nTitle
-          , btext = nBtext
-          , mtext = nMtext}
-    update' acid (UpdateEntry newEntry)
-    seeOther (concat $ ["/", show $ lang newEntry, "/", show entryId])
-             (toResponse ())
-
-guardSession :: AcidState Blog -> ServerPartT IO ()
-guardSession acid = do
-    (sId :: Text) <- readCookieValue "session"
-    (uName :: Text) <- readCookieValue "sUser"
-    now <- liftIO getCurrentTime
-    mS <- query' acid (GetSession $ SessionID sId)
-    case mS of
-      Nothing -> mzero
-      (Just Session{..}) -> unless ((uName == username user) && sessionTimeDiff now sdate)
-                                   mzero
-  where
-    sessionTimeDiff :: UTCTime -> UTCTime -> Bool
-    sessionTimeDiff now sdate = diffUTCTime now sdate < 43200
-
-
-processLogin :: AcidState Blog -> ServerPart Response
-processLogin acid = do
-    decodeBody tmpPolicy
-    account <- lookText' "account"
-    password <- look "password"
-    login <- query' acid (CheckUser (Username account) password)
-    if login
-      then createSession account
-      else unauthorized $ toResponse adminLogin
-  where
-    createSession account = do
-      now <- liftIO getCurrentTime
-      let sId = hashString $ show now
-      addCookie (MaxAge 43200) (mkCookie "session" $ unpack sId)
-      addCookie (MaxAge 43200) (mkCookie "sUser" $ T.unpack account)
-      user <- query' acid (GetUser $ Username account)
-      let nSession = Session (T.pack $ unpack sId) (fromJust user) now
-      update' acid (AddSession nSession)
-      seeOther ("/admin?do=login" :: Text) (toResponse())

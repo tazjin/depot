@@ -9,7 +9,7 @@ import Data.Time     (UTCTime, getCurrentTime)
 import Network.URI
 import Text.RSS
 
-import BlogDB  hiding (Title)
+import BlogStore
 import Locales
 
 createChannel :: BlogLang -> UTCTime -> [ChannelElem]
