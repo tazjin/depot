@@ -19,6 +19,12 @@ let
     gitAppraise = pkgs.callPackage ./third_party/go/git-appraise/git-appraise {};
     nixery = import ./third_party/nixery.nix { pkgs = super; };
     terraform-gcp = pkgs.terraform_0_12.withPlugins(p: [ p.google ]);
+    ormolu = import (super.fetchFromGitHub {
+      owner = "tweag";
+      repo = "ormolu";
+      rev = "a7076c0f83e5c06ea9067b71171859fa2ba8afd9";
+      sha256 = "1p4n2ja4ciw3qfskn65ggpy37mvgf2sslxqmqn8s8jjarnqcyfny";
+    }) { pkgs = super; };
   };
 
   # The pinned commit here is identical to the public nixery.dev
