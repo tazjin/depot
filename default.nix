@@ -11,6 +11,7 @@ let
     # Local projects should be added here:
     tazjin = {
       blog = import ./services/tazblog { inherit pkgs; };
+      blog_cli = pkgs.callPackage ./tools/blog_cli {};
       gemma = import ./services/gemma { inherit pkgs; };
     };
 

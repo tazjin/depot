@@ -22,6 +22,9 @@ case "${TARGET_TOOL}" in
   kontemplate)
     attr="kontemplate"
     ;;
+  blog_cli)
+    attr="tazjin.blog_cli"
+    ;;
   *)
     echo "The tool '${TARGET_TOOL}' is currently not installed in this repository."
     exit 1
