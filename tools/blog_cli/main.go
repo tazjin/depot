@@ -33,14 +33,14 @@ var (
 var chunkSize = 200
 
 type metadata struct {
-	Chunks int       `json:"chunks"`
-	Title  string    `json:"title"`
-	Date   time.Time `json:"date"`
+	Chunks int       `json:"c"`
+	Title  string    `json:"t"`
+	Date   time.Time `json:"d"`
 }
 
 type chunk struct {
-	Chunk int    `json:"c"`
-	Text  string `json:"t"`
+	Chunk int
+	Text  string
 }
 
 type post struct {
