@@ -1,0 +1,21 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tazblog
+  labels:
+    app: tazblog
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tazblog
+  template:
+    metadata:
+      labels:
+        app: tazblog
+    spec:
+      containers:
+      - name: tazblog
+        image: nixery.local/shell/tazjin.blog:{{ gitHEAD }}
+        command: [ "tazblog" ]
