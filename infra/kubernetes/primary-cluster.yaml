@@ -6,6 +6,7 @@ include:
   - name: nixery
     values:
       port: 8080
+      version: 2e688c1
       bucket: tazjins-data
       account: nixery@tazjins-infrastructure.iam.gserviceaccount.com
       repo: ssh://source.developers.google.com:2022/p/tazjins-infrastructure/r/monorepo
