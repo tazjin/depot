@@ -19,6 +19,7 @@ library
                  text,
                  blaze-html,
                  blaze-markup,
+                 cache,
                  crypto-api,
                  cryptohash,
                  old-locale,

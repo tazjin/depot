@@ -15,33 +15,36 @@
 --
 -- This module implements logic for assembling a post out of these
 -- fragments and caching it based on the TTL of its `_meta` record.
-
 module BlogStore where
 
-import           Data.Text              (Text)
-import Locales (BlogLang(..))
-import           Data.Time (UTCTime)
 import Control.Monad.IO.Class (MonadIO)
+import Data.Text (Text)
+import Data.Time (UTCTime)
+import Locales (BlogLang (..))
 
-newtype EntryId = EntryId { unEntryId :: Integer }
-    deriving (Eq, Ord)
+newtype EntryId = EntryId {unEntryId :: Integer}
+  deriving (Eq, Ord)
 
 instance Show EntryId where
+
   show = show . unEntryId
 
-data Entry = Entry {
-    entryId :: EntryId,
-    lang    :: BlogLang,
-    author  :: Text,
-    title   :: Text,
-    btext   :: Text,
-    mtext   :: Text,
-    edate   :: UTCTime
-} deriving (Eq, Ord, Show)
+data Entry
+  = Entry
+      { entryId :: EntryId,
+        lang :: BlogLang,
+        author :: Text,
+        title :: Text,
+        btext :: Text,
+        mtext :: Text,
+        edate :: UTCTime
+        }
+  deriving (Eq, Ord, Show)
 
 data BlogCache
 
 type Offset = Integer
+
 type Count = Integer
 
 newCache :: String -> IO BlogCache

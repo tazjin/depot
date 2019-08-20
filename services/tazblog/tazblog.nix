@@ -1,7 +1,7 @@
 { mkDerivation, acid-state, base, base64-bytestring, blaze-html
-, blaze-markup, bytestring, crypto-api, cryptohash, hamlet
-, happstack-server, ixset, markdown, mtl, network, network-uri
-, old-locale, options, rss, safecopy, shakespeare, stdenv, text
+, blaze-markup, bytestring, cache, crypto-api, cryptohash, hamlet
+, happstack-server, markdown, mtl, network, network-uri
+, old-locale, options, rss, shakespeare, stdenv, text
 , time, transformers
 }:
 mkDerivation {
@@ -12,7 +12,7 @@ mkDerivation {
   isExecutable = true;
   libraryHaskellDepends = [
     base base64-bytestring blaze-html blaze-markup bytestring
-    crypto-api cryptohash hamlet happstack-server markdown mtl
+    cache crypto-api cryptohash hamlet happstack-server markdown mtl
     network network-uri old-locale rss shakespeare text time
     transformers
   ];
