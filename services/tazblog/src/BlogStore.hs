@@ -15,12 +15,21 @@
 --
 -- This module implements logic for assembling a post out of these
 -- fragments and caching it based on the TTL of its `_meta` record.
-module BlogStore where
+module BlogStore(
+  BlogCache,
+  EntryId(..),
+  Entry(..),
+  withCache,
+  listEntries,
+  getEntry,
+) where
 
 import Control.Monad.IO.Class (MonadIO)
 import Data.Text (Text)
 import Data.Time (UTCTime)
 import Locales (BlogLang (..))
+import Network.DNS.Lookup (lookupTXT)
+import qualified Network.DNS.Resolver as R
 
 newtype EntryId = EntryId {unEntryId :: Integer}
   deriving (Eq, Ord)
@@ -41,17 +50,26 @@ data Entry
         }
   deriving (Eq, Ord, Show)
 
+-- | Wraps a DNS resolver with caching configured. For the initial
+-- version of this, all caching of entries is done by the resolver
+-- (i.e. no pre-assembled versions of entries are cached).
 data BlogCache
+  = BlogCache { resolver :: R.Resolver
+              , zone :: String }
 
 type Offset = Integer
 
 type Count = Integer
 
-newCache :: String -> IO BlogCache
-newCache zone = undefined
+withCache :: String -> (BlogCache -> IO a) -> IO a
+withCache zone f = do
+  let conf = R.defaultResolvConf { R.resolvCache = Just R.defaultCacheConf
+                                 , R.resolvConcurrent = True }
+  seed <- R.makeResolvSeed conf
+  R.withResolver seed $ (\r -> f $ BlogCache r zone)
 
 listEntries :: MonadIO m => BlogCache -> Offset -> Count -> m [Entry]
-listEntries cache offset count = undefined
+listEntries (BlogCache r z) offset count = undefined
 
 getEntry :: MonadIO m => BlogCache -> EntryId -> m (Maybe Entry)
-getEntry cache eId = undefined
+getEntry (BlogCache r z) eId = undefined

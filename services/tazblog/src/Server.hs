@@ -29,8 +29,8 @@ tmpPolicy = defaultBodyPolicy "/tmp" 0 200000 1000
 
 runBlog :: Int -> String -> IO ()
 runBlog port respath = do
-  cache <- newCache "blog.tazj.in."
-  simpleHTTP nullConf {port = port} $ tazBlog cache respath
+  withCache "blog.tazj.in." $ \cache ->
+    simpleHTTP nullConf {port = port} $ tazBlog cache respath
 
 tazBlog :: BlogCache -> String -> ServerPart Response
 tazBlog cache resDir = do
