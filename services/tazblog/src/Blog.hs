@@ -12,7 +12,6 @@
 module Blog where
 
 import BlogStore
-import           Data.Maybe      (fromJust)
 import           Data.Text       (Text, empty, pack)
 import           Data.Text.Lazy  (fromStrict)
 import           Data.Time
@@ -26,12 +25,9 @@ import qualified Data.Text       as T
 replace :: Eq a => a -> a -> [a] -> [a]
 replace x y = map (\z -> if z == x then y else z)
 
-show' :: Show a => a -> Text
-show' = pack . show
-
--- |After this time all entries are Markdown
-markdownCutoff :: UTCTime
-markdownCutoff = fromJust $ parseTimeM False defaultTimeLocale "%s" "1367149834"
+-- |After this date all entries are Markdown
+markdownCutoff :: Day
+markdownCutoff = fromGregorian 2013 04 28
 
 -- blog HTML
 blogTemplate :: BlogLang -> Text -> Html -> Html
@@ -99,7 +95,7 @@ $maybe links <- pageLinks
   where
    linkElems Entry{..} = concat $ ["/", show lang, "/", show entryId]
 
-showLinks :: Maybe Integer -> BlogLang -> Html
+showLinks :: Maybe Int -> BlogLang -> Html
 showLinks (Just i) lang = [shamlet|
   $if ((>) i 1)
     <div .navigation>

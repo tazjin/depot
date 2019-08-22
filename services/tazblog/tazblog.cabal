@@ -13,7 +13,8 @@ library
   default-language: Haskell2010
   ghc-options: -W
   exposed-modules: Blog, BlogStore, Locales, Server, RSS
-  build-depends: base,
+  build-depends: aeson,
+                 base,
                  bytestring,
                  happstack-server,
                  text,

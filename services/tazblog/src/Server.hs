@@ -21,7 +21,7 @@ instance FromReqURI BlogLang where
       "en" -> Just EN
       _    -> Nothing
 
-pageSize :: Integer
+pageSize :: Int
 pageSize = 3
 
 tmpPolicy :: BodyPolicy
@@ -68,12 +68,12 @@ tryEntry (Just entry) _ = ok $ toResponse $ blogTemplate eLang eTitle $ renderEn
         eTitle = T.append ": " (title entry)
         eLang = lang entry
 
-offset :: Maybe Integer -> Integer
+offset :: Maybe Int -> Int
 offset = maybe 0 ((*) pageSize)
 
 showIndex :: BlogCache -> BlogLang -> ServerPart Response
 showIndex cache lang = do
-    (page :: Maybe Integer) <- optional $ lookRead "page"
+    (page :: Maybe Int) <- optional $ lookRead "page"
     entries <- listEntries cache (offset page) pageSize
     ok $ toResponse $ blogTemplate lang "" $
         renderEntries entries (Just $ showLinks page lang)
