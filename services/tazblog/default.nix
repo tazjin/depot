@@ -4,4 +4,9 @@
 
 { pkgs ? import <nixpkgs> {} }:
 
-pkgs.haskell.packages.ghc865.callPackage ./tazblog.nix {}
+let tazblog = pkgs.haskell.packages.ghc865.callPackage ./tazblog.nix {};
+in pkgs.writeShellScriptBin "tazblog" ''
+  export PORT=8000
+  export RESOURCE_DIR=${./static}
+  exec ${tazblog}/bin/tazblog
+''
