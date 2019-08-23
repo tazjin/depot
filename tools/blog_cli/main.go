@@ -36,7 +36,7 @@ var chunkSize = 200
 type day time.Time
 
 func (d day) MarshalJSON() ([]byte, error) {
-	j := (time.Time(d)).Format("2006-01-02")
+	j := (time.Time(d)).Format(`"2006-01-02"`)
 	return []byte(j), nil
 }
 
@@ -97,7 +97,11 @@ func (p *post) writeToDNS() error {
 
 // Encode given value as JSON and base64-encode it.
 func encodeJSON(v interface{}) string {
-	outer, _ := json.Marshal(v)
+	outer, err := json.Marshal(v)
+	if err != nil {
+		log.Fatalln("Failed to encode JSON", err)
+	}
+
 	return base64.RawStdEncoding.EncodeToString(outer)
 }
 
