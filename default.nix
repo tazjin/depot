@@ -12,7 +12,7 @@ let
     tazjin = {
       blog = import ./services/tazblog { inherit pkgs; };
       blog_cli = pkgs.callPackage ./tools/blog_cli {};
-      gemma = import ./services/gemma { inherit pkgs; };
+      gemma = pkgs.callPackage ./services/gemma {};
     };
 
     # Third-party projects (either vendored or modified from nixpkgs) go here:
@@ -25,6 +25,15 @@ let
       rev = "a7076c0f83e5c06ea9067b71171859fa2ba8afd9";
       sha256 = "1p4n2ja4ciw3qfskn65ggpy37mvgf2sslxqmqn8s8jjarnqcyfny";
     }) { pkgs = super; };
+
+    # Gemma needs an older version of Elm to be built. Updating it to
+    # the newer version is a lot of effort.
+    elmPackages = (import (super.fetchFromGitHub {
+      owner = "NixOS";
+      repo = "nixpkgs";
+      rev = "14f9ee66e63077539252f8b4550049381a082518";
+      sha256 = "1wn7nmb1cqfk2j91l3rwc6yhimfkzxprb8wknw5wi57yhq9m6lv1";
+    }) {}).elmPackages;
   };
 
   # The pinned commit here is identical to the public nixery.dev

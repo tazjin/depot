@@ -1,14 +1,8 @@
-with import <nixpkgs> {};
+{ stdenv, sbcl, lispPackages, elmPackages, pkgconfig }:
 
 stdenv.mkDerivation rec {
   name = "gemma";
-
   src = ./.;
-
-  # For the time being, Gemma can not be built because it requires an
-  # older version of Elm than what is available and Elm upgrade paths
-  # are painful.
-  broken = true;
 
   buildInputs = with lispPackages; [
     sbcl
@@ -50,5 +44,9 @@ stdenv.mkDerivation rec {
     description = "Tool for tracking recurring tasks";
     homepage    = "https://github.com/tazjin/gemma";
     license     = licenses.gpl3;
+
+    # For the time being, Gemma can not be built because the Lisp build process
+    # broke in some way I haven't had time to debug.
+    broken = true;
   };
 }
