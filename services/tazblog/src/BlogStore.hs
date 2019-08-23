@@ -42,7 +42,6 @@ import qualified Network.DNS.Resolver as R
 import Data.ByteString.Base64 (decodeLenient)
 import Data.List (sortBy)
 import Data.Either (fromRight)
-import Debug.Trace (trace)
 
 newtype EntryId = EntryId {unEntryId :: Integer}
   deriving (Eq, Ord, FromJSON)
@@ -94,7 +93,7 @@ listEntries cache offset count = liftIO $ do
 
   -- TODO: maybe don't just drop broken entries
   return
-    $ fromRight (error "no entries") $ sequence $ trace (show entries) entries
+    $ fromRight (error "no entries") $ sequence entries
 
 getEntry :: MonadIO m => BlogCache -> EntryId -> m (Maybe Entry)
 getEntry cache eid = liftIO $ (entryFromDNS cache eid) >>= \case
