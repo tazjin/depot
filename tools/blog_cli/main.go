@@ -23,6 +23,7 @@ var (
 	project = flag.String("project", "tazjins-infrastructure", "Target GCP project")
 	zone    = flag.String("zone", "blog-tazj-in", "Target Cloud DNS zone")
 	title   = flag.String("title", "", "Title of the blog post")
+	date    = flag.String("date", "", "Date the post was written on")
 	infile  = flag.String("text", "", "Text file containing the blog post")
 	id      = flag.String("id", "", "Post ID - will be generated if unset")
 )
@@ -32,10 +33,17 @@ var (
 // try again.
 var chunkSize = 200
 
+type day time.Time
+
+func (d day) MarshalJSON() ([]byte, error) {
+	j := (time.Time(d)).Format("2006-01-02")
+	return []byte(j), nil
+}
+
 type metadata struct {
-	Chunks int       `json:"c"`
-	Title  string    `json:"t"`
-	Date   time.Time `json:"d"`
+	Chunks int    `json:"c"`
+	Title  string `json:"t"`
+	Date   day    `json:"d"`
 }
 
 type chunk struct {
@@ -105,7 +113,7 @@ func encodeChunk(c chunk) (string, bool) {
 	return s, tooLarge
 }
 
-func createPost(id, title, text string, date time.Time) post {
+func createPost(id, title, text string, date day) post {
 	runes := []rune(text)
 	n := 0
 	tooLarge := false
@@ -167,12 +175,24 @@ func main() {
 		log.Fatalln("Post ID must be set (-id)")
 	}
 
+	var postDate day
+	if *date != "" {
+		t, err := time.Parse("2006-01-02", *date)
+		if err != nil {
+			log.Fatalln("Invalid post date", err)
+		}
+
+		postDate = day(t)
+	} else {
+		postDate = day(time.Now())
+	}
+
 	t, err := ioutil.ReadFile(*infile)
 	if err != nil {
 		log.Fatalln("Failed to read post:", err)
 	}
 
-	post := createPost(*id, *title, string(t), time.Now())
+	post := createPost(*id, *title, string(t), postDate)
 
 	log.Println("Writing post to DNS ...")
 	err = post.writeToDNS()
