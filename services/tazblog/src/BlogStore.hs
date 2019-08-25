@@ -85,7 +85,7 @@ withCache zone f = do
             R.resolvConcurrent = True
             }
   seed <- R.makeResolvSeed conf
-  R.withResolver seed $ (\r -> f $ BlogCache r zone)
+  R.withResolver seed (\r -> f $ BlogCache r zone)
 
 listEntries :: MonadIO m => BlogCache -> Offset -> Count -> m [Entry]
 listEntries cache offset count = liftIO $ do
@@ -97,7 +97,7 @@ listEntries cache offset count = liftIO $ do
     $ sequence entries
 
 getEntry :: MonadIO m => BlogCache -> EntryId -> m (Maybe Entry)
-getEntry cache eid = liftIO $ (entryFromDNS cache eid) >>= \case
+getEntry cache eid = liftIO $ entryFromDNS cache eid >>= \case
   Left _ -> return Nothing -- TODO: ??
   Right entry -> return $ Just entry
 
@@ -150,7 +150,7 @@ entryChunk (BlogCache r z) (EntryId eid) c =
 fetchAssembleChunks :: BlogCache -> EntryId -> Meta -> IO (Either StoreError Text)
 fetchAssembleChunks cache eid (Meta n _ _) = do
   chunks <- mapM (entryChunk cache eid) [0 .. (n - 1)]
-  return $ either Left (Right . T.concat) $ sequence chunks
+  return $ fmap T.concat $ sequence chunks
 
 entryFromDNS :: BlogCache -> EntryId -> IO (Either StoreError Entry)
 entryFromDNS cache eid = do
@@ -177,6 +177,6 @@ postList (BlogCache r z) =
   let domain = encodeUtf8 ("_posts." <> z)
       record = lookupTXT r domain
       toPosts =
-        fmap (sortBy (flip compare)) . sequence
-          . map (\r -> maybe (Left InvalidPosts) Right (decodeStrict r))
-   in record >>= return . either (Left . DNS) toPosts
+        fmap (sortBy (flip compare))
+          . mapM (maybe (Left InvalidPosts) Right . decodeStrict)
+   in either (Left . DNS) toPosts <$> record

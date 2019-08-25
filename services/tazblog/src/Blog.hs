@@ -95,7 +95,7 @@ $maybe links <- pageLinks
   ^{links}
 |]
   where
-    linkElems Entry {..} = concat $ ["/", show entryId]
+    linkElems Entry {..} = "/" ++ show entryId
 
 showLinks :: Maybe Int -> Html
 showLinks (Just i) =
@@ -134,7 +134,7 @@ renderEntry e@Entry {..} =
 showError :: Text -> Text -> Html
 showError title err =
   blogTemplate (": " <> title)
-    $ [shamlet|
+    [shamlet|
 <p>:(
 <p>#{err}
 <hr>

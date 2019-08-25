@@ -6,7 +6,6 @@ module RSS
 where
 
 import BlogStore
-import Control.Monad (liftM)
 import Data.Maybe (fromJust)
 import qualified Data.Text as T
 import Data.Time (UTCTime (..), getCurrentTime, secondsToDiffTime)
@@ -46,4 +45,4 @@ createFeed :: [Entry] -> IO RSS
 createFeed e = getCurrentTime >>= (\t -> return $ createRSS t $ createItems e)
 
 renderFeed :: [Entry] -> IO String
-renderFeed e = liftM (showXML . rssToXML) (createFeed e)
+renderFeed e = fmap (showXML . rssToXML) (createFeed e)

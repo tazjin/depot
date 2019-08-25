@@ -7,5 +7,5 @@ let tazblog = import ./tazblog.nix;
     ghc = pkgs.ghc.withPackages(p: map (x: p."${x}") depNames);
 in pkgs.stdenv.mkDerivation {
   name = "shell";
-  buildInputs = [ ghc ];
+  buildInputs = [ ghc pkgs.hlint ];
 }

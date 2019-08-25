@@ -1,6 +1,5 @@
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE RecordWildCards #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
 module Server where
@@ -22,12 +21,12 @@ tmpPolicy :: BodyPolicy
 tmpPolicy = defaultBodyPolicy "/tmp" 0 200000 1000
 
 runBlog :: Int -> String -> IO ()
-runBlog port respath = do
+runBlog port respath =
   withCache "blog.tazj.in." $ \cache ->
     simpleHTTP nullConf {port = port} $ tazblog cache respath
 
 tazblog :: BlogCache -> String -> ServerPart Response
-tazblog cache resDir = do
+tazblog cache resDir =
   msum
     [ -- legacy language-specific routes
       dir "de" $ blogHandler cache,
@@ -65,7 +64,7 @@ tryEntry (Just entry) = ok $ toResponse $ blogTemplate eTitle $ renderEntry entr
     eTitle = T.append ": " (title entry)
 
 offset :: Maybe Int -> Int
-offset = maybe 0 ((*) pageSize)
+offset = maybe 0 (pageSize *)
 
 showIndex :: BlogCache -> ServerPart Response
 showIndex cache = do
