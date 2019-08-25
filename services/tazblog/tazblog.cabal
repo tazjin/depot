@@ -19,33 +19,15 @@ library
                  happstack-server,
                  text,
                  blaze-html,
-                 blaze-markup,
-                 cache,
                  dns,
-                 crypto-api,
-                 cryptohash,
                  old-locale,
                  time,
                  base64-bytestring,
-                 mtl,
-                 transformers,
                  network,
                  network-uri,
                  rss,
-                 hamlet,
                  shakespeare,
                  markdown
-  default-extensions:
-             DeriveDataTypeable
-             FlexibleContexts
-             GeneralizedNewtypeDeriving
-             MultiParamTypeClasses
-             OverloadedStrings
-             RecordWildCards
-             ScopedTypeVariables
-             TemplateHaskell
-             TypeFamilies
-             QuasiQuotes
 
 executable tazblog
   hs-source-dirs: blog
@@ -54,5 +36,4 @@ executable tazblog
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends: base,
                  tazblog,
-                 options,
                  network
