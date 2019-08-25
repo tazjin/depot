@@ -7,6 +7,21 @@
 with builtins;
 
 let
+  # The pinned commit here is identical to the public nixery.dev
+  # version, since popularity data has been generated for that.
+  stableCommit = "88d9f776091896cfe57dc6fbdf246e7d27d5f105";
+  stableSrc = fetchTarball {
+    url = "https://github.com/NixOS/nixpkgs-channels/archive/${stableCommit}.tar.gz";
+    sha256 = "0z8a0g69fmbbzi77jhvhwafv73dn5fg3gsr0q828lss6j5qpx995";
+  };
+
+  unstableCommit = "765a71f15025ce78024bae3dc4a92bd2be3a8fbf";
+  unstableSrc = fetchTarball {
+    url = "https://github.com/NixOS/nixpkgs-channels/archive/${unstableCommit}.tar.gz";
+    sha256 = "0j1wghr9dj9njn3x9xi0wzjk1107gi2pxb0w2dk8g0djmhnlx71q";
+  };
+  unstable = import unstableSrc {};
+
   localPkgs = super: pkgs: {
     # Local projects should be added here:
     tazjin = {
@@ -17,8 +32,9 @@ let
 
     # Third-party projects (either vendored or modified from nixpkgs) go here:
     gitAppraise = pkgs.callPackage ./third_party/go/git-appraise/git-appraise {};
+
     nixery = import ./third_party/nixery.nix { pkgs = super; };
-    terraform-gcp = pkgs.terraform_0_12.withPlugins(p: [ p.google ]);
+    terraform-gcp = unstable.terraform_0_12.withPlugins(p: [ p.google p.google-beta ]);
     ormolu = import (super.fetchFromGitHub {
       owner = "tweag";
       repo = "ormolu";
@@ -36,12 +52,7 @@ let
     }) {}).elmPackages;
   };
 
-  # The pinned commit here is identical to the public nixery.dev
-  # version, since popularity data has been generated for that.
-  nixpkgsVersion = "88d9f776091896cfe57dc6fbdf246e7d27d5f105";
-  nixpkgs = "https://github.com/NixOS/nixpkgs-channels/archive/${nixpkgsVersion}.tar.gz";
-
-in { ... } @ args: import (fetchTarball nixpkgs) (args // {
+in { ... } @ args: import stableSrc (args // {
     overlays = [ localPkgs ];
     config.allowUnfree = true;
 })
