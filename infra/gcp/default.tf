@@ -29,6 +29,7 @@ resource "google_project_services" "primary" {
     "clouddebugger.googleapis.com",
     "cloudtrace.googleapis.com",
     "datastore.googleapis.com",
+    "dns.googleapis.com",
     "logging.googleapis.com",
     "monitoring.googleapis.com",
     "servicemanagement.googleapis.com",
