@@ -22,9 +22,6 @@ case "${TARGET_TOOL}" in
   blog_cli)
     attr="tazjin.blog_cli"
     ;;
-  ormolu)
-    attr="ormolu"
-    ;;
   *)
     echo "The tool '${TARGET_TOOL}' is currently not installed in this repository."
     exit 1
