@@ -10,19 +10,10 @@ import BlogStore
 import Control.Applicative (optional)
 import Control.Monad (msum)
 import Control.Monad.IO.Class (liftIO)
-import Data.Char (toLower)
 import Data.Maybe (maybe)
 import qualified Data.Text as T
 import Happstack.Server hiding (Session)
-import Locales
 import RSS
-
-instance FromReqURI BlogLang where
-  fromReqURI sub =
-    case map toLower sub of
-      "de" -> Just DE
-      "en" -> Just EN
-      _ -> Nothing
 
 pageSize :: Int
 pageSize = 3
@@ -33,26 +24,27 @@ tmpPolicy = defaultBodyPolicy "/tmp" 0 200000 1000
 runBlog :: Int -> String -> IO ()
 runBlog port respath = do
   withCache "blog.tazj.in." $ \cache ->
-    simpleHTTP nullConf {port = port} $ tazBlog cache respath
+    simpleHTTP nullConf {port = port} $ tazblog cache respath
 
-tazBlog :: BlogCache -> String -> ServerPart Response
-tazBlog cache resDir = do
+tazblog :: BlogCache -> String -> ServerPart Response
+tazblog cache resDir = do
   msum
-    [ path $ \(lang :: BlogLang) -> blogHandler cache lang,
+    [ -- legacy language-specific routes
+      dir "de" $ blogHandler cache,
+      dir "en" $ blogHandler cache,
       dir "static" $ staticHandler resDir,
-      blogHandler cache EN,
+      blogHandler cache,
       staticHandler resDir,
-      notFound $ toResponse $ showError NotFound DE
+      notFound $ toResponse $ showError "Not found" "Page not found"
       ]
 
-blogHandler :: BlogCache -> BlogLang -> ServerPart Response
-blogHandler cache lang =
+blogHandler :: BlogCache -> ServerPart Response
+blogHandler cache =
   msum
-    [ path $ \(eId :: Integer) -> showEntry cache lang $ EntryId eId,
-      nullDir >> showIndex cache lang,
-      dir "rss" $ nullDir >> showRSS cache lang,
-      dir "rss.xml" $ nullDir >> showRSS cache lang,
-      notFound $ toResponse $ showError NotFound lang
+    [ path $ \(eId :: Integer) -> showEntry cache $ EntryId eId,
+      nullDir >> showIndex cache,
+      dir "rss" $ nullDir >> showRSS cache,
+      dir "rss.xml" $ nullDir >> showRSS cache
       ]
 
 staticHandler :: String -> ServerPart Response
@@ -61,31 +53,30 @@ staticHandler resDir = do
   setHeaderM "expires" "Tue, 20 Jan 2037 04:20:42 GMT"
   serveDirectory DisableBrowsing [] resDir
 
-showEntry :: BlogCache -> BlogLang -> EntryId -> ServerPart Response
-showEntry cache lang eId = do
+showEntry :: BlogCache -> EntryId -> ServerPart Response
+showEntry cache eId = do
   entry <- getEntry cache eId
-  tryEntry entry lang
+  tryEntry entry
 
-tryEntry :: Maybe Entry -> BlogLang -> ServerPart Response
-tryEntry Nothing lang = notFound $ toResponse $ showError NotFound lang
-tryEntry (Just entry) _ = ok $ toResponse $ blogTemplate eLang eTitle $ renderEntry entry
+tryEntry :: Maybe Entry -> ServerPart Response
+tryEntry Nothing = notFound $ toResponse $ showError "Not found" "Blog entry not found"
+tryEntry (Just entry) = ok $ toResponse $ blogTemplate eTitle $ renderEntry entry
   where
     eTitle = T.append ": " (title entry)
-    eLang = lang entry
 
 offset :: Maybe Int -> Int
 offset = maybe 0 ((*) pageSize)
 
-showIndex :: BlogCache -> BlogLang -> ServerPart Response
-showIndex cache lang = do
+showIndex :: BlogCache -> ServerPart Response
+showIndex cache = do
   (page :: Maybe Int) <- optional $ lookRead "page"
   entries <- listEntries cache (offset page) pageSize
-  ok $ toResponse $ blogTemplate lang ""
-    $ renderEntries entries (Just $ showLinks page lang)
+  ok $ toResponse $ blogTemplate ""
+    $ renderEntries entries (Just $ showLinks page)
 
-showRSS :: BlogCache -> BlogLang -> ServerPart Response
-showRSS cache lang = do
+showRSS :: BlogCache -> ServerPart Response
+showRSS cache = do
   entries <- listEntries cache 0 4
-  feed <- liftIO $ renderFeed lang entries
+  feed <- liftIO $ renderFeed entries
   setHeaderM "content-type" "text/xml"
   ok $ toResponse feed

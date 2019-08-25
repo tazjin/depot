@@ -2,7 +2,6 @@
 module Main where
 
 import Control.Applicative ((<$>), (<*>))
-import Locales (version)
 import Server (runBlog)
 import System.Environment (getEnv)
 
@@ -20,6 +19,6 @@ readOpts =
 
 main :: IO ()
 main = do
-  putStrLn ("TazBlog " ++ version ++ " in Haskell starting")
   opts <- readOpts
+  putStrLn ("tazblog starting on port " ++ (show $ blogPort opts))
   runBlog (blogPort opts) (resourceDir opts)

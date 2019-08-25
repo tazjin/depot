@@ -7,42 +7,43 @@ where
 
 import BlogStore
 import Control.Monad (liftM)
-import Data.Maybe (fromMaybe)
+import Data.Maybe (fromJust)
 import qualified Data.Text as T
 import Data.Time (UTCTime (..), getCurrentTime, secondsToDiffTime)
-import Locales
-import Network.URI
+import Network.URI (URI, parseURI)
 import Text.RSS
 
-createChannel :: BlogLang -> UTCTime -> [ChannelElem]
-createChannel l now =
-  [ Language $ show l,
+createChannel :: UTCTime -> [ChannelElem]
+createChannel now =
+  [ Language "en",
     Copyright "Vincent Ambo",
     WebMaster "mail@tazj.in",
     ChannelPubDate now
     ]
 
-createRSS :: BlogLang -> UTCTime -> [Item] -> RSS
-createRSS l t = RSS (rssTitle l) (rssLink l) (rssDesc l) (createChannel l t)
+createRSS :: UTCTime -> [Item] -> RSS
+createRSS t =
+  let link = fromJust $ parseURI "https://tazj.in"
+   in RSS "tazjin's blog" link "tazjin's blog feed" (createChannel t)
 
 createItem :: Entry -> Item
 createItem Entry {..} =
-  [ Title $ T.unpack title,
-    Link $ makeLink lang entryId,
+  [ Title "tazjin's blog",
+    Link $ entryLink entryId,
     Description $ T.unpack text,
     PubDate $ UTCTime edate $ secondsToDiffTime 0
     ]
 
-makeLink :: BlogLang -> EntryId -> URI
-makeLink l i =
-  let url = "http://tazj.in/" ++ show l ++ "/" ++ show i
-   in fromMaybe nullURI $ parseURI url
+entryLink :: EntryId -> URI
+entryLink i =
+  let url = "http://tazj.in/" ++ "/" ++ show i
+   in fromJust $ parseURI url
 
 createItems :: [Entry] -> [Item]
 createItems = map createItem
 
-createFeed :: BlogLang -> [Entry] -> IO RSS
-createFeed l e = getCurrentTime >>= (\t -> return $ createRSS l t $ createItems e)
+createFeed :: [Entry] -> IO RSS
+createFeed e = getCurrentTime >>= (\t -> return $ createRSS t $ createItems e)
 
-renderFeed :: BlogLang -> [Entry] -> IO String
-renderFeed l e = liftM (showXML . rssToXML) (createFeed l e)
+renderFeed :: [Entry] -> IO String
+renderFeed e = liftM (showXML . rssToXML) (createFeed e)

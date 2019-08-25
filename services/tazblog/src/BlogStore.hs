@@ -40,7 +40,6 @@ import Data.List (sortBy)
 import Data.Text as T (Text, concat, pack)
 import Data.Text.Encoding (decodeUtf8', encodeUtf8)
 import Data.Time (Day)
-import Locales (BlogLang (..))
 import Network.DNS (DNSError, lookupTXT)
 import qualified Network.DNS.Resolver as R
 
@@ -54,7 +53,6 @@ instance Show EntryId where
 data Entry
   = Entry
       { entryId :: EntryId,
-        lang :: BlogLang,
         author :: Text,
         title :: Text,
         text :: Text,
@@ -166,7 +164,6 @@ entryFromDNS cache eid = do
         $ either Left
             ( \text -> Right $ Entry
                 { entryId = eid,
-                  lang = EN,
                   author = "tazjin",
                   title = t,
                   text = text,
