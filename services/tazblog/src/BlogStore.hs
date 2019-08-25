@@ -57,8 +57,7 @@ data Entry
         lang :: BlogLang,
         author :: Text,
         title :: Text,
-        btext :: Text,
-        mtext :: Text,
+        text :: Text,
         edate :: Day
         }
   deriving (Eq, Ord, Show)
@@ -170,8 +169,7 @@ entryFromDNS cache eid = do
                   lang = EN,
                   author = "tazjin",
                   title = t,
-                  btext = text,
-                  mtext = "",
+                  text = text,
                   edate = d
                   }
               )

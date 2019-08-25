@@ -82,13 +82,9 @@ $forall entry <- entries
     <aside .date>
       #{pack $ formatTime defaultTimeLocale "%Y-%m-%d" $ edate entry}
     $if (isEntryMarkdown entry)
-      ^{renderEntryMarkdown $ btext entry}
+      ^{renderEntryMarkdown $ text entry}
     $else
-      ^{preEscapedToHtml $ btext entry}
-    $if ((/=) (mtext entry) empty)
-      <p>
-        <a .uncoloured-link href=#{linkElems entry}>
-          #{readMore $ lang entry}
+      ^{preEscapedToHtml $ text entry}
   <hr>
 $maybe links <- pageLinks
   ^{links}
@@ -126,11 +122,9 @@ renderEntry e@Entry {..} =
   <aside .date>
     #{pack $ formatTime defaultTimeLocale "%Y-%m-%d" edate}
   $if (isEntryMarkdown e)
-    ^{renderEntryMarkdown btext}
-    <p>^{renderEntryMarkdown $ mtext}
+    ^{renderEntryMarkdown text}
   $else
-    ^{preEscapedToHtml $ btext}
-    <p>^{preEscapedToHtml $ mtext}
+    ^{preEscapedToHtml $ text}
 <hr>
 |]
 

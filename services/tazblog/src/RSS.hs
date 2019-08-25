@@ -29,7 +29,7 @@ createItem :: Entry -> Item
 createItem Entry {..} =
   [ Title $ T.unpack title,
     Link $ makeLink lang entryId,
-    Description $ T.unpack btext,
+    Description $ T.unpack text,
     PubDate $ UTCTime edate $ secondsToDiffTime 0
     ]
 
