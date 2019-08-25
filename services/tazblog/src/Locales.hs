@@ -1,17 +1,20 @@
-{-# LANGUAGE ScopedTypeVariables, OverloadedStrings #-}
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE ScopedTypeVariables #-}
+
 module Locales where
 
-import           Data.Maybe  (fromMaybe)
-import           Data.Text   (Text)
-import qualified Data.Text   as T
-import           Network.URI
+import Data.Maybe (fromMaybe)
+import Data.Text (Text)
+import qualified Data.Text as T
+import Network.URI
 
 data BlogLang = EN | DE
-    deriving (Eq, Ord)
+  deriving (Eq, Ord)
 
 instance Show BlogLang where
-    show DE = "de"
-    show EN = "en"
+
+  show DE = "de"
+  show EN = "en"
 
 data BlogError = NotFound | UnknownError
 

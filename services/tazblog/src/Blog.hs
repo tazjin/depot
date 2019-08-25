@@ -1,26 +1,25 @@
-{-# LANGUAGE DeriveDataTypeable         #-}
-{-# LANGUAGE FlexibleContexts           #-}
+{-# LANGUAGE DeriveDataTypeable #-}
+{-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
-{-# LANGUAGE MultiParamTypeClasses      #-}
-{-# LANGUAGE OverloadedStrings          #-}
-{-# LANGUAGE QuasiQuotes                #-}
-{-# LANGUAGE RecordWildCards            #-}
-{-# LANGUAGE ScopedTypeVariables        #-}
-{-# LANGUAGE TemplateHaskell            #-}
-{-# LANGUAGE TypeFamilies               #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE QuasiQuotes #-}
+{-# LANGUAGE RecordWildCards #-}
+{-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TypeFamilies #-}
 
 module Blog where
 
 import BlogStore
-import           Data.Text       (Text, empty, pack)
-import           Data.Text.Lazy  (fromStrict)
-import           Data.Time
-import           Locales
-import           Text.Blaze.Html (preEscapedToHtml)
-import           Text.Hamlet
-import           Text.Markdown
-
-import qualified Data.Text       as T
+import Data.Text (Text, empty, pack)
+import qualified Data.Text as T
+import Data.Text.Lazy (fromStrict)
+import Data.Time
+import Locales
+import Text.Blaze.Html (preEscapedToHtml)
+import Text.Hamlet
+import Text.Markdown
 
 replace :: Eq a => a -> a -> [a] -> [a]
 replace x y = map (\z -> if z == x then y else z)
@@ -29,9 +28,9 @@ replace x y = map (\z -> if z == x then y else z)
 markdownCutoff :: Day
 markdownCutoff = fromGregorian 2013 04 28
 
--- blog HTML
 blogTemplate :: BlogLang -> Text -> Html -> Html
-blogTemplate lang t_append body = [shamlet|
+blogTemplate lang t_append body =
+  [shamlet|
 $doctype 5
   <head>
     <meta charset="utf-8">
@@ -48,11 +47,12 @@ $doctype 5
     ^{body}
     ^{showFooter}
 |]
- where
-  rssUrl = T.concat ["/", show' lang, "/rss.xml"]
+  where
+    rssUrl = T.concat ["/", show' lang, "/rss.xml"]
 
 showFooter :: Html
-showFooter = [shamlet|
+showFooter =
+  [shamlet|
 <footer>
   <p .footer>Served without any dynamic languages.
   <p .footer>
@@ -72,7 +72,8 @@ renderEntryMarkdown :: Text -> Html
 renderEntryMarkdown = markdown def {msXssProtect = False} . fromStrict
 
 renderEntries :: [Entry] -> Maybe Html -> Html
-renderEntries entries pageLinks = [shamlet|
+renderEntries entries pageLinks =
+  [shamlet|
 $forall entry <- entries
   <article>
     <h2 .inline>
@@ -93,10 +94,11 @@ $maybe links <- pageLinks
   ^{links}
 |]
   where
-   linkElems Entry{..} = concat $ ["/", show lang, "/", show entryId]
+    linkElems Entry {..} = concat $ ["/", show lang, "/", show entryId]
 
 showLinks :: Maybe Int -> BlogLang -> Html
-showLinks (Just i) lang = [shamlet|
+showLinks (Just i) lang =
+  [shamlet|
   $if ((>) i 1)
     <div .navigation>
       <a href=#{nLink $ succ i} .uncoloured-link>#{backText lang}
@@ -106,16 +108,18 @@ showLinks (Just i) lang = [shamlet|
     ^{showLinks Nothing lang}
 |]
   where
-   nLink page = T.concat ["/", show' lang, "/?page=", show' page]
-showLinks Nothing lang = [shamlet|
+    nLink page = T.concat ["/", show' lang, "/?page=", show' page]
+showLinks Nothing lang =
+  [shamlet|
 <div .navigation>
   <a href=#{nLink} .uncoloured-link>#{backText lang}
 |]
   where
-   nLink = T.concat ["/", show' lang, "/?page=2"]
+    nLink = T.concat ["/", show' lang, "/?page=2"]
 
 renderEntry :: Entry -> Html
-renderEntry e@Entry{..} = [shamlet|
+renderEntry e@Entry {..} =
+  [shamlet|
 <article>
   <h2 .inline>
     #{title}
@@ -131,12 +135,16 @@ renderEntry e@Entry{..} = [shamlet|
 |]
 
 showError :: BlogError -> BlogLang -> Html
-showError NotFound l = blogTemplate l (T.append ": " $ notFoundTitle l) $ [shamlet|
+showError NotFound l =
+  blogTemplate l (T.append ": " $ notFoundTitle l)
+    $ [shamlet|
 <p>:(
 <p>#{notFoundText l}
 <hr>
 |]
-showError UnknownError l = blogTemplate l "" $ [shamlet|
+showError UnknownError l =
+  blogTemplate l ""
+    $ [shamlet|
 <p>:(
 <p>#{unknownErrorText l}
 <hr>
