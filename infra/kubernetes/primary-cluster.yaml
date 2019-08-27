@@ -3,6 +3,17 @@
 ---
 context: gke_tazjins-infrastructure_europe-north1_tazjin-cluster
 include:
+  # SSL certificates (provisioned by Google)
+  - name: tazj-in-cert
+    path: https-cert
+    values:
+      domain: tazj.in
+  - name: www-tazj-in-cert
+    path: https-cert
+    values:
+      domain: www.tazj.in
+
+  # Services
   - name: nixery
     values:
       port: 8080
