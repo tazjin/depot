@@ -19,3 +19,16 @@ spec:
       - name: tazblog
         image: nixery.local/shell/tazjin.blog:{{ gitHEAD }}
         command: [ "tazblog" ]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tazblog
+spec:
+  type: NodePort
+  selector:
+    app: tazblog
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
