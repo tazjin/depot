@@ -1,4 +1,5 @@
 language: nix
+nix: 2.2.2
 env:
   - NIX_PATH="nixpkgs=${TRAVIS_BUILD_DIR}"
 before_script:
