@@ -26,7 +26,7 @@ spec:
     spec:
       containers:
         - name: tazblog
-          image: nixery.local/shell/nginx:{{ gitHEAD }}
+          image: nixery.local/shell/nginx
           command: ["/bin/bash", "-c"]
           args:
             - |
