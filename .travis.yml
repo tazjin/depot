@@ -1,0 +1,10 @@
+language: nix
+env:
+  - NIX_PATH="nixpkgs=${TRAVIS_BUILD_DIR}"
+before_script:
+  - nix-env -f '<nixpkgs>' -iA cachix
+  - cachix use tazjin
+script:
+  # All of my own tools are under the top-level 'tazjin' attribute
+  # set, this command will build all of them.
+  - nix-build -A tazjin | cachix push tazjin
