@@ -4,9 +4,13 @@
 
 { writeShellScriptBin, haskell }:
 
-let tazblog = haskell.packages.ghc865.callPackage ./tazblog.nix {};
-in writeShellScriptBin "tazblog" ''
-  export PORT=8000
-  export RESOURCE_DIR=${./static}
-  exec ${tazblog}/bin/tazblog
-''
+let
+  tazblog = haskell.packages.ghc865.callPackage ./tazblog.nix {};
+  wrapper =  writeShellScriptBin "tazblog" ''
+    export PORT=8000
+    export RESOURCE_DIR=${./static}
+    exec ${tazblog}/bin/tazblog
+  '';
+in wrapper.overrideAttrs(_: {
+  allowSubstitutes = true;
+})
