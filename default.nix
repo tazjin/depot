@@ -50,6 +50,13 @@ let
       rev = "14f9ee66e63077539252f8b4550049381a082518";
       sha256 = "1wn7nmb1cqfk2j91l3rwc6yhimfkzxprb8wknw5wi57yhq9m6lv1";
     }) {}).elmPackages;
+
+    # One of Gemma's dependencies is missing in nixpkgs' Quicklisp
+    # package set, it is overlaid locally here.
+    lispPackages = import ./third_party/common_lisp/quicklisp.nix {
+      inherit (self) lib;
+      inherit (super) lispPackages;
+    };
   };
 
 in { ... } @ args: import stableSrc (args // {
