@@ -1,38 +1,45 @@
-{ stdenv, sbcl, lispPackages, elmPackages, pkgconfig }:
+{ stdenv, sbcl, lispPackages, elmPackages, makeWrapper, openssl }:
 
-stdenv.mkDerivation rec {
+let frontend = stdenv.mkDerivation {
+  name = "gemma-frontend";
+  src = ./frontend;
+  buildInputs = [ elmPackages.elm ];
+
+  phases = [ "unpackPhase" "buildPhase" ];
+  buildPhase = ''
+    mkdir .home && export HOME="$PWD/.home"
+    mkdir -p $out
+    ls -lh
+    elm-make --yes Main.elm --output $out/index.html
+  '';
+};
+in stdenv.mkDerivation rec {
   name = "gemma";
   src = ./.;
 
-  buildInputs = with lispPackages; [
+  nativeBuildInputs = with lispPackages; [
     sbcl
-    quicklisp
     hunchentoot
     cl-json
+    cffi
+    cl-prevalence
     local-time
-    elmPackages.elm
-    pkgconfig
+    makeWrapper
   ];
 
-  # The build phase has three distinct things it needs to do:
-  #
-  # 1. "Compile" the Elm source into something useful to browsers.
-  #
-  # 2. Configure the Lisp part of the application to serve the compiled Elm
-  #
-  # 3. Build (and don't strip!) an executable out of the Lisp backend.
   buildPhase = ''
     mkdir -p $out/share/gemma $out/bin
-    mkdir .home && export HOME="$PWD/.home"
 
-    # Build Elm
-    cd frontend
-    elm-make --yes Main.elm --output $out/share/gemma/index.html
-
-    # Build Lisp
+    # Build Lisp using the Nix-provided wrapper which sets the load
+    # paths correctly.
     cd $src
-    quicklisp init
-    env GEMMA_BIN_TARGET=$out/bin/gemma sbcl --load build.lisp
+    env GEMMA_BIN_TARGET=$out/bin/gemma common-lisp.sh --load build.lisp
+
+    # Wrap gemma to find OpenSSL at runtime:
+    wrapProgram $out/bin/gemma --prefix LD_LIBRARY_PATH : "${openssl.out}/lib"
+
+    # and finally copy the frontend to the appropriate spot
+    cp ${frontend}/index.html $out/share/gemma/index.html
   '';
 
   installPhase = "true";
@@ -44,9 +51,5 @@ stdenv.mkDerivation rec {
     description = "Tool for tracking recurring tasks";
     homepage    = "https://github.com/tazjin/gemma";
     license     = licenses.gpl3;
-
-    # For the time being, Gemma can not be built because the Lisp build process
-    # broke in some way I haven't had time to debug.
-    broken = true;
   };
 }
