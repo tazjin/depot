@@ -22,29 +22,29 @@ let
   };
   unstable = import unstableSrc {};
 
-  localPkgs = super: pkgs: {
+  localPkgs = self: super: {
     # Local projects should be added here:
     tazjin = {
-      blog = import ./services/tazblog { inherit pkgs; };
-      blog_cli = pkgs.callPackage ./tools/blog_cli {};
-      gemma = pkgs.callPackage ./services/gemma {};
+      blog = import ./services/tazblog { pkgs = self; };
+      blog_cli = self.callPackage ./tools/blog_cli {};
+      gemma = self.callPackage ./services/gemma {};
     };
 
     # Third-party projects (either vendored or modified from nixpkgs) go here:
-    gitAppraise = pkgs.callPackage ./third_party/go/git-appraise/git-appraise {};
+    gitAppraise = self.callPackage ./third_party/go/git-appraise/git-appraise {};
 
-    nixery = import ./third_party/nixery.nix { pkgs = super; };
+    nixery = import ./third_party/nixery.nix { pkgs = self; };
     terraform-gcp = unstable.terraform_0_12.withPlugins(p: [ p.google p.google-beta ]);
-    ormolu = import (super.fetchFromGitHub {
+    ormolu = import (self.fetchFromGitHub {
       owner = "tweag";
       repo = "ormolu";
       rev = "a7076c0f83e5c06ea9067b71171859fa2ba8afd9";
       sha256 = "1p4n2ja4ciw3qfskn65ggpy37mvgf2sslxqmqn8s8jjarnqcyfny";
-    }) { pkgs = super; };
+    }) { pkgs = self; };
 
     # Gemma needs an older version of Elm to be built. Updating it to
     # the newer version is a lot of effort.
-    elmPackages = (import (super.fetchFromGitHub {
+    elmPackages = (import (self.fetchFromGitHub {
       owner = "NixOS";
       repo = "nixpkgs";
       rev = "14f9ee66e63077539252f8b4550049381a082518";
