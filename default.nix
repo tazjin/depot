@@ -25,7 +25,7 @@ let
   localPkgs = self: super: {
     # Local projects should be added here:
     tazjin = {
-      blog = import ./services/tazblog { pkgs = self; };
+      blog = self.callPackage ./services/tazblog {};
       blog_cli = self.callPackage ./tools/blog_cli {};
       gemma = self.callPackage ./services/gemma {};
     };

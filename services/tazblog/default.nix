@@ -2,10 +2,10 @@
 #
 # tazblog.nix was generated using cabal2nix.
 
-{ pkgs ? import <nixpkgs> {} }:
+{ writeShellScriptBin, haskell }:
 
-let tazblog = pkgs.haskell.packages.ghc865.callPackage ./tazblog.nix {};
-in pkgs.writeShellScriptBin "tazblog" ''
+let tazblog = haskell.packages.ghc865.callPackage ./tazblog.nix {};
+in writeShellScriptBin "tazblog" ''
   export PORT=8000
   export RESOURCE_DIR=${./static}
   exec ${tazblog}/bin/tazblog
