@@ -12,6 +12,11 @@ include:
     path: https-cert
     values:
       domain: www.tazj.in
+  - name: oslo-pub-cert
+    path: https-cert
+    values:
+      domain: oslo.pub
+
 
   # Services
   - name: nixery
