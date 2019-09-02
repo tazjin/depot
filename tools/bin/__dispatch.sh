@@ -10,9 +10,6 @@ readonly REPO_ROOT=$(git rev-parse --show-toplevel)
 readonly TARGET_TOOL=$(basename $0)
 
 case "${TARGET_TOOL}" in
-  git-appraise)
-    attr="thirdParty.gitAppraise"
-    ;;
   terraform)
     attr="terraform-gcp"
     ;;

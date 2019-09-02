@@ -31,8 +31,6 @@ let
     };
 
     # Third-party projects (either vendored or modified from nixpkgs) go here:
-    gitAppraise = self.callPackage ./third_party/go/git-appraise/git-appraise {};
-
     nixery = import ./third_party/nixery.nix { pkgs = self; };
     terraform-gcp = unstable.terraform_0_12.withPlugins(p: [ p.google p.google-beta ]);
     ormolu = import (self.fetchFromGitHub {
