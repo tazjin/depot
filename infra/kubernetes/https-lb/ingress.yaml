@@ -18,6 +18,7 @@ spec:
     - host: oslo.pub
       http:
         paths:
-          - backend:
+          - path: /
+            backend:
               serviceName: nginx
-              servicePort: 80
+              servicePort: 6756
