@@ -81,8 +81,3 @@ resource "google_service_account" "nixery" {
   account_id   = "nixery"
   display_name = "Nixery service account"
 }
-
-# Configure a git repository in which to store my monorepo
-resource "google_sourcerepo_repository" "monorepo" {
-  name = "monorepo"
-}
