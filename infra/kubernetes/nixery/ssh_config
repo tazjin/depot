@@ -1,0 +1,4 @@
+Match host *
+      User tazjin@google.com
+      IdentityFile /var/nixery/id_nixery
+      UserKnownHostsFile /var/nixery/known_hosts

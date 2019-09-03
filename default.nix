@@ -28,6 +28,13 @@ let
       blog = self.callPackage ./services/tazblog {};
       blog_cli = self.callPackage ./tools/blog_cli {};
       gemma = self.callPackage ./services/gemma {};
+
+      kms_pass = self.callPackage ./tools/kms_pass {
+        project = "tazjins-infrastructure";
+        region = "europe-north1";
+        keyring = "tazjins-keys";
+        key = "kontemplate-key";
+      };
     };
 
     # Third-party projects (either vendored or modified from nixpkgs) go here:
@@ -48,6 +55,12 @@ let
       rev = "14f9ee66e63077539252f8b4550049381a082518";
       sha256 = "1wn7nmb1cqfk2j91l3rwc6yhimfkzxprb8wknw5wi57yhq9m6lv1";
     }) {}).elmPackages;
+
+    # Wrap kontemplate to inject the Cloud KMS version of 'pass'
+    kontemplate = self.writeShellScriptBin "kontemplate" ''
+      export PATH="${self.tazjin.kms_pass}/bin:$PATH"
+      exec ${super.kontemplate}/bin/kontemplate $@
+    '';
 
     # One of Gemma's dependencies is missing in nixpkgs' Quicklisp
     # package set, it is overlaid locally here.
