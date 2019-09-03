@@ -27,24 +27,25 @@ resource "google_project_services" "primary" {
     "bigquerystorage.googleapis.com",
     "cloudapis.googleapis.com",
     "clouddebugger.googleapis.com",
+    "cloudkms.googleapis.com",
     "cloudtrace.googleapis.com",
+    "compute.googleapis.com",
+    "container.googleapis.com",
+    "containerregistry.googleapis.com",
     "datastore.googleapis.com",
     "dns.googleapis.com",
+    "iam.googleapis.com",
+    "iamcredentials.googleapis.com",
     "logging.googleapis.com",
     "monitoring.googleapis.com",
+    "oslogin.googleapis.com",
+    "pubsub.googleapis.com",
     "servicemanagement.googleapis.com",
     "serviceusage.googleapis.com",
+    "sourcerepo.googleapis.com",
     "sql-component.googleapis.com",
     "storage-api.googleapis.com",
     "storage-component.googleapis.com",
-    "container.googleapis.com",
-    "iam.googleapis.com",
-    "compute.googleapis.com",
-    "iamcredentials.googleapis.com",
-    "oslogin.googleapis.com",
-    "pubsub.googleapis.com",
-    "containerregistry.googleapis.com",
-    "sourcerepo.googleapis.com",
   ]
 }
 
@@ -80,4 +81,23 @@ resource "google_container_node_pool" "primary_nodes" {
 resource "google_service_account" "nixery" {
   account_id   = "nixery"
   display_name = "Nixery service account"
+}
+
+# Configure Cloud KMS for secret encryption
+resource "google_kms_key_ring" "tazjins_keys" {
+  name     = "tazjins-keys"
+  location = "europe-north1"
+
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
+resource "google_kms_crypto_key" "kontemplate_key" {
+  name     = "kontemplate-key"
+  key_ring = google_kms_key_ring.tazjins_keys.id
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
