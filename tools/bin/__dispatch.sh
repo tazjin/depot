@@ -22,6 +22,9 @@ case "${TARGET_TOOL}" in
   stern)
     attr="stern"
     ;;
+  pass)
+    attr="tazjin.kms_pass"
+    ;;
   *)
     echo "The tool '${TARGET_TOOL}' is currently not installed in this repository."
     exit 1
