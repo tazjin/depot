@@ -3,10 +3,6 @@
 # The service via which Nixery is exposed has a private DNS entry
 # pointing to it, which makes it possible to resolve `nixery.local`
 # in-cluster without things getting nasty.
-#
-# The 'nixery-keys' secret was configured manually using a created
-# service account key. This does not use metadata-based authentication
-# due to the requirement for having an actual PEM-key to sign with.
 ---
 apiVersion: apps/v1
 kind: Deployment
