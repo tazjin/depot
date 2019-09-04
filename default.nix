@@ -57,10 +57,19 @@ let
     }) {}).elmPackages;
 
     # Wrap kontemplate to inject the Cloud KMS version of 'pass'
-    kontemplate = self.writeShellScriptBin "kontemplate" ''
-      export PATH="${self.tazjin.kms_pass}/bin:$PATH"
-      exec ${super.kontemplate}/bin/kontemplate $@
-    '';
+    kontemplate =
+      let master = super.kontemplate.overrideAttrs(_: {
+        src = self.fetchFromGitHub {
+          owner = "tazjin";
+          repo = "kontemplate";
+          rev = "v1.8.0";
+          sha256 = "123mjmmm4hynraq1fpn3j5i0a1i87l265kkjraxxxbl0zacv74i1";
+        };
+      });
+      in self.writeShellScriptBin "kontemplate" ''
+        export PATH="${self.tazjin.kms_pass}/bin:$PATH"
+        exec ${master}/bin/kontemplate $@
+      '';
 
     # One of Gemma's dependencies is missing in nixpkgs' Quicklisp
     # package set, it is overlaid locally here.
