@@ -5,8 +5,8 @@
 let src = pkgs.fetchFromGitHub {
   owner = "google";
   repo = "nixery";
-  rev = "811a1fd228906c89af61d340be8f44788152dad9";
-  sha256 = "0jsps86kr64rbnyi49w4pv9pr2fz1wp80zzk5a8ap6q21daky4q0";
+  rev = "924a4b2d3bf5ed9d7052d7ac09288bb0037daae1";
+  sha256 = "1ccq2nk4kbprm48zzpvc132970wvdmvi1iyyrk8kbrf3b92gsm63";
 };
 in import src {
   inherit pkgs;
