@@ -9,10 +9,10 @@ with builtins;
 let
   # The pinned commit here is identical to the public nixery.dev
   # version, since popularity data has been generated for that.
-  stableCommit = "88d9f776091896cfe57dc6fbdf246e7d27d5f105";
+  stableCommit = "5271f8dddc0f2e54f55bd2fc1868c09ff72ac980";
   stableSrc = fetchTarball {
     url = "https://github.com/NixOS/nixpkgs-channels/archive/${stableCommit}.tar.gz";
-    sha256 = "0z8a0g69fmbbzi77jhvhwafv73dn5fg3gsr0q828lss6j5qpx995";
+    sha256 = "0w0x7whwb98lalaw25hxarmr924m1i49c1kacyypmnh2vjbkrjmi";
   };
 
   unstableCommit = "765a71f15025ce78024bae3dc4a92bd2be3a8fbf";
