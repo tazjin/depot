@@ -26,7 +26,7 @@ spec:
     spec:
       containers:
         - name: tazblog
-          image: nixery.local/shell/nginx
+          image: nixery.local/shell/nginx:{{ .version }}
           command: ["/bin/bash", "-c"]
           args:
             - |
