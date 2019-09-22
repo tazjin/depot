@@ -77,6 +77,14 @@ let
       inherit (self) lib;
       inherit (super) lispPackages;
     };
+
+    # All projects that should be built by CI should be added here:
+    ciProjects = [
+      self.kontemplate
+      self.nixery
+      self.ormolu
+      self.terraform-gcp
+    ] ++ filter (d: d ? meta.broken && !d.meta.broken) (attrValues self.tazjin);
   };
 
 in { ... } @ args: import stableSrc (args // {
