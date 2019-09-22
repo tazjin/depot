@@ -9,7 +9,6 @@ let frontend = stdenv.mkDerivation {
   buildPhase = ''
     mkdir .home && export HOME="$PWD/.home"
     mkdir -p $out
-    ls -lh
     elm-make --yes Main.elm --output $out/index.html
   '';
 };
@@ -51,5 +50,8 @@ in stdenv.mkDerivation rec {
     description = "Tool for tracking recurring tasks";
     homepage    = "https://github.com/tazjin/gemma";
     license     = licenses.gpl3;
+
+    # Lisp builds are broken for some reason (2019-09-22)
+    broken = true;
   };
 }
