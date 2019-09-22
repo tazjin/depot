@@ -8,4 +8,4 @@ before_script:
 script:
   # All of my own tools are under the top-level 'tazjin' attribute
   # set, this command will build all of them.
-  - nix-build -A tazjin | cachix push tazjin
+  - nix-build -A ciProjects | cachix push tazjin
