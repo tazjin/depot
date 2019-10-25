@@ -25,6 +25,7 @@ include:
       bucket: tazjins-data
       account: nixery@tazjins-infrastructure.iam.gserviceaccount.com
       repo: git@github.com:tazjin/depot.git
+      popularity: 'popularity-19.09.891.80b42e630b2.json'
   - name: tazblog
   - name: https-lb
   - name: nginx

@@ -42,6 +42,8 @@ spec:
             value: 'ssh -F /var/nixery/ssh_config'
           - name: NIXERY_PKGS_REPO
             value: {{ .repo }}
+          - name: NIX_POPULARITY_URL
+            value: 'https://storage.googleapis.com/nixery-layers/popularity/{{ .popularity }}'
       volumes:
         - name: nixery-secrets
           secret:
