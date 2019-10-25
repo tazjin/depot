@@ -9,10 +9,10 @@ with builtins;
 let
   # The pinned commit here is identical to the public nixery.dev
   # version, since popularity data has been generated for that.
-  stableCommit = "5271f8dddc0f2e54f55bd2fc1868c09ff72ac980";
+  stableCommit = "80b42e630b23052d9525840a9742100a2ceaaa8f";
   stableSrc = fetchTarball {
     url = "https://github.com/NixOS/nixpkgs-channels/archive/${stableCommit}.tar.gz";
-    sha256 = "0w0x7whwb98lalaw25hxarmr924m1i49c1kacyypmnh2vjbkrjmi";
+    sha256 = "0243qiivxl3z51biy4f5y5cy81x5bki5dazl9wqwgnmd373gpmxy";
   };
 
   unstableCommit = "765a71f15025ce78024bae3dc4a92bd2be3a8fbf";
@@ -39,7 +39,7 @@ let
 
     # Third-party projects (either vendored or modified from nixpkgs) go here:
     nixery = import ./third_party/nixery.nix { pkgs = self; };
-    terraform-gcp = unstable.terraform_0_12.withPlugins(p: [ p.google p.google-beta ]);
+    terraform-gcp = self.terraform_0_12.withPlugins(p: [ p.google p.google-beta ]);
     ormolu = import (self.fetchFromGitHub {
       owner = "tweag";
       repo = "ormolu";
