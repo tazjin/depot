@@ -28,6 +28,7 @@ let
       blog = self.callPackage ./services/tazblog {};
       blog_cli = self.callPackage ./tools/blog_cli {};
       gemma = self.callPackage ./services/gemma {};
+      nixcon = self.naersk.buildPackage ./services/nixcon-demo {};
 
       kms_pass = self.callPackage ./tools/kms_pass {
         project = "tazjins-infrastructure";
