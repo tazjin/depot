@@ -90,4 +90,5 @@ let
 in { ... } @ args: import stableSrc (args // {
     overlays = [ localPkgs ];
     config.allowUnfree = true;
+    config.allowBroken = true;
 })
