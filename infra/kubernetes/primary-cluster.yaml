@@ -21,7 +21,7 @@ include:
   - name: nixery
     values:
       port: 8080
-      version: lcw8ywgfwjkxbs4mwy4w4kvpm7h67f45
+      version: as6056ijn2scvzq8n1i2nlqwc5kddp1s
       bucket: tazjins-data
       account: nixery@tazjins-infrastructure.iam.gserviceaccount.com
       repo: git@github.com:tazjin/depot.git
