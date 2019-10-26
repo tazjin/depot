@@ -28,6 +28,7 @@ let
       blog = self.callPackage ./services/tazblog {};
       blog_cli = self.callPackage ./tools/blog_cli {};
       gemma = self.callPackage ./services/gemma {};
+      nixcon = self.naersk.buildPackage ./services/nixcon-demo {};
 
       kms_pass = self.callPackage ./tools/kms_pass {
         project = "tazjins-infrastructure";
@@ -46,6 +47,12 @@ let
       rev = "a7076c0f83e5c06ea9067b71171859fa2ba8afd9";
       sha256 = "1p4n2ja4ciw3qfskn65ggpy37mvgf2sslxqmqn8s8jjarnqcyfny";
     }) { pkgs = self; };
+    naersk = self.callPackage (self.fetchFromGitHub {
+      owner = "nmattia";
+      repo = "naersk";
+      rev = "68c1c2b2b661913cdc5ecabea518dfdc4f449027";
+      sha256 = "1ll310pl44kdbwfslzwvg2v7khf1y0xkg2j5wcfia4k7sj6bcl28";
+    }) {};
 
     # Gemma needs an older version of Elm to be built. Updating it to
     # the newer version is a lot of effort.
