@@ -15,13 +15,6 @@ let
     sha256 = "0243qiivxl3z51biy4f5y5cy81x5bki5dazl9wqwgnmd373gpmxy";
   };
 
-  unstableCommit = "765a71f15025ce78024bae3dc4a92bd2be3a8fbf";
-  unstableSrc = fetchTarball {
-    url = "https://github.com/NixOS/nixpkgs-channels/archive/${unstableCommit}.tar.gz";
-    sha256 = "0j1wghr9dj9njn3x9xi0wzjk1107gi2pxb0w2dk8g0djmhnlx71q";
-  };
-  unstable = import unstableSrc {};
-
   localPkgs = self: super: {
     # Local projects should be added here:
     tazjin = {
