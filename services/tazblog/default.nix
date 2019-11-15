@@ -2,9 +2,10 @@
 #
 # tazblog.nix was generated using cabal2nix.
 
-{ writeShellScriptBin, haskell }:
+{ pkgs, ... }:
 
 let
+  inherit (pkgs) writeShellScriptBin haskell;
   tazblog = haskell.packages.ghc865.callPackage ./tazblog.nix {};
   wrapper =  writeShellScriptBin "tazblog" ''
     export PORT=8000
@@ -13,4 +14,5 @@ let
   '';
 in wrapper.overrideAttrs(_: {
   allowSubstitutes = true;
+  meta.enableCI = true;
 })

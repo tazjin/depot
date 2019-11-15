@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: tazblog
-        image: nixery.local/shell/tazjin.blog:{{ gitHEAD }}
+        image: nixery.local/shell/services.tazblog:{{ gitHEAD }}
         command: [ "tazblog" ]
 ---
 apiVersion: v1

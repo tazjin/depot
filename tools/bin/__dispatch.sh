@@ -11,19 +11,19 @@ readonly TARGET_TOOL=$(basename $0)
 
 case "${TARGET_TOOL}" in
   terraform)
-    attr="terraform-gcp"
+    attr="third_party.terraform-gcp"
     ;;
   kontemplate)
     attr="kontemplate"
     ;;
   blog_cli)
-    attr="tazjin.blog_cli"
+    attr="tools.blog_cli"
     ;;
   stern)
     attr="stern"
     ;;
   pass)
-    attr="tazjin.kms_pass"
+    attr="tools.kms_pass"
     ;;
   *)
     echo "The tool '${TARGET_TOOL}' is currently not installed in this repository."

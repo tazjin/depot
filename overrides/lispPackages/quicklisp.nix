@@ -1,6 +1,3 @@
-# Overlay over `pkgs.lispPackages` that adds additional packages which
-# are missing from the imported Quicklisp package set in nixpkgs.
-
 { lib, lispPackages }:
 
 let inherit (lispPackages) buildLispPackage qlOverrides fetchurl;
