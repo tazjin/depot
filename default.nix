@@ -16,7 +16,16 @@ let
   };
   readTree = import ./read-tree.nix;
 
-  localPkgs = self: super:
+  # Derivations that have `meta.enableCI` set to `true` should be
+  # built by the CI system on every commit. This code implements
+  # filtering of all derivations in the local sets against this
+  # condition.
+  filterCI = lib: pkgs: let
+    inherit (lib) collect isDerivation filterAttrsRecursive;
+    ciCondition = _: x: (!isDerivation x) || ((x ? meta.enableCI) && (x.meta.enableCI));
+  in collect isDerivation (filterAttrsRecursive ciCondition pkgs);
+
+  repoPkgs = self: super:
     let config = {
       pkgs = self;
       upstream = super;
@@ -32,19 +41,17 @@ let
       services = readTree ./services config;
       tools = readTree ./tools config;
       third_party = readTree ./third_party config;
-    } // (readTree ./overrides config);
-
-  #   # All projects that should be built by CI should be added here:
-  #   ciProjects = [
-  #     self.kontemplate
-  #     self.nixery
-  #     self.ormolu
-  #     self.terraform-gcp
-  #   ] ++ filter (d: d ? meta.broken && !d.meta.broken) (attrValues self.tazjin);
-  # };
-
+    }
+    # Load overrides into the top-level:
+    // (readTree ./overrides config)
+    # Collect all projects that should be built by CI
+    // {
+      ciProjects = (filterCI super.lib self.services)
+        ++ (filterCI super.lib self.tools)
+        ++ (filterCI super.lib self.third_party);
+    };
 in { ... } @ args: import stableSrc (args // {
-    overlays = [ localPkgs ];
+    overlays = [ repoPkgs ];
     config.allowUnfree = true;
     config.allowBroken = true;
 })

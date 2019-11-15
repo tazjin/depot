@@ -9,7 +9,7 @@
 { pkgs, kms, ... }:
 
 let inherit (pkgs) google-cloud-sdk tree writeShellScriptBin;
-in writeShellScriptBin "pass" ''
+in (writeShellScriptBin "pass" ''
   set -eo pipefail
 
   CMD="$1"
@@ -57,4 +57,4 @@ in writeShellScriptBin "pass" ''
       exit 1
       ;;
   esac
-''
+'') // { meta.enableCI = true; }

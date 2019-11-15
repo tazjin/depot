@@ -14,4 +14,5 @@ let
   '';
 in wrapper.overrideAttrs(_: {
   allowSubstitutes = true;
+  meta.enableCI = true;
 })
