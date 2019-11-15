@@ -1,17 +1,20 @@
-{ stdenv, sbcl, lispPackages, elmPackages, makeWrapper, openssl }:
+{ pkgs, ... }:
 
-let frontend = stdenv.mkDerivation {
-  name = "gemma-frontend";
-  src = ./frontend;
-  buildInputs = [ elmPackages.elm ];
+let
+  inherit (pkgs) stdenv sbcl lispPackages elmPackages makeWrapper openssl;
 
-  phases = [ "unpackPhase" "buildPhase" ];
-  buildPhase = ''
-    mkdir .home && export HOME="$PWD/.home"
-    mkdir -p $out
-    elm-make --yes Main.elm --output $out/index.html
-  '';
-};
+  frontend = stdenv.mkDerivation {
+    name = "gemma-frontend";
+    src = ./frontend;
+    buildInputs = [ elmPackages.elm ];
+
+    phases = [ "unpackPhase" "buildPhase" ];
+    buildPhase = ''
+      mkdir .home && export HOME="$PWD/.home"
+      mkdir -p $out
+      elm-make --yes Main.elm --output $out/index.html
+    '';
+  };
 in stdenv.mkDerivation rec {
   name = "gemma";
   src = ./.;

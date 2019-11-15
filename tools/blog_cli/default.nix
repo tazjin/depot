@@ -1,6 +1,6 @@
-{ buildGoPackage }:
+{ pkgs, ... }:
 
-buildGoPackage {
+pkgs.buildGoPackage {
   name = "blog_cli";
   goPackagePath = "github.com/tazjin/personal/blog_cli";
   src = ./.;

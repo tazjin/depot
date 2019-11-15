@@ -1,6 +1,6 @@
 # Technically I suppose Nixery is not a third-party program, but it's
 # outside of this repository ...
-{ pkgs }:
+{ pkgs, ... }:
 
 let src = pkgs.fetchFromGitHub {
   owner = "google";

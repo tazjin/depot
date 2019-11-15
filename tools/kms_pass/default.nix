@@ -6,10 +6,10 @@
 #
 # Only the 'show' and 'insert' commands are supported.
 
-{ google-cloud-sdk, tree, writeShellScriptBin
-, project, region, keyring, key }:
+{ pkgs, kms, ... }:
 
-writeShellScriptBin "pass" ''
+let inherit (pkgs) google-cloud-sdk tree writeShellScriptBin;
+in writeShellScriptBin "pass" ''
   set -eo pipefail
 
   CMD="$1"
@@ -34,20 +34,20 @@ writeShellScriptBin "pass" ''
     show)
       secret_check
       ${google-cloud-sdk}/bin/gcloud kms decrypt \
-        --project ${project} \
-        --location ${region} \
-        --keyring ${keyring} \
-        --key ${key} \
+        --project ${kms.project} \
+        --location ${kms.region} \
+        --keyring ${kms.keyring} \
+        --key ${kms.key} \
         --ciphertext-file $SECRET_PATH \
         --plaintext-file -
       ;;
     insert)
       secret_check
       ${google-cloud-sdk}/bin/gcloud kms encrypt \
-        --project ${project} \
-        --location ${region} \
-        --keyring ${keyring} \
-        --key ${key} \
+        --project ${kms.project} \
+        --location ${kms.region} \
+        --keyring ${kms.keyring} \
+        --key ${kms.key} \
         --ciphertext-file $SECRET_PATH \
         --plaintext-file -
       echo "Inserted secret '$SECRET'"

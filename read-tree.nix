@@ -1,4 +1,4 @@
-path: self: super:
+path: { pkgs, ... } @ args:
 
 let
   inherit (builtins)
@@ -14,8 +14,6 @@ let
     tail
     toPath
     toString;
-
-  args = { pkgs = self; };
 
   zipAttrs = names: values:
     if (names == []) || (values == [])
