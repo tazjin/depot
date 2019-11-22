@@ -50,9 +50,9 @@ let
   program = { name, srcs, deps ? [] }:
   let uniqueDeps = allDeps deps;
   in runCommand name {} ''
-    ${go}/bin/go tool compile -o ${name}.a -trimpath=$PWD ${includeSources uniqueDeps} ${spaceOut srcs}
+    ${go}/bin/go tool compile -o ${name}.a -trimpath=$PWD -trimpath=${go} ${includeSources uniqueDeps} ${spaceOut srcs}
     mkdir -p $out/bin
-    ${go}/bin/go tool link -o $out/bin/${name} ${includeLibs uniqueDeps} ${name}.a
+    ${go}/bin/go tool link -o $out/bin/${name} -buildid nix ${includeLibs uniqueDeps} ${name}.a
   '';
 
   # Build a Go library assembled out of the specified files.
