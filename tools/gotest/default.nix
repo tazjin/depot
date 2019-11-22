@@ -24,4 +24,4 @@ in buildGo.program {
   name = "gotest";
   srcs = [ ./main.go ];
   deps = [ somelib someproto ];
-}
+} // { meta.enableCI = true; }
