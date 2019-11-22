@@ -3,6 +3,7 @@
 #
 # TODO(tazjin): Go through Bazel rules_go options and implement corresponding flags
 # TODO(tazjin): Refactor to include /golang/protobuf/descriptor in goProto deps
+# TODO(tazjin): Find a way to expose documentation (esp. for generated stuff)
 
 { pkgs, ... }@args:
 
@@ -10,16 +11,13 @@ let
   inherit (builtins)
     attrNames
     baseNameOf
-    currentSystem
+    elemAt
     filter
-    isString
-    head
     map
     match
     readDir
-    toFile
-    toPath
-    toString;
+    replaceStrings
+    toPath;
 
   inherit (pkgs) bash lib go runCommand fetchFromGitHub protobuf;
 
@@ -66,17 +64,17 @@ let
   in (runCommand "golib-${name}" {} ''
     mkdir -p $out/${path}
     ${srcList path (map (s: "${s}") srcs)}
-    ${go}/bin/go tool compile -o $out/${path}.a -trimpath=$PWD -p ${path} ${includeSources uniqueDeps} ${spaceOut srcs}
+    ${go}/bin/go tool compile -o $out/${path}.a -trimpath=$PWD -trimpath=${go} -p ${path} ${includeSources uniqueDeps} ${spaceOut srcs}
   '') // { goDeps = uniqueDeps; };
 
-  # Build a Go library out of the specified proto/gRPC file.
-  proto = { name, proto, path ? name }: package {
+  # Build a Go library out of the specified protobuf definition.
+  proto = { name, proto, path ? name, protocFlags ? "", extraDeps ? [] }: package {
     inherit name path;
-    deps = [ goProto ];
+    deps = [ goProto ] ++ extraDeps;
     srcs = lib.singleton (runCommand "goproto-${name}.pb.go" {} ''
       cp ${proto} ${baseNameOf proto}
       ${protobuf}/bin/protoc --plugin=${protocGo}/bin/protoc-gen-go \
-        --go_out=import_path=${baseNameOf path}:. ${baseNameOf proto}
+        --go_out=${protocFlags}import_path=${baseNameOf path}:. ${baseNameOf proto}
       mv *.pb.go $out
     '');
   };
@@ -89,27 +87,25 @@ let
     sha256 = "0fynqrim022x9xi2bivkw19npbz4316v4yr7mb677s9s36z4dc4h";
   };
 
+  protoPart = path: deps: package {
+    inherit deps;
+    name = replaceStrings ["/"] ["_"] path;
+    path = "github.com/golang/protobuf/${path}";
+    srcs = goFilesIn (toPath "${proto-go-src}/${path}");
+  };
+
   goProto =
     let
       protobuf = package {
         name = "protobuf";
         path = "github.com/golang/protobuf/proto";
+        # TODO(tazjin): How does this build toggle work?
         srcs = filter
           (f: (match "(.*)/pointer_reflect.go" f) == null)
           (goFilesIn (toPath "${proto-go-src}/proto"));
       };
-      type = name: package {
-        name = "ptypes-${name}";
-        path = "github.com/golang/protobuf/ptypes/${name}";
-        srcs = goFilesIn (toPath "${proto-go-src}/ptypes/${name}");
-        deps = [ protobuf ];
-      };
-      # descriptor = package {
-      #   name = "descriptor";
-      #   path = "github.com/golang/protobuf/descriptor";
-      #   deps = [ protobuf ];
-      #   srcs = goFilesIn (toPath "${proto-go-src}/descriptor");
-      # };
+      type = name: protoPart "ptypes/${name}" [ protobuf ];
+      descriptor = protoPart "descriptor" [ protobuf ];
       ptypes = package {
         name = "ptypes";
         path = "github.com/golang/protobuf/ptypes";
@@ -125,37 +121,14 @@ let
       };
     in protobuf // { goDeps = allDeps (protobuf.goDeps ++ [ ptypes ]); };
 
+  protocDescriptor = (protoPart "protoc-gen-go/descriptor" [ goProto ]);
   protocGo =
     let
-      descriptor = package {
-        name = "descriptor";
-        path = "github.com/golang/protobuf/protoc-gen-go/descriptor";
-        srcs = goFilesIn (toPath "${proto-go-src}/protoc-gen-go/descriptor");
-        deps = [ goProto ];
-      };
-      plugin = package {
-        name = "plugin";
-        path = "github.com/golang/protobuf/protoc-gen-go/plugin";
-        srcs = goFilesIn (toPath "${proto-go-src}/protoc-gen-go/plugin");
-        deps = [ descriptor ];
-      };
-      remap = package {
-        name = "remap";
-        path = "github.com/golang/protobuf/protoc-gen-go/generator/internal/remap";
-        srcs = goFilesIn (toPath "${proto-go-src}/protoc-gen-go/generator/internal/remap");
-      };
-      generator = package {
-        name = "generator";
-        path = "github.com/golang/protobuf/protoc-gen-go/generator";
-        srcs = goFilesIn (toPath "${proto-go-src}/protoc-gen-go/generator");
-        deps = [ descriptor remap plugin ];
-      };
-      grpc = package {
-        name = "grpc";
-        path = "github.com/golang/protobuf/protoc-gen-go/grpc";
-        deps = [ generator ];
-        srcs = goFilesIn (toPath "${proto-go-src}/protoc-gen-go/grpc");
-      };
+      generator = protoPart "protoc-gen-go/generator" [
+        (protoPart "protoc-gen-go/generator/internal/remap" [])
+        (protoPart "protoc-gen-go/plugin" [ protocDescriptor ])
+      ];
+      grpc = protoPart "protoc-gen-go/grpc" [ generator ];
     in program {
       name = "protoc-gen-go";
       deps = [ goProto grpc generator ];
