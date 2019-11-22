@@ -1,0 +1,9 @@
+syntax = "proto3";
+package someproto;
+
+import "google/protobuf/timestamp.proto";
+
+message Person {
+  string name = 1;
+  google.protobuf.Timestamp last_updated = 2;
+}
