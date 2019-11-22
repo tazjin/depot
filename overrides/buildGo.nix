@@ -30,7 +30,7 @@ let
   includeDepLib = dep: "-L ${dep}";
   includeLibs = deps: spaceOut (map includeDepLib deps);
 
-  srcBasename = src: head (filter isString (match "([a-z0-9]{32}\-)?(.*\.go)" (baseNameOf src)));
+  srcBasename = src: elemAt (match "([a-z0-9]{32}\-)?(.*\.go)" (baseNameOf src)) 1;
   srcCopy = path: src: "cp ${src} $out/${path}/${srcBasename src}";
   srcList = path: srcs: lib.concatStringsSep "\n" (map (srcCopy path) srcs);
 
