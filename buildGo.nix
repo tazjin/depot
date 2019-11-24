@@ -44,15 +44,17 @@ let
 
   allDeps = deps: lib.unique (lib.flatten (deps ++ (map (d: d.goDeps) deps)));
 
+  xFlags = x_defs: spaceOut (map (k: "-X ${k}=${x_defs."${k}"}") (attrNames x_defs));
+
   # High-level build functions
 
   # Build a Go program out of the specified files and dependencies.
-  program = { name, srcs, deps ? [] }:
+  program = { name, srcs, deps ? [], x_defs ? {} }:
   let uniqueDeps = allDeps deps;
   in runCommand name {} ''
     ${go}/bin/go tool compile -o ${name}.a -trimpath=$PWD -trimpath=${go} ${includeSources uniqueDeps} ${spaceOut srcs}
     mkdir -p $out/bin
-    ${go}/bin/go tool link -o $out/bin/${name} -buildid nix ${includeLibs uniqueDeps} ${name}.a
+    ${go}/bin/go tool link -o $out/bin/${name} -buildid nix ${xFlags x_defs} ${includeLibs uniqueDeps} ${name}.a
   '';
 
   # Build a Go library assembled out of the specified files.
