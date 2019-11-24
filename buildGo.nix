@@ -15,9 +15,11 @@ let
     filter
     map
     match
-    readDir;
+    readDir
+    replaceStrings
+    toPath;
 
-  inherit (pkgs) lib go runCommand;
+  inherit (pkgs) lib go runCommand fetchFromGitHub protobuf;
 
   # Helpers for low-level Go compiler invocations
   spaceOut = lib.concatStringsSep " ";
@@ -64,7 +66,77 @@ let
     ${srcList path (map (s: "${s}") srcs)}
     ${go}/bin/go tool compile -o $out/${path}.a -trimpath=$PWD -trimpath=${go} -p ${path} ${includeSources uniqueDeps} ${spaceOut srcs}
   '') // { goDeps = uniqueDeps; };
+
+  # Build a Go library out of the specified protobuf definition.
+  proto = { name, proto, path ? name, protocFlags ? "", extraDeps ? [] }: package {
+    inherit name path;
+    deps = [ goProto ] ++ extraDeps;
+    srcs = lib.singleton (runCommand "goproto-${name}.pb.go" {} ''
+      cp ${proto} ${baseNameOf proto}
+      ${protobuf}/bin/protoc --plugin=${protocGo}/bin/protoc-gen-go \
+        --go_out=${protocFlags}import_path=${baseNameOf path}:. ${baseNameOf proto}
+      mv *.pb.go $out
+    '');
+  };
+
+  # Protobuf & gRPC integration requires these dependencies:
+  proto-go-src = fetchFromGitHub {
+    owner = "golang";
+    repo = "protobuf";
+    rev = "ed6926b37a637426117ccab59282c3839528a700";
+    sha256 = "0fynqrim022x9xi2bivkw19npbz4316v4yr7mb677s9s36z4dc4h";
+  };
+
+  protoPart = path: deps: package {
+    inherit deps;
+    name = replaceStrings ["/"] ["_"] path;
+    path = "github.com/golang/protobuf/${path}";
+    srcs = goFilesIn (toPath "${proto-go-src}/${path}");
+  };
+
+  goProto =
+    let
+      protobuf = package {
+        name = "protobuf";
+        path = "github.com/golang/protobuf/proto";
+        # TODO(tazjin): How does this build toggle work?
+        srcs = filter
+          (f: (match "(.*)/pointer_reflect.go" f) == null)
+          (goFilesIn (toPath "${proto-go-src}/proto"));
+      };
+      type = name: protoPart "ptypes/${name}" [ protobuf ];
+      descriptor = protoPart "descriptor" [ protobuf ];
+      ptypes = package {
+        name = "ptypes";
+        path = "github.com/golang/protobuf/ptypes";
+        srcs = goFilesIn (toPath "${proto-go-src}/ptypes");
+        deps = map type [
+          "any"
+          "duration"
+          "empty"
+          "struct"
+          "timestamp"
+          "wrappers"
+        ];
+      };
+    in protobuf // { goDeps = allDeps (protobuf.goDeps ++ [ ptypes ]); };
+
+  protocDescriptor = (protoPart "protoc-gen-go/descriptor" [ goProto ]);
+  protocGo =
+    let
+      generator = protoPart "protoc-gen-go/generator" [
+        (protoPart "protoc-gen-go/generator/internal/remap" [])
+        (protoPart "protoc-gen-go/plugin" [ protocDescriptor ])
+      ];
+      grpc = protoPart "protoc-gen-go/grpc" [ generator ];
+    in program {
+      name = "protoc-gen-go";
+      deps = [ goProto grpc generator ];
+      srcs = filter
+        (f: (match "(.*)/doc.go" f) == null)
+        (goFilesIn (toPath "${proto-go-src}/protoc-gen-go"));
+    };
 in {
   # Only the high-level builder functions are exposed
-  inherit program package;
+  inherit program package proto;
 }
