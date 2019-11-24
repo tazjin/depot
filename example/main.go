@@ -12,6 +12,8 @@ import (
 	"fmt"
 )
 
+var Flag string = "unsuccessfully"
+
 func main() {
 	thing := exampleproto.Thing{
 		Id:          example.UUID(),
@@ -19,4 +21,5 @@ func main() {
 	}
 
 	fmt.Printf("The thing is a %s with ID %q\n", thing.Id, thing.KindOfThing)
+	fmt.Printf("The flag has been %s set\n", Flag)
 }

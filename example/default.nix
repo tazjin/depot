@@ -40,4 +40,8 @@ in buildGo.program {
     examplePackage
     exampleProto
   ];
+
+  x_defs = {
+    "main.Flag" = "successfully";
+  };
 }
