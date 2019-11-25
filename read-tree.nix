@@ -3,7 +3,6 @@ path: { pkgs, ... } @ args:
 let
   inherit (builtins)
     attrNames
-    attrValues
     filter
     head
     isString
@@ -11,19 +10,13 @@ let
     map
     match
     readDir
-    tail
     toPath
     toString;
 
-  zipAttrs = names: values:
-    if (names == []) || (values == [])
-    then []
-    else [{
-      name = head names;
-      value = head values;
-    }] ++ zipAttrs (tail names) (tail values);
-
-  attrsToList = attrs: zipAttrs (attrNames attrs) (attrValues attrs);
+  attrsToList = attrs: map (name: {
+    inherit name;
+    value = attrs."${name}";
+  }) (attrNames attrs);
 
   isFile = s: s == "regular";
   isDir = s: s == "directory";
