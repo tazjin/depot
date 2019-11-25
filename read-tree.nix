@@ -1,4 +1,4 @@
-path: { pkgs, ... } @ args:
+initPath: { pkgs, ... } @ args:
 
 let
   inherit (builtins)
@@ -6,10 +6,13 @@ let
     filter
     head
     isString
+    length
     listToAttrs
     map
     match
     readDir
+    split
+    tail
     toPath
     toString;
 
@@ -37,6 +40,23 @@ let
         }) files;
     in filter (f: isString f.name) nixFiles;
 
+  # Some packages require that their position in the tree is passed in
+  # as an argument. To do this the root directory (i.e. $PWD during
+  # imports) is chopped off the front of the path components in
+  # imports.
+  pathParts = p: tail (filter isString (split "/" (toString p)));
+  initLen = length (pathParts ./.);
+  drop = n: l:
+    if n == 0
+      then l
+      else if l == []
+        then []
+        else drop (n - 1) (tail l);
+
+  argsWithPath = args: parts: args // {
+    locatedAt = drop initLen parts;
+  };
+
   traverse = path: dir:
     let nixFiles = filterNixFiles dir;
         imported = map (f: {
@@ -51,8 +71,8 @@ let
 
   importOr = path: dir: f:
     if dir ? "default.nix"
-      then import path args
+      then import path (argsWithPath args (pathParts path))
       else f path (attrsToList dir);
 
   readTree = path: importOr path (readDir path) traverse;
-in readTree path
+in readTree initPath
