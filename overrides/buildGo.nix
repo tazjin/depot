@@ -1,3 +1,6 @@
+# Copyright 2019 Google LLC.
+# SPDX-License-Identifier: Apache-2.0
+#
 # buildGo provides Nix functions to build Go packages in the style of Bazel's
 # rules_go.
 #
@@ -5,7 +8,7 @@
 # TODO(tazjin): Refactor to include /golang/protobuf/descriptor in goProto deps
 # TODO(tazjin): Find a way to expose documentation (esp. for generated stuff)
 
-{ pkgs, ... }@args:
+{ pkgs, ... }:
 
 let
   inherit (builtins)
@@ -19,7 +22,7 @@ let
     replaceStrings
     toPath;
 
-  inherit (pkgs) bash lib go runCommand fetchFromGitHub protobuf;
+  inherit (pkgs) lib go runCommand fetchFromGitHub protobuf;
 
   # Helpers for low-level Go compiler invocations
   spaceOut = lib.concatStringsSep " ";
@@ -44,15 +47,17 @@ let
 
   allDeps = deps: lib.unique (lib.flatten (deps ++ (map (d: d.goDeps) deps)));
 
+  xFlags = x_defs: spaceOut (map (k: "-X ${k}=${x_defs."${k}"}") (attrNames x_defs));
+
   # High-level build functions
 
   # Build a Go program out of the specified files and dependencies.
-  program = { name, srcs, deps ? [] }:
+  program = { name, srcs, deps ? [], x_defs ? {} }:
   let uniqueDeps = allDeps deps;
   in runCommand name {} ''
     ${go}/bin/go tool compile -o ${name}.a -trimpath=$PWD -trimpath=${go} ${includeSources uniqueDeps} ${spaceOut srcs}
     mkdir -p $out/bin
-    ${go}/bin/go tool link -o $out/bin/${name} -buildid nix ${includeLibs uniqueDeps} ${name}.a
+    ${go}/bin/go tool link -o $out/bin/${name} -buildid nix ${xFlags x_defs} ${includeLibs uniqueDeps} ${name}.a
   '';
 
   # Build a Go library assembled out of the specified files.
