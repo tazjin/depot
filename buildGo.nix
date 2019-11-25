@@ -11,15 +11,15 @@ let
   inherit (builtins)
     attrNames
     baseNameOf
+    dirOf
     elemAt
     filter
     map
     match
     readDir
-    replaceStrings
-    toPath;
+    replaceStrings;
 
-  inherit (pkgs) lib go runCommand fetchFromGitHub protobuf;
+  inherit (pkgs) lib go runCommand fetchFromGitHub protobuf symlinkJoin;
 
   # Helpers for low-level Go compiler invocations
   spaceOut = lib.concatStringsSep " ";
@@ -45,6 +45,8 @@ let
   allDeps = deps: lib.unique (lib.flatten (deps ++ (map (d: d.goDeps) deps)));
 
   xFlags = x_defs: spaceOut (map (k: "-X ${k}=${x_defs."${k}"}") (attrNames x_defs));
+
+  pathToName = p: replaceStrings ["/"] ["_"] (toString p);
 
   # High-level build functions
 
@@ -75,11 +77,51 @@ let
     deps = [ goProto ] ++ extraDeps;
     srcs = lib.singleton (runCommand "goproto-${name}.pb.go" {} ''
       cp ${proto} ${baseNameOf proto}
-      ${protobuf}/bin/protoc --plugin=${protocGo}/bin/protoc-gen-go \
+      ${protobuf}/bin/protoc --plugin=${goProto}/bin/protoc-gen-go \
         --go_out=${protocFlags}import_path=${baseNameOf path}:. ${baseNameOf proto}
       mv *.pb.go $out
     '');
   };
+
+  # Build an externally defined Go library using `go build` itself.
+  #
+  # Libraries built this way can be included in any standard buildGo
+  # build.
+  #
+  # Contrary to other functions, `src` is expected to point at a
+  # single directory containing the root of the external library.
+  external = { path, src, deps ? [] }:
+    let
+      name = pathToName path;
+      uniqueDeps = allDeps deps;
+      srcDir = runCommand "goext-src-${name}" {} ''
+        mkdir -p $out/${dirOf path}
+        cp -r ${src} $out/${dirOf path}/${baseNameOf path}
+      '';
+      gopathSrc = symlinkJoin {
+        name = "gopath-${name}";
+        paths = uniqueDeps ++ [ srcDir ];
+      };
+      gopathPkg = runCommand "goext-pkg-${name}" {} ''
+        mkdir -p gopath $out
+        export GOPATH=$PWD/gopath
+        ln -s ${gopathSrc} gopath/src
+        ${go}/bin/go install ${path}/...
+
+        if [[ -d gopath/pkg/linux_amd64 ]]; then
+          echo "Installing Go packages for ${path}"
+          mv gopath/pkg/linux_amd64/* $out
+        fi
+
+        if [[ -d gopath/bin ]]; then
+          echo "Installing Go binaries for ${path}"
+          mv gopath/bin $out/bin
+        fi
+      '';
+    in symlinkJoin {
+      name = "goext-${name}";
+      paths = [ gopathSrc gopathPkg ];
+    } // { goDeps = uniqueDeps; };
 
   # Protobuf & gRPC integration requires these dependencies:
   proto-go-src = fetchFromGitHub {
@@ -89,56 +131,12 @@ let
     sha256 = "0fynqrim022x9xi2bivkw19npbz4316v4yr7mb677s9s36z4dc4h";
   };
 
-  protoPart = path: deps: package {
-    inherit deps;
-    name = replaceStrings ["/"] ["_"] path;
-    path = "github.com/golang/protobuf/${path}";
-    srcs = goFilesIn (toPath "${proto-go-src}/${path}");
+  goProto = external {
+    path = "github.com/golang/protobuf";
+    src = proto-go-src;
+    deps = [];
   };
-
-  goProto =
-    let
-      protobuf = package {
-        name = "protobuf";
-        path = "github.com/golang/protobuf/proto";
-        # TODO(tazjin): How does this build toggle work?
-        srcs = filter
-          (f: (match "(.*)/pointer_reflect.go" f) == null)
-          (goFilesIn (toPath "${proto-go-src}/proto"));
-      };
-      type = name: protoPart "ptypes/${name}" [ protobuf ];
-      descriptor = protoPart "descriptor" [ protobuf ];
-      ptypes = package {
-        name = "ptypes";
-        path = "github.com/golang/protobuf/ptypes";
-        srcs = goFilesIn (toPath "${proto-go-src}/ptypes");
-        deps = map type [
-          "any"
-          "duration"
-          "empty"
-          "struct"
-          "timestamp"
-          "wrappers"
-        ];
-      };
-    in protobuf // { goDeps = allDeps (protobuf.goDeps ++ [ ptypes ]); };
-
-  protocDescriptor = (protoPart "protoc-gen-go/descriptor" [ goProto ]);
-  protocGo =
-    let
-      generator = protoPart "protoc-gen-go/generator" [
-        (protoPart "protoc-gen-go/generator/internal/remap" [])
-        (protoPart "protoc-gen-go/plugin" [ protocDescriptor ])
-      ];
-      grpc = protoPart "protoc-gen-go/grpc" [ generator ];
-    in program {
-      name = "protoc-gen-go";
-      deps = [ goProto grpc generator ];
-      srcs = filter
-        (f: (match "(.*)/doc.go" f) == null)
-        (goFilesIn (toPath "${proto-go-src}/protoc-gen-go"));
-    };
 in {
   # Only the high-level builder functions are exposed
-  inherit program package proto;
+  inherit program package proto external;
 }
