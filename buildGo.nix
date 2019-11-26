@@ -72,16 +72,19 @@ let
   '') // { goDeps = uniqueDeps; };
 
   # Build a Go library out of the specified protobuf definition.
-  proto = { name, proto, path ? name, protocFlags ? "", extraDeps ? [] }: package {
+  proto = { name, proto, path ? name, extraDeps ? [] }: package {
     inherit name path;
-    deps = [ goProto ] ++ extraDeps;
+    deps = [ protoLibs.goProto ] ++ extraDeps;
     srcs = lib.singleton (runCommand "goproto-${name}.pb.go" {} ''
       cp ${proto} ${baseNameOf proto}
-      ${protobuf}/bin/protoc --plugin=${goProto}/bin/protoc-gen-go \
-        --go_out=${protocFlags}import_path=${baseNameOf path}:. ${baseNameOf proto}
+      ${protobuf}/bin/protoc --plugin=${protoLibs.goProto}/bin/protoc-gen-go \
+        --go_out=plugins=grpc,import_path=${baseNameOf path}:. ${baseNameOf proto}
       mv *.pb.go $out
     '');
   };
+
+  # Build a Go library out of the specified gRPC definition.
+  grpc = args: proto (args // { extraDeps = [ protoLibs.goGrpc ]; });
 
   # Build an externally defined Go library using `go build` itself.
   #
@@ -128,5 +131,5 @@ let
   };
 in {
   # Only the high-level builder functions are exposed
-  inherit program package proto external;
+  inherit program package proto grpc external;
 }
