@@ -123,18 +123,8 @@ let
       paths = [ gopathSrc gopathPkg ];
     }) // { goDeps = uniqueDeps; };
 
-  # Protobuf & gRPC integration requires these dependencies:
-  proto-go-src = fetchFromGitHub {
-    owner = "golang";
-    repo = "protobuf";
-    rev = "ed6926b37a637426117ccab59282c3839528a700";
-    sha256 = "0fynqrim022x9xi2bivkw19npbz4316v4yr7mb677s9s36z4dc4h";
-  };
-
-  goProto = external {
-    path = "github.com/golang/protobuf";
-    src = proto-go-src;
-    deps = [];
+  protoLibs = import ./proto.nix {
+    inherit external;
   };
 in {
   # Only the high-level builder functions are exposed
