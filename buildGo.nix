@@ -90,7 +90,7 @@ let
   #
   # Contrary to other functions, `src` is expected to point at a
   # single directory containing the root of the external library.
-  external = { path, src, deps ? [] }:
+  external = { path, src, deps ? [], srcOnly ? false, targets ? [ "..." ] }:
     let
       name = pathToName path;
       uniqueDeps = allDeps deps;
@@ -106,7 +106,7 @@ let
         mkdir -p gopath $out
         export GOPATH=$PWD/gopath
         ln -s ${gopathSrc} gopath/src
-        ${go}/bin/go install ${path}/...
+        ${go}/bin/go install ${spaceOut (map (t: path + "/" + t) targets)}
 
         if [[ -d gopath/pkg/linux_amd64 ]]; then
           echo "Installing Go packages for ${path}"
@@ -118,10 +118,10 @@ let
           mv gopath/bin $out/bin
         fi
       '';
-    in symlinkJoin {
+    in (if srcOnly then gopathSrc else symlinkJoin {
       name = "goext-${name}";
       paths = [ gopathSrc gopathPkg ];
-    } // { goDeps = uniqueDeps; };
+    }) // { goDeps = uniqueDeps; };
 
   # Protobuf & gRPC integration requires these dependencies:
   proto-go-src = fetchFromGitHub {
