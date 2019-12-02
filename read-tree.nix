@@ -31,7 +31,7 @@ let
     in if res == null then null else head res;
 
   filterNixFiles = dir:
-    let files = filter (e: isFile e.value) dir;
+    let files = filter (e: isFile e.value && e.name != "default.nix") dir;
         nixFiles = map (f: {
           # Name and value are intentionally flipped to get the
           # correct attribute set structure back out
@@ -70,9 +70,10 @@ let
     in listToAttrs (imported ++ dirs);
 
   importOr = path: dir: f:
-    if dir ? "default.nix"
-      then import path (argsWithPath args (pathParts path))
-      else f path (attrsToList dir);
+    let contents = f path (attrsToList dir);
+    in if dir ? "default.nix"
+      then import path (argsWithPath args (pathParts path)) // contents
+      else contents;
 
   readTree = path: importOr path (readDir path) traverse;
 in readTree initPath
