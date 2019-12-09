@@ -24,6 +24,8 @@ let
       buildGoPackage
       cargo
       darwin
+      emacs26-nox
+      emacsPackagesFor
       fetchFromGitHub
       google-cloud-sdk
       haskell
@@ -38,7 +40,8 @@ let
       symlinkJoin
       tree
       writeShellScriptBin
-      writeText;
+      writeText
+      writeTextFile;
   };
 
 in exposed // {
