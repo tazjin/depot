@@ -1,84 +1,49 @@
-# TODO(tazjin): avoid {} by only calling functions *after* checking what they are
-
 args: initPath:
 
 let
   inherit (builtins)
     attrNames
+    baseNameOf
     filter
     head
-    isString
     length
     listToAttrs
     map
     match
-    readDir
-    split
-    tail
-    toString;
+    readDir;
 
-  attrsToList = attrs: map (name: {
-    inherit name;
-    value = attrs."${name}";
-  }) (attrNames attrs);
+  argsWithPath = parts: args // {
+    locatedAt = parts;
+  };
 
-  isFile = s: s == "regular";
-  isDir = s: s == "directory";
+  # The marker is added to everything that was imported directly by
+  # readTree.
+  marker = { __readTree = true; };
 
-  joinPath = p: f: p + ("/" + f);
-
-  isNixFile = file:
+  nixFileName = file:
     let res = match "(.*)\.nix" file;
     in if res == null then null else head res;
 
-  filterNixFiles = dir:
-    let files = filter (e: isFile e.value && e.name != "default.nix") dir;
-        nixFiles = map (f: {
-          # Name and value are intentionally flipped to get the
-          # correct attribute set structure back out
-          name = isNixFile f.name;
-          value = f.name; # i.e. the path
-        }) files;
-    in filter (f: isString f.name) nixFiles;
-
-  # Some packages require that their position in the tree is passed in
-  # as an argument. To do this the root directory (i.e. $PWD during
-  # imports) is chopped off the front of the path components in
-  # imports.
-  pathParts = p: tail (filter isString (split "/" (toString p)));
-  initLen = length (pathParts ./.);
-  drop = n: l:
-    if n == 0
-      then l
-      else if l == []
-        then []
-        else drop (n - 1) (tail l);
-
-  argsWithPath = args: parts: args // {
-    locatedAt = drop initLen parts;
-  };
-
-  traverse = path: dir:
-    let nixFiles = filterNixFiles dir;
-        imported = map (f: {
-          inherit (f) name;
-          value = import (joinPath path f.value) (argsWithPath args (pathParts path));
-        }) nixFiles;
-        dirs = map (d: {
-          inherit (d) name;
-          value = readTree (joinPath path d.name);
-        }) (filter (e: isDir e.value) dir);
-    in listToAttrs (imported ++ dirs);
-
-  importOr = path: dir: f:
+  readTree = path: parts:
     let
-      allContents = f path (attrsToList dir);
-      dirOnlyContents = f path (filter (f: f.value == "directory") (attrsToList dir));
-    in if dir ? "default.nix"
-      then import path (argsWithPath args (pathParts path))
-        // { __treeChildren = true; } # used downstream for traversals
-        // dirOnlyContents
-      else allContents;
+      dir = readDir path;
+      self = (import path (argsWithPath parts)) // marker;
+      joinChild = c: path + ("/" + c);
 
-  readTree = path: importOr path (readDir path) traverse;
-in readTree initPath
+      # Import non-empty subdirectories
+      filterDir = f: dir."${f}" == "directory";
+      children = map (c: {
+        name = c;
+        value = readTree (joinChild c) (parts ++ [ c ]);
+      }) (filter filterDir (attrNames dir));
+
+      # Import Nix files
+      nixFiles = filter (f: f != null) (map nixFileName (attrNames dir));
+      nixChildren = map (c: let p = joinChild (c + ".nix"); in {
+        name = c;
+        value = (import p (argsWithPath (parts ++ [ c ]))) // marker;
+      }) nixFiles;
+    in if dir ? "default.nix"
+      then self // (listToAttrs children)
+      else listToAttrs (nixChildren ++ children);
+in readTree initPath [ (baseNameOf initPath) ]
