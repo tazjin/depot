@@ -21,27 +21,43 @@ let
     # Inherit the packages from nixpkgs that should be available inside
     # of the repo. They become available under `pkgs.third_party.<name>`
     inherit (nixpkgs)
+      bashInteractive
       buildGoPackage
+      cacert
+      cachix
       cargo
+      coreutils
       darwin
+      dockerTools
       emacs26-nox
       emacsPackagesFor
       fetchFromGitHub
+      git
+      gnutar
+      go
       google-cloud-sdk
+      gzip
       haskell
+      iana-etc
       jq
       lib
       llvmPackages
+      mdbook
+      nix
+      openssh
       remarshal
       rsync
       runCommand
+      rustPlatform
       rustc
       stdenv
       symlinkJoin
+      terraform_0_12
       tree
       writeShellScriptBin
       writeText
-      writeTextFile;
+      writeTextFile
+      zlib;
   };
 
 in exposed // {
