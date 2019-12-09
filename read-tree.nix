@@ -13,7 +13,6 @@ let
     readDir
     split
     tail
-    toPath
     toString;
 
   attrsToList = attrs: map (name: {
@@ -24,7 +23,7 @@ let
   isFile = s: s == "regular";
   isDir = s: s == "directory";
 
-  joinPath = p: f: toPath ((toString p) + "/" + f);
+  joinPath = p: f: p + ("/" + f);
 
   isNixFile = file:
     let res = match "(.*)\.nix" file;
