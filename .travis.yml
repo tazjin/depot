@@ -6,6 +6,4 @@ before_script:
   - nix-env -f '<nixpkgs>' -iA third_party.cachix
   - cachix use tazjin
 script:
-  # All of my own tools are under the top-level 'tazjin' attribute
-  # set, this command will build all of them.
-  - nix-build -A ciProjects | cachix push tazjin
+  - nix-build ci-builds.nix | cachix push tazjin

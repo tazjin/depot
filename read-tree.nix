@@ -1,5 +1,7 @@
-# TODO(tazjin): if there's a default.nix, keep traversing but don't import .nix files?
 # TODO(tazjin): avoid {} by only calling functions *after* checking what they are
+# TODO(tazjin): add an attribute to derivations that have children to
+#   indicate that traversal should continue for ... traversal use-cases
+#   (such as CI package filtering)
 
 args: initPath:
 
