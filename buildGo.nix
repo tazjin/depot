@@ -48,6 +48,13 @@ let
 
   pathToName = p: replaceStrings ["/"] ["_"] (toString p);
 
+  # Add an `overrideGo` attribute to a function result that works
+  # similar to `overrideAttrs`, but is used specifically for the
+  # arguments passed to Go builders.
+  makeOverridable = f: orig: (f orig) // {
+    overrideGo = new: makeOverridable f (orig // (new orig));
+  };
+
   # High-level build functions
 
   # Build a Go program out of the specified files and dependencies.
@@ -130,6 +137,11 @@ let
     inherit external;
   };
 in {
-  # Only the high-level builder functions are exposed
-  inherit program package proto grpc external;
+  # Only the high-level builder functions are exposed, but made
+  # overrideable.
+  program = makeOverridable program;
+  package = makeOverridable package;
+  proto = makeOverridable proto;
+  grpc = makeOverridable grpc;
+  external = makeOverridable external;
 }
