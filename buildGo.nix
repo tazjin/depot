@@ -14,10 +14,12 @@ let
     dirOf
     elemAt
     filter
+    listToAttrs
     map
     match
     readDir
-    replaceStrings;
+    replaceStrings
+    toString;
 
   inherit (pkgs) lib go runCommand fetchFromGitHub protobuf symlinkJoin;
 
@@ -33,14 +35,6 @@ let
   srcBasename = src: elemAt (match "([a-z0-9]{32}\-)?(.*\.go)" (baseNameOf src)) 1;
   srcCopy = path: src: "cp ${src} $out/${path}/${srcBasename src}";
   srcList = path: srcs: lib.concatStringsSep "\n" (map (srcCopy path) srcs);
-
-  isGoFile = f: (match ".*\.go" f) != null;
-  isGoTest = f: (match ".*_test\.go" f) != null;
-  goFileFilter = k: v: (v == "regular") && (isGoFile k) && (!isGoTest k);
-  goFilesIn = dir:
-    let files = readDir dir;
-        goFiles = filter (f: goFileFilter f files."${f}") (attrNames files);
-    in map (f: dir + "/" + f) goFiles;
 
   allDeps = deps: lib.unique (lib.flatten (deps ++ (map (d: d.goDeps) deps)));
 
@@ -93,6 +87,41 @@ let
   # Build a Go library out of the specified gRPC definition.
   grpc = args: proto (args // { extraDeps = [ protoLibs.goGrpc ]; });
 
+  # Traverse an externally defined Go library to build up a tree of
+  # its packages.
+  #
+  # TODO(tazjin): Automatically infer which packages depend on which
+  # other packages, which currently requires overriding.
+  #
+  # TODO(tazjin): Add support for rewriting package paths.
+  external' = { src, path, deps ? [] }:
+    let
+      dir = readDir src;
+      isGoFile = f: (match ".*\.go" f) != null;
+      isGoTest = f: (match ".*_test\.go" f) != null;
+      goFileFilter = k: v: (v == "regular") && (isGoFile k) && (!isGoTest k);
+      goSources =
+        let goFiles = filter (f: goFileFilter f dir."${f}") (attrNames dir);
+        in map (f: src + ("/" + f)) goFiles;
+
+      subDirs = filter (n: dir."${n}" == "directory") (attrNames dir);
+      subPackages = map (name: {
+        inherit name;
+        value = external' {
+          inherit deps;
+          src = src + ("/" + name);
+          path = path + ("/" + name);
+        };
+      }) subDirs;
+      subAttrs = listToAttrs (filter (p: p.value != {}) subPackages);
+
+      current = package {
+        inherit deps path;
+        name = pathToName path;
+        srcs = goSources;
+      };
+    in if goSources == [] then subAttrs else (current // subAttrs);
+
   # Build an externally defined Go library using `go build` itself.
   #
   # Libraries built this way can be included in any standard buildGo
@@ -144,4 +173,12 @@ in {
   proto = makeOverridable proto;
   grpc = makeOverridable grpc;
   external = makeOverridable external;
+
+  # TODO: remove
+  inherit external';
+
+  extTest = external' {
+    src = /home/tazjin/go/src/cloud.google.com/go;
+    path = "cloud.google.com/go";
+  };
 }
