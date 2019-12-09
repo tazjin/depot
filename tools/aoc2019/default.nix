@@ -14,7 +14,7 @@ let
   solutions = map (f: let day = getDay f; in {
     name = day;
     value = pkgs.writeElispBin {
-      name = "solution-${day}";
+      name = "aoc2019";
       deps = p: with p; [ dash s ht ];
       src = ./. + ("/" + f);
     };

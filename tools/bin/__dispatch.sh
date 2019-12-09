@@ -25,6 +25,9 @@ case "${TARGET_TOOL}" in
   pass)
     attr="tools.kms_pass"
     ;;
+  aoc2019)
+    attr="tools.aoc2019.${1}"
+    ;;
   *)
     echo "The tool '${TARGET_TOOL}' is currently not installed in this repository."
     exit 1
