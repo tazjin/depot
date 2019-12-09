@@ -40,6 +40,7 @@ let
       haskell
       iana-etc
       jq
+      kontemplate
       lib
       lispPackages
       llvmPackages
