@@ -1,6 +1,6 @@
 { pkgs, ... }:
 
-let inherit (pkgs.third_party.nixpkgs) callPackage fetchFromGitHub;
+let inherit (pkgs.third_party) callPackage fetchFromGitHub;
 in callPackage (fetchFromGitHub {
   owner = "nmattia";
   repo = "naersk";
