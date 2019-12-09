@@ -1,7 +1,4 @@
 # TODO(tazjin): avoid {} by only calling functions *after* checking what they are
-# TODO(tazjin): add an attribute to derivations that have children to
-#   indicate that traversal should continue for ... traversal use-cases
-#   (such as CI package filtering)
 
 args: initPath:
 
@@ -78,7 +75,9 @@ let
       allContents = f path (attrsToList dir);
       dirOnlyContents = f path (filter (f: f.value == "directory") (attrsToList dir));
     in if dir ? "default.nix"
-      then import path (argsWithPath args (pathParts path)) // dirOnlyContents
+      then import path (argsWithPath args (pathParts path))
+        // { __treeChildren = true; } # used downstream for traversals
+        // dirOnlyContents
       else allContents;
 
   readTree = path: importOr path (readDir path) traverse;
