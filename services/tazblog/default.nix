@@ -5,7 +5,7 @@
 { pkgs, ... }:
 
 let
-  inherit (pkgs) writeShellScriptBin haskell;
+  inherit (pkgs.third_party.nixpkgs) writeShellScriptBin haskell;
   tazblog = haskell.packages.ghc865.callPackage ./tazblog.nix {};
   wrapper =  writeShellScriptBin "tazblog" ''
     export PORT=8000

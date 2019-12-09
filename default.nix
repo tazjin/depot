@@ -1,5 +1,6 @@
-# This file sets up the top-level package set by merging all local packages into
-# the nixpkgs top-level.
+# This file sets up the top-level package set by traversing the package tree
+# (see read-tree.nix for details) and constructing a matching attribute set
+# tree.
 #
 # This makes packages accessible via the Nixery instance that is configured to
 # use this repository as its nixpkgs source.
@@ -7,14 +8,9 @@
 with builtins;
 
 let
-  # The pinned commit here is identical to the public nixery.dev
-  # version, since popularity data has been generated for that.
-  stableCommit = "80b42e630b23052d9525840a9742100a2ceaaa8f";
-  stableSrc = fetchTarball {
-    url = "https://github.com/NixOS/nixpkgs-channels/archive/${stableCommit}.tar.gz";
-    sha256 = "0243qiivxl3z51biy4f5y5cy81x5bki5dazl9wqwgnmd373gpmxy";
-  };
-  readTree = import ./read-tree.nix;
+  # This definition of fix is identical to <nixpkgs>.lib.fix, but the global
+  # package set is not available here.
+  fix = f: let x = f x; in x;
 
   # Derivations that have `meta.enableCI` set to `true` should be
   # built by the CI system on every commit. This code implements
@@ -25,33 +21,43 @@ let
     ciCondition = _: x: (!isDerivation x) || ((x ? meta.enableCI) && (x.meta.enableCI));
   in collect isDerivation (filterAttrsRecursive ciCondition pkgs);
 
-  repoPkgs = self: super:
-    let config = {
-      pkgs = self;
-      upstream = super;
+  # Global configuration that all packages are called with.
+  config = pkgs: {
+    inherit pkgs;
 
-      kms = {
-        project = "tazjins-infrastructure";
-        region = "europe-north1";
-        keyring = "tazjins-keys";
-        key = "kontemplate-key";
-      };
+    kms = {
+      project = "tazjins-infrastructure";
+      region = "europe-north1";
+      keyring = "tazjins-keys";
+      key = "kontemplate-key";
     };
-    in {
-      services = readTree ./services config;
-      tools = readTree ./tools config;
-      third_party = readTree ./third_party config;
-    }
-    # Load overrides into the top-level:
-    // (readTree ./overrides config)
-    # Collect all projects that should be built by CI
-    // {
-      ciProjects = (filterCI super.lib self.services)
-        ++ (filterCI super.lib self.tools)
-        ++ (filterCI super.lib self.third_party);
-    };
-in { ... } @ args: import stableSrc (args // {
-    overlays = [ repoPkgs ];
-    config.allowUnfree = true;
-    config.allowBroken = true;
-})
+  };
+
+  readTree' = import ./read-tree.nix;
+
+  localPkgs = readTree: {
+    services    = readTree ./services;
+    tools       = readTree ./tools;
+    third_party = readTree ./third_party;
+  };
+in fix(self: {
+  config = config self;
+
+  # Elevate 'lib' from nixpkgs
+  lib = self.third_party.nixpkgs.lib;
+
+  # Collect all projects that should be built by CI
+  ciProjects = (filterCI self.lib self.services)
+    ++ (filterCI super.lib self.tools)
+    ++ (filterCI super.lib self.third_party);
+}
+
+# Add local packages as structured by readTree
+// (localPkgs (readTree' self.config))
+
+# Load overrides into the top-level.
+#
+# This can be used to move things from third_party into the top-level, too (such
+# as `lib`).
+// (readTree' self.config) ./overrides
+)

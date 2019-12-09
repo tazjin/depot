@@ -1,4 +1,4 @@
-{ pkgs ? import ../../default.nix {} }:
+{ pkgs ? (import ../../default.nix {}).third_party.nixpkgs }:
 
 let tazblog = import ./tazblog.nix;
     depNames = with builtins; filter (

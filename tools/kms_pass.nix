@@ -8,7 +8,7 @@
 
 { pkgs, kms, ... }:
 
-let inherit (pkgs) google-cloud-sdk tree writeShellScriptBin;
+let inherit (pkgs.third_party.nixpkgs) google-cloud-sdk tree writeShellScriptBin;
 in (writeShellScriptBin "pass" ''
   set -eo pipefail
 

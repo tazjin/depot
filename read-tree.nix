@@ -1,4 +1,7 @@
-initPath: { pkgs, ... } @ args:
+# TODO(tazjin): if there's a default.nix, keep traversing but don't import .nix files?
+# TODO(tazjin): avoid {} by only calling functions *after* checking what they are
+
+args: initPath:
 
 let
   inherit (builtins)

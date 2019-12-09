@@ -1,6 +1,6 @@
 { pkgs, ... }:
 
-pkgs.buildGoPackage {
+pkgs.third_party.nixpkgs.buildGoPackage {
   name = "blog_cli";
   goPackagePath = "github.com/tazjin/personal/blog_cli";
   src = ./.;
