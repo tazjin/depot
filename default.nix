@@ -44,12 +44,20 @@ in fix(self: {
   config = config self;
 
   # Elevate 'lib' from nixpkgs
-  lib = self.third_party.nixpkgs.lib;
+  lib = import (self.third_party.nixpkgsSrc + "/lib");
 
   # Collect all projects that should be built by CI
-  ciProjects = (filterCI self.lib self.services)
-    ++ (filterCI super.lib self.tools)
-    ++ (filterCI super.lib self.third_party);
+  # ciProjects = (filterCI self.lib self.services)
+  #   ++ (filterCI super.lib self.tools)
+  #   ++ (filterCI super.lib self.third_party);
+  # TODO(tazjin): re-enable automatic filtering for this, requires
+  # read-tree fixes
+  ciProjects = with self; [
+    services.tazblog
+    services.nixcon-demo
+    tools.kms_pass
+    tools.blog_cli
+  ];
 }
 
 # Add local packages as structured by readTree
