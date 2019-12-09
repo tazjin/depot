@@ -2,7 +2,7 @@
 # the newer version is a lot of effort.
 { pkgs, ... }:
 
-(import (pkgs.fetchFromGitHub {
+(import (pkgs.third_party.fetchFromGitHub {
   owner = "NixOS";
   repo = "nixpkgs";
   rev = "14f9ee66e63077539252f8b4550049381a082518";

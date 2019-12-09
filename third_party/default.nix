@@ -41,15 +41,20 @@ let
       iana-etc
       jq
       lib
+      lispPackages
       llvmPackages
+      makeWrapper
       mdbook
       nix
       openssh
+      openssl
+      protobuf
       remarshal
       rsync
       runCommand
       rustPlatform
       rustc
+      sbcl
       stdenv
       symlinkJoin
       terraform_0_12

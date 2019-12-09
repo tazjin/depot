@@ -1,8 +1,8 @@
 { pkgs, ... }:
 
 let
-  inherit (pkgs) lispPackages;
-  inherit (pkgs.third_party.nixpkgs) stdenv sbcl elmPackages makeWrapper openssl;
+  inherit (pkgs) elmPackages lispPackages;
+  inherit (pkgs.third_party) stdenv sbcl makeWrapper openssl;
 
   frontend = stdenv.mkDerivation {
     name = "gemma-frontend";

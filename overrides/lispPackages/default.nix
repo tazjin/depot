@@ -4,5 +4,5 @@
 
 import ./quicklisp.nix {
   inherit (pkgs) lib;
-  inherit (pkgs.third_party.nixpkgs) lispPackages;
+  inherit (pkgs.third_party) lispPackages;
 }
