@@ -65,7 +65,7 @@ let
     let nixFiles = filterNixFiles dir;
         imported = map (f: {
           inherit (f) name;
-          value = import (joinPath path f.value) args;
+          value = import (joinPath path f.value) (argsWithPath args (pathParts path));
         }) nixFiles;
         dirs = map (d: {
           inherit (d) name;
