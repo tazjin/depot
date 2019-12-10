@@ -10,15 +10,20 @@ let
     listToAttrs
     map
     match
+    isAttrs
     readDir;
 
   argsWithPath = parts: args // {
     locatedAt = parts;
   };
 
-  # The marker is added to everything that was imported directly by
+  # The marker is added to every set that was imported directly by
   # readTree.
-  marker = { __readTree = true; };
+  importWithMark = path: parts:
+    let imported = import path (argsWithPath parts);
+    in if (isAttrs imported)
+      then imported // { __readTree = true; }
+      else imported;
 
   nixFileName = file:
     let res = match "(.*)\.nix" file;
@@ -27,7 +32,7 @@ let
   readTree = path: parts:
     let
       dir = readDir path;
-      self = (import path (argsWithPath parts)) // marker;
+      self = importWithMark path parts;
       joinChild = c: path + ("/" + c);
 
       # Import non-empty subdirectories
@@ -41,7 +46,7 @@ let
       nixFiles = filter (f: f != null) (map nixFileName (attrNames dir));
       nixChildren = map (c: let p = joinChild (c + ".nix"); in {
         name = c;
-        value = (import p (argsWithPath (parts ++ [ c ]))) // marker;
+        value = importWithMark p (parts ++ [ c ]);
       }) nixFiles;
     in if dir ? "default.nix"
       then self // (listToAttrs children)
