@@ -73,7 +73,7 @@ let
   '') // { goDeps = uniqueDeps; };
 
   # Build a Go library out of the specified protobuf definition.
-  proto = { name, proto, path ? name, extraDeps ? [] }: package {
+  proto = { name, proto, path ? name, extraDeps ? [] }: (makeOverridable package) {
     inherit name path;
     deps = [ protoLibs.goProto ] ++ extraDeps;
     srcs = lib.singleton (runCommand "goproto-${name}.pb.go" {} ''
