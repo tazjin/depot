@@ -13,6 +13,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"path"
 	"path/filepath"
 	"strings"
 )
@@ -28,11 +29,10 @@ var stdlibList string
 // Return information includes the local (relative from project root)
 // and external (none-stdlib) dependencies of this package.
 type pkg struct {
-	Name        string   `json:"name"`
-	Source      string   `json:"source"`
-	Files       []string `json:"files"`
-	LocalDeps   []string `json:"localDeps"`
-	ForeignDeps []string `json:"foreignDeps"`
+	Name        []string   `json:"name"`
+	Files       []string   `json:"files"`
+	LocalDeps   [][]string `json:"localDeps"`
+	ForeignDeps []string   `json:"foreignDeps"`
 }
 
 // findGoDirs returns a filepath.WalkFunc that identifies all
@@ -80,7 +80,7 @@ func findGoDirs(at string) ([]string, error) {
 // analysePackage loads and analyses the imports of a single Go
 // package, returning the data that is required by the Nix code to
 // generate a derivation for this package.
-func analysePackage(root, source, path string, stdlib map[string]bool) (pkg, error) {
+func analysePackage(root, source, importpath string, stdlib map[string]bool) (pkg, error) {
 	ctx := build.Default
 
 	p, err := ctx.ImportDir(source, build.IgnoreVendor)
@@ -88,7 +88,7 @@ func analysePackage(root, source, path string, stdlib map[string]bool) (pkg, err
 		return pkg{}, err
 	}
 
-	local := []string{}
+	local := [][]string{}
 	foreign := []string{}
 
 	for _, i := range p.Imports {
@@ -96,17 +96,22 @@ func analysePackage(root, source, path string, stdlib map[string]bool) (pkg, err
 			continue
 		}
 
-		if strings.HasPrefix(i, path) {
-			local = append(local, i)
+		if strings.HasPrefix(i, importpath) {
+			local = append(local, strings.Split(strings.TrimPrefix(i, importpath+"/"), "/"))
 		} else {
 			foreign = append(foreign, i)
 		}
 	}
 
+	prefix := strings.TrimPrefix(source, root+"/")
+	files := []string{}
+	for _, f := range p.GoFiles {
+		files = append(files, path.Join(prefix, f))
+	}
+
 	analysed := pkg{
-		Name:        strings.TrimPrefix(source, root+"/"),
-		Source:      source,
-		Files:       p.GoFiles,
+		Name:        strings.Split(prefix, "/"),
+		Files:       files,
 		LocalDeps:   local,
 		ForeignDeps: foreign,
 	}
@@ -125,9 +130,8 @@ func loadStdlibPkgs(from string) (pkgs map[string]bool, err error) {
 }
 
 func main() {
-	// TODO(tazjin): Remove default values
-	source := flag.String("source", "/nix/store/fzp67ris29zg5zfs65z0q245x0fahgll-source", "path to directory with sources to process")
-	path := flag.String("path", "github.com/golang/protobuf", "import path for the package")
+	source := flag.String("source", "", "path to directory with sources to process")
+	path := flag.String("path", "", "import path for the package")
 
 	flag.Parse()
 
@@ -154,6 +158,6 @@ func main() {
 		all = append(all, analysed)
 	}
 
-	j, _ := json.MarshalIndent(all, "", "  ") // TODO: no indent
+	j, _ := json.Marshal(all)
 	fmt.Println(string(j))
 }
