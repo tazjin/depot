@@ -34,6 +34,7 @@ type pkg struct {
 	Files       []string   `json:"files"`
 	LocalDeps   [][]string `json:"localDeps"`
 	ForeignDeps []string   `json:"foreignDeps"`
+	IsCommand   bool       `json:"isCommand"`
 }
 
 // findGoDirs returns a filepath.WalkFunc that identifies all
@@ -116,6 +117,7 @@ func analysePackage(root, source, importpath string, stdlib map[string]bool) (pk
 		Files:       files,
 		LocalDeps:   local,
 		ForeignDeps: foreign,
+		IsCommand:   p.IsCommand(),
 	}, nil
 }
 

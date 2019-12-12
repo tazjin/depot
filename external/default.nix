@@ -3,7 +3,7 @@
 { pkgs, program, package }:
 
 let
-  inherit (builtins) foldl'fromJSON head readFile replaceStrings tail throw;
+  inherit (builtins) elemAt foldl' fromJSON head length readFile replaceStrings tail throw;
   inherit (pkgs) lib runCommand go jq ripgrep;
 
   pathToName = p: replaceStrings ["/"] ["_"] (toString p);
@@ -36,14 +36,24 @@ let
     if path == [] then { gopkg = value; }
     else { "${head path}" = mkset (tail path) value; };
 
-  toPackage = self: src: path: entry: package {
-    name = pathToName entry.name entry.name;
-    path = lib.concatStringsSep "/" ([ path ] ++ entry.locator);
-    srcs = map (f: src + ("/" + f)) entry.files;
-    deps = map (d: lib.attrByPath (d ++ [ "gopkg" ]) (
-      throw "missing local dependency '${lib.concatStringsSep "." d}' in '${path}'"
-    ) self) entry.localDeps;
-  };
+  last = l: elemAt l ((length l) - 1);
+
+  toPackage = self: src: path: entry:
+    let
+      args = {
+        srcs = map (f: src + ("/" + f)) entry.files;
+        deps = map (d: lib.attrByPath (d ++ [ "gopkg" ]) (
+          throw "missing local dependency '${lib.concatStringsSep "." d}' in '${path}'"
+        ) self) entry.localDeps;
+      };
+      libArgs = args // {
+        name = pathToName entry.name;
+        path = lib.concatStringsSep "/" ([ path ] ++ entry.locator);
+      };
+      binArgs = args // {
+        name = last ([ path ] ++ entry.locator);
+      };
+    in if entry.isCommand then (program binArgs) else (package libArgs);
 
 in { src, path, deps ? [] }: let
   name = pathToName path;
