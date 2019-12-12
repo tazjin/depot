@@ -94,19 +94,27 @@ func analysePackage(root, source, importpath string, stdlib map[string]bool) (pk
 	}
 
 	prefix := strings.TrimPrefix(source, root+"/")
+
+	name := []string{}
+	if len(prefix) != len(source) {
+		name = strings.Split(prefix, "/")
+	} else {
+		// Otherwise, the name is empty since its the root package and no
+		// prefix should be added to files.
+		prefix = ""
+	}
+
 	files := []string{}
 	for _, f := range p.GoFiles {
 		files = append(files, path.Join(prefix, f))
 	}
 
-	analysed := pkg{
-		Name:        strings.Split(prefix, "/"),
+	return pkg{
+		Name:        name,
 		Files:       files,
 		LocalDeps:   local,
 		ForeignDeps: foreign,
-	}
-
-	return analysed, nil
+	}, nil
 }
 
 func loadStdlibPkgs(from string) (pkgs map[string]bool, err error) {
