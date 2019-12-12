@@ -38,33 +38,18 @@ type pkg struct {
 // findGoDirs returns a filepath.WalkFunc that identifies all
 // directories that contain Go source code in a certain tree.
 func findGoDirs(at string) ([]string, error) {
-	var goDirs []string
-	dir := ""
+	dirSet := make(map[string]bool)
 
 	err := filepath.Walk(at, func(path string, info os.FileInfo, err error) error {
-		// Skip testdata
-		if info.IsDir() && info.Name() == "testdata" {
+		// Skip folders that are guaranteed to not be relevant
+		if info.IsDir() && (info.Name() == "testdata" || info.Name() == ".git") {
 			return filepath.SkipDir
-		}
-
-		// Keep track of the last seen directory.
-		if info.IsDir() {
-			dir = path
-			return nil
-		}
-
-		// If the directory has already been "popped", nothing else needs
-		// to happen.
-		if dir == "" {
-			return nil
 		}
 
 		// If the current file is a Go file, then the directory is popped
 		// (i.e. marked as a Go directory).
-		if strings.HasSuffix(info.Name(), ".go") && !strings.HasSuffix(info.Name(), "_test.go") {
-			goDirs = append(goDirs, dir)
-			dir = ""
-			return nil
+		if !info.IsDir() && strings.HasSuffix(info.Name(), ".go") && !strings.HasSuffix(info.Name(), "_test.go") {
+			dirSet[filepath.Dir(path)] = true
 		}
 
 		return nil
@@ -72,6 +57,11 @@ func findGoDirs(at string) ([]string, error) {
 
 	if err != nil {
 		return nil, err
+	}
+
+	goDirs := []string{}
+	for k, _ := range dirSet {
+		goDirs = append(goDirs, k)
 	}
 
 	return goDirs, nil
