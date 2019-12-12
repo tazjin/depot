@@ -72,10 +72,23 @@ let
     ${go}/bin/go tool compile -o $out/${path}.a -trimpath=$PWD -trimpath=${go} -p ${path} ${includeSources uniqueDeps} ${spaceOut srcs}
   '') // { goDeps = uniqueDeps; goImportPath = path; };
 
+  # Build a tree of Go libraries out of an external Go source
+  # directory that follows the standard Go layout and was not built
+  # with buildGo.nix.
+  #
+  # The derivation for each actual dependency will reside in an
+  # attribute named "gopkg".
+  external = import ./external { inherit pkgs program package; };
+
+  # Import support libraries needed for protobuf & gRPC support
+  protoLibs = import ./proto.nix {
+    inherit external;
+  };
+
   # Build a Go library out of the specified protobuf definition.
   proto = { name, proto, path ? name, extraDeps ? [] }: (makeOverridable package) {
     inherit name path;
-    deps = [ protoLibs.goProto ] ++ extraDeps;
+    deps = [ protoLibs'.protobuf ] ++ extraDeps;
     srcs = lib.singleton (runCommand "goproto-${name}.pb.go" {} ''
       cp ${proto} ${baseNameOf proto}
       ${protobuf}/bin/protoc --plugin=${protoLibs.goProto}/bin/protoc-gen-go \
@@ -87,84 +100,6 @@ let
   # Build a Go library out of the specified gRPC definition.
   grpc = args: proto (args // { extraDeps = [ protoLibs.goGrpc ]; });
 
-  # Traverse an externally defined Go library to build up a tree of
-  # its packages.
-  #
-  # TODO(tazjin): Automatically infer which packages depend on which
-  # other packages, which currently requires overriding.
-  #
-  # TODO(tazjin): Add support for rewriting package paths.
-  external' = { src, path, deps ? [] }:
-    let
-      dir = readDir src;
-      isGoFile = f: (match ".*\.go" f) != null;
-      isGoTest = f: (match ".*_test\.go" f) != null;
-      goFileFilter = k: v: (v == "regular") && (isGoFile k) && (!isGoTest k);
-      goSources =
-        let goFiles = filter (f: goFileFilter f dir."${f}") (attrNames dir);
-        in map (f: src + ("/" + f)) goFiles;
-
-      subDirs = filter (n: dir."${n}" == "directory") (attrNames dir);
-      subPackages = map (name: {
-        inherit name;
-        value = external' {
-          inherit deps;
-          src = src + ("/" + name);
-          path = path + ("/" + name);
-        };
-      }) subDirs;
-      subAttrs = listToAttrs (filter (p: p.value != {}) subPackages);
-
-      current = package {
-        inherit deps path;
-        name = pathToName path;
-        srcs = goSources;
-      };
-    in if goSources == [] then subAttrs else (current // subAttrs);
-
-  # Build an externally defined Go library using `go build` itself.
-  #
-  # Libraries built this way can be included in any standard buildGo
-  # build.
-  #
-  # Contrary to other functions, `src` is expected to point at a
-  # single directory containing the root of the external library.
-  external = { path, src, deps ? [], srcOnly ? false, targets ? [ "..." ] }:
-    let
-      name = pathToName path;
-      uniqueDeps = allDeps deps;
-      srcDir = runCommand "goext-src-${name}" {} ''
-        mkdir -p $out/${dirOf path}
-        cp -r ${src} $out/${dirOf path}/${baseNameOf path}
-      '';
-      gopathSrc = symlinkJoin {
-        name = "gopath-${name}";
-        paths = uniqueDeps ++ [ srcDir ];
-      };
-      gopathPkg = runCommand "goext-pkg-${name}" {} ''
-        mkdir -p gopath $out
-        export GOPATH=$PWD/gopath
-        ln -s ${gopathSrc} gopath/src
-        ${go}/bin/go install ${spaceOut (map (t: path + "/" + t) targets)}
-
-        if [[ -d gopath/pkg/linux_amd64 ]]; then
-          echo "Installing Go packages for ${path}"
-          mv gopath/pkg/linux_amd64/* $out
-        fi
-
-        if [[ -d gopath/bin ]]; then
-          echo "Installing Go binaries for ${path}"
-          mv gopath/bin $out/bin
-        fi
-      '';
-    in (if srcOnly then gopathSrc else symlinkJoin {
-      name = "goext-${name}";
-      paths = [ gopathSrc gopathPkg ];
-    }) // { goDeps = uniqueDeps; };
-
-  protoLibs = import ./proto.nix {
-    inherit external;
-  };
 in {
   # Only the high-level builder functions are exposed, but made
   # overrideable.
@@ -173,12 +108,4 @@ in {
   proto = makeOverridable proto;
   grpc = makeOverridable grpc;
   external = makeOverridable external;
-
-  # TODO: remove
-  inherit external';
-
-  extTest = external' {
-    src = /home/tazjin/go/src/cloud.google.com/go;
-    path = "cloud.google.com/go";
-  };
 }
