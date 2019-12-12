@@ -70,7 +70,7 @@ let
     mkdir -p $out/${path}
     ${srcList path (map (s: "${s}") srcs)}
     ${go}/bin/go tool compile -o $out/${path}.a -trimpath=$PWD -trimpath=${go} -p ${path} ${includeSources uniqueDeps} ${spaceOut srcs}
-  '') // { goDeps = uniqueDeps; };
+  '') // { goDeps = uniqueDeps; goImportPath = path; };
 
   # Build a Go library out of the specified protobuf definition.
   proto = { name, proto, path ? name, extraDeps ? [] }: (makeOverridable package) {
