@@ -3,7 +3,17 @@
 { pkgs, program, package }:
 
 let
-  inherit (builtins) elemAt foldl' fromJSON head length readFile replaceStrings tail throw;
+  inherit (builtins)
+    elemAt
+    foldl'
+    fromJSON
+    head
+    length
+    readFile
+    replaceStrings
+    tail
+    throw;
+
   inherit (pkgs) lib runCommand go jq ripgrep;
 
   pathToName = p: replaceStrings ["/"] ["_"] (toString p);
