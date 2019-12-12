@@ -29,7 +29,8 @@ var stdlibList string
 // Return information includes the local (relative from project root)
 // and external (none-stdlib) dependencies of this package.
 type pkg struct {
-	Name        []string   `json:"name"`
+	Name        string     `json:"name"`
+	Locator     []string   `json:"locator"`
 	Files       []string   `json:"files"`
 	LocalDeps   [][]string `json:"localDeps"`
 	ForeignDeps []string   `json:"foreignDeps"`
@@ -95,12 +96,12 @@ func analysePackage(root, source, importpath string, stdlib map[string]bool) (pk
 
 	prefix := strings.TrimPrefix(source, root+"/")
 
-	name := []string{}
+	locator := []string{}
 	if len(prefix) != len(source) {
-		name = strings.Split(prefix, "/")
+		locator = strings.Split(prefix, "/")
 	} else {
-		// Otherwise, the name is empty since its the root package and no
-		// prefix should be added to files.
+		// Otherwise, the locator is empty since its the root package and
+		// no prefix should be added to files.
 		prefix = ""
 	}
 
@@ -110,7 +111,8 @@ func analysePackage(root, source, importpath string, stdlib map[string]bool) (pk
 	}
 
 	return pkg{
-		Name:        name,
+		Name:        path.Join(importpath, prefix),
+		Locator:     locator,
 		Files:       files,
 		LocalDeps:   local,
 		ForeignDeps: foreign,
