@@ -76,8 +76,8 @@ let
   # directory that follows the standard Go layout and was not built
   # with buildGo.nix.
   #
-  # The derivation for each actual dependency will reside in an
-  # attribute named "gopkg".
+  # The derivation for each actual package will reside in an attribute
+  # named "gopkg", and an attribute named "gobin" for binaries.
   external = import ./external { inherit pkgs program package; };
 
   # Import support libraries needed for protobuf & gRPC support
@@ -88,10 +88,10 @@ let
   # Build a Go library out of the specified protobuf definition.
   proto = { name, proto, path ? name, extraDeps ? [] }: (makeOverridable package) {
     inherit name path;
-    deps = [ protoLibs'.protobuf ] ++ extraDeps;
+    deps = [ protoLibs.goProto.proto.gopkg ] ++ extraDeps;
     srcs = lib.singleton (runCommand "goproto-${name}.pb.go" {} ''
       cp ${proto} ${baseNameOf proto}
-      ${protobuf}/bin/protoc --plugin=${protoLibs.goProto}/bin/protoc-gen-go \
+      ${protobuf}/bin/protoc --plugin=${protoLibs.goProto.protoc-gen-go.gopkg}/bin/protoc-gen-go \
         --go_out=plugins=grpc,import_path=${baseNameOf path}:. ${baseNameOf proto}
       mv *.pb.go $out
     '');

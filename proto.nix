@@ -19,7 +19,6 @@ in rec {
 
   xnet = external {
     path = "golang.org/x/net";
-    srcOnly = true;
     deps = [ xtext ];
     src = fetchGit {
       url = "https://go.googlesource.com/net";
@@ -29,7 +28,6 @@ in rec {
 
   xsys = external {
     path = "golang.org/x/sys";
-    srcOnly = true;
     src = fetchGit {
       url = "https://go.googlesource.com/sys";
       rev = "bd437916bb0eb726b873ee8e9b2dcf212d32e2fd";
@@ -38,7 +36,6 @@ in rec {
 
   xtext = external {
     path = "golang.org/x/text";
-    srcOnly = true;
     src = fetchGit {
       url = "https://go.googlesource.com/text";
       rev = "cbf43d21aaebfdfeb81d91a5f444d13a3046e686";
@@ -47,7 +44,6 @@ in rec {
 
   genproto = external {
     path = "google.golang.org/genproto";
-    srcOnly = true;
     src = fetchGit {
       url = "https://github.com/google/go-genproto";
       rev = "83cc0476cb11ea0da33dacd4c6354ab192de6fe6";
