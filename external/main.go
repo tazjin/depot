@@ -43,14 +43,15 @@ func findGoDirs(at string) ([]string, error) {
 	dirSet := make(map[string]bool)
 
 	err := filepath.Walk(at, func(path string, info os.FileInfo, err error) error {
+		name := info.Name()
 		// Skip folders that are guaranteed to not be relevant
-		if info.IsDir() && (info.Name() == "testdata" || info.Name() == ".git") {
+		if info.IsDir() && (name == "testdata" || name == ".git") {
 			return filepath.SkipDir
 		}
 
 		// If the current file is a Go file, then the directory is popped
 		// (i.e. marked as a Go directory).
-		if !info.IsDir() && strings.HasSuffix(info.Name(), ".go") && !strings.HasSuffix(info.Name(), "_test.go") {
+		if !info.IsDir() && strings.HasSuffix(name, ".go") && !strings.HasSuffix(name, "_test.go") {
 			dirSet[filepath.Dir(path)] = true
 		}
 
@@ -154,6 +155,16 @@ func main() {
 	all := []pkg{}
 	for _, d := range goDirs {
 		analysed, err := analysePackage(*source, d, *path, stdlibPkgs)
+
+		// If the Go source analysis returned "no buildable Go files",
+		// that directory should be skipped.
+		//
+		// This might be due to `+build` flags on the platform and other
+		// reasons (such as test files).
+		if _, ok := err.(*build.NoGoError); ok {
+			continue
+		}
+
 		if err != nil {
 			log.Fatalf("failed to analyse package at %q: %s", d, err)
 		}
