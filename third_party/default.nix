@@ -7,10 +7,10 @@
 let
   # The pinned commit here is identical to the public nixery.dev
   # version, since popularity data has been generated for that.
-  stableCommit = "80b42e630b23052d9525840a9742100a2ceaaa8f";
+  stableCommit = "3140fa89c51233397f496f49014f6b23216667c2";
   stableSrc = fetchTarball {
     url = "https://github.com/NixOS/nixpkgs-channels/archive/${stableCommit}.tar.gz";
-    sha256 = "0243qiivxl3z51biy4f5y5cy81x5bki5dazl9wqwgnmd373gpmxy";
+    sha256 = "18p0d5lnfvzsyfah02mf6bi249990pfwnylwhqdh8qi70ncrk3f8";
   };
   nixpkgs = import stableSrc {
     config.allowUnfree = true;
