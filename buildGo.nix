@@ -98,7 +98,7 @@ let
   };
 
   # Build a Go library out of the specified gRPC definition.
-  grpc = args: proto (args // { extraDeps = [ protoLibs.goGrpc ]; });
+  grpc = args: proto (args // { extraDeps = [ protoLibs.goGrpc.gopkg ]; });
 
 in {
   # Only the high-level builder functions are exposed, but made
