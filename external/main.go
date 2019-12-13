@@ -89,7 +89,9 @@ func analysePackage(root, source, importpath string, stdlib map[string]bool) (pk
 			continue
 		}
 
-		if strings.HasPrefix(i, importpath) {
+		if i == importpath {
+			local = append(local, []string{})
+		} else if strings.HasPrefix(i, importpath) {
 			local = append(local, strings.Split(strings.TrimPrefix(i, importpath+"/"), "/"))
 		} else {
 			foreign = append(foreign, i)
