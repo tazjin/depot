@@ -32,6 +32,7 @@ type pkg struct {
 	Name        string     `json:"name"`
 	Locator     []string   `json:"locator"`
 	Files       []string   `json:"files"`
+	SFiles      []string   `json:"sfiles"`
 	LocalDeps   [][]string `json:"localDeps"`
 	ForeignDeps []string   `json:"foreignDeps"`
 	IsCommand   bool       `json:"isCommand"`
@@ -75,6 +76,7 @@ func findGoDirs(at string) ([]string, error) {
 // generate a derivation for this package.
 func analysePackage(root, source, importpath string, stdlib map[string]bool) (pkg, error) {
 	ctx := build.Default
+	ctx.CgoEnabled = false
 
 	p, err := ctx.ImportDir(source, build.IgnoreVendor)
 	if err != nil {
@@ -114,10 +116,16 @@ func analysePackage(root, source, importpath string, stdlib map[string]bool) (pk
 		files = append(files, path.Join(prefix, f))
 	}
 
+	sfiles := []string{}
+	for _, f := range p.SFiles {
+		sfiles = append(sfiles, path.Join(prefix, f))
+	}
+
 	return pkg{
 		Name:        path.Join(importpath, prefix),
 		Locator:     locator,
 		Files:       files,
+		SFiles:      sfiles,
 		LocalDeps:   local,
 		ForeignDeps: foreign,
 		IsCommand:   p.IsCommand(),

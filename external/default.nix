@@ -67,6 +67,7 @@ let
       libArgs = args // {
         name = pathToName entry.name;
         path = lib.concatStringsSep "/" ([ path ] ++ entry.locator);
+        sfiles = map (f: src + ("/" + f)) entry.sfiles;
       };
 
       binArgs = args // {
