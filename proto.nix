@@ -19,11 +19,17 @@ in rec {
 
   xnet = external {
     path = "golang.org/x/net";
-    deps = [ xtext ];
+
     src = fetchGit {
       url = "https://go.googlesource.com/net";
       rev = "ffdde105785063a81acd95bdf89ea53f6e0aac2d";
     };
+
+    deps = map (p: p.gopkg) [
+      xtext.secure.bidirule
+      xtext.unicode.bidi
+      xtext.unicode.norm
+    ];
   };
 
   xsys = external {
@@ -48,21 +54,31 @@ in rec {
       url = "https://github.com/google/go-genproto";
       rev = "83cc0476cb11ea0da33dacd4c6354ab192de6fe6";
     };
+
+    deps = with goProto; map (p: p.gopkg) [
+      proto
+      ptypes.any
+    ];
   };
 
   goGrpc = external {
     path = "google.golang.org/grpc";
-    deps = [ goProto xnet xsys genproto ];
+    deps = map (p: p.gopkg) ([
+      xnet.trace
+      xnet.http2
+      xsys.unix
+      xnet.http2.hpack
+      genproto.googleapis.rpc.status
+    ] ++ (with goProto; [
+      proto
+      ptypes
+      ptypes.duration
+      ptypes.timestamp
+    ]));
 
     src = fetchGit {
       url = "https://github.com/grpc/grpc-go";
       rev = "d8e3da36ac481ef00e510ca119f6b68177713689";
     };
-
-    targets = [
-      "."
-      "codes"
-      "status"
-    ];
   };
 }
