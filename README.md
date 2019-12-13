@@ -90,19 +90,20 @@ in buildGo.program {
   | `deps`    | `list<drv>`  | List of dependencies (i.e. other Go libraries) | no        |
   | `path`    | `string`     | Go import path for the resulting library       | no        |
 
-* `buildGo.external`: Build a Go library or program using standard `go` tooling.
+* `buildGo.external`: Build an externally defined Go library or program.
 
-  This exists for compatibility with complex external dependencies. In theory it
-  is possible to write `buildGo.package` specifications for each subpackage of
-  an external dependency, but it is often cumbersome to do so.
+  This function performs analysis on the supplied source code (which
+  can use the standard Go tooling layout) and creates a tree of all
+  the packages contained within.
 
-  | parameter | type           | use                                            | required? |
-  |-----------|----------------|------------------------------------------------|-----------|
-  | `path`    | `string`       | Go import path for the resulting library       | yes       |
-  | `src`     | `path`         | Path to the source **directory**               | yes       |
-  | `deps`    | `list<drv>`    | List of dependencies (i.e. other Go libraries) | no        |
-  | `srcOnly` | `bool`         | Only copy sources, do not perform a build.     | no        |
-  | `targets` | `list<string>` | Sub-packages to build (defaults to all)        | no        |
+  This exists for compatibility with external libraries that were not
+  defined using buildGo.
+
+  | parameter | type           | use                                           | required? |
+  |-----------|----------------|-----------------------------------------------|-----------|
+  | `path`    | `string`       | Go import path for the resulting package      | yes       |
+  | `src`     | `path`         | Path to the source **directory**              | yes       |
+  | `deps`    | `list<drv>`    | List of dependencies (i.e. other Go packages) | no        |
 
   For some examples of how `buildGo.external` is used, check out
   [`proto.nix`](./proto.nix).
