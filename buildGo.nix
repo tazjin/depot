@@ -64,12 +64,17 @@ let
   #
   # This outputs both the sources and compiled binary, as both are
   # needed when downstream packages depend on it.
-  package = { name, srcs, deps ? [], path ? name }:
+  package = { name, srcs, deps ? [], path ? name, sfiles ? [] }:
   let uniqueDeps = allDeps deps;
+      asmBuild = if sfiles == [] then "" else ''
+        ${go}/bin/go tool asm -trimpath $PWD -I $PWD -I ${go}/share/go/pkg/include -D GOOS_linux -D GOARCH_amd64 -gensymabis -o ./symabis ${spaceOut sfiles}
+      '';
+      asmLink = if sfiles == [] then "-complete" else "-symabis ./symabis";
   in (runCommand "golib-${name}" {} ''
     mkdir -p $out/${path}
     ${srcList path (map (s: "${s}") srcs)}
-    ${go}/bin/go tool compile -o $out/${path}.a -trimpath=$PWD -trimpath=${go} -p ${path} ${includeSources uniqueDeps} ${spaceOut srcs}
+    ${asmBuild}
+    ${go}/bin/go tool compile -pack ${asmLink} -o $out/${path}.a -trimpath=$PWD -trimpath=${go} -p ${path} ${includeSources uniqueDeps} ${spaceOut srcs}
   '') // { goDeps = uniqueDeps; goImportPath = path; };
 
   # Build a tree of Go libraries out of an external Go source
