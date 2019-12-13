@@ -51,6 +51,7 @@ let
       openssl
       protobuf
       remarshal
+      ripgrep
       rsync
       runCommand
       rustPlatform
