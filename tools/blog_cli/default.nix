@@ -1,10 +1,9 @@
 { pkgs, ... }:
 
-pkgs.third_party.buildGoPackage {
+pkgs.buildGo.program {
   name = "blog_cli";
-  goPackagePath = "github.com/tazjin/personal/blog_cli";
-  src = ./.;
-  goDeps = ./deps.nix;
-
-  meta.enableCI = true;
-}
+  srcs = [ ./main.go ];
+  deps = with pkgs.third_party; [
+    gopkgs."google.golang.org".api.dns.v1.gopkg
+  ];
+} // { meta.enableCI = true; }
