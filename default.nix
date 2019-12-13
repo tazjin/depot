@@ -5,6 +5,8 @@
 # This makes packages accessible via the Nixery instance that is configured to
 # use this repository as its nixpkgs source.
 
+{ ... }@args:
+
 with builtins;
 
 let
