@@ -9,6 +9,7 @@ let
     fromJSON
     head
     length
+    listToAttrs
     readFile
     replaceStrings
     tail
@@ -48,29 +49,45 @@ let
 
   last = l: elemAt l ((length l) - 1);
 
-  toPackage = self: src: path: entry:
+  toPackage = self: src: path: depMap: entry:
     let
+      localDeps = map (d: lib.attrByPath (d ++ [ "gopkg" ]) (
+        throw "missing local dependency '${lib.concatStringsSep "." d}' in '${path}'"
+      ) self) entry.localDeps;
+
+      foreignDeps = map (d: lib.attrByPath [ d ] (
+        throw "missing foreign dependency '${d}' in '${path}'"
+      ) depMap) entry.foreignDeps;
+
       args = {
         srcs = map (f: src + ("/" + f)) entry.files;
-        deps = map (d: lib.attrByPath (d ++ [ "gopkg" ]) (
-          throw "missing local dependency '${lib.concatStringsSep "." d}' in '${path}'"
-        ) self) entry.localDeps;
+        deps = localDeps ++ foreignDeps;
       };
+
       libArgs = args // {
         name = pathToName entry.name;
         path = lib.concatStringsSep "/" ([ path ] ++ entry.locator);
       };
+
       binArgs = args // {
         name = last ([ path ] ++ entry.locator);
       };
     in if entry.isCommand then (program binArgs) else (package libArgs);
 
 in { src, path, deps ? [] }: let
+  # Build a map of dependencies (from their import paths to their
+  # derivation) so that they can be conditionally imported only in
+  # sub-packages that require them.
+  depMap = listToAttrs (map (d: {
+    name = d.goImportPath;
+    value = d;
+  }) deps);
+
   name = pathToName path;
   analysisOutput = runCommand "${name}-structure.json" {} ''
     ${analyser}/bin/analyser -path ${path} -source ${src} > $out
   '';
   analysis = fromJSON (readFile analysisOutput);
 in lib.fix(self: foldl' lib.recursiveUpdate {} (
-  map (entry: mkset entry.locator (toPackage self src path entry)) analysis
+  map (entry: mkset entry.locator (toPackage self src path depMap entry)) analysis
 ))
