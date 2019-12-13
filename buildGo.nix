@@ -65,16 +65,28 @@ let
   # This outputs both the sources and compiled binary, as both are
   # needed when downstream packages depend on it.
   package = { name, srcs, deps ? [], path ? name, sfiles ? [] }:
-  let uniqueDeps = allDeps deps;
-      asmBuild = if sfiles == [] then "" else ''
-        ${go}/bin/go tool asm -trimpath $PWD -I $PWD -I ${go}/share/go/pkg/include -D GOOS_linux -D GOARCH_amd64 -gensymabis -o ./symabis ${spaceOut sfiles}
-      '';
-      asmLink = if sfiles == [] then "-complete" else "-symabis ./symabis";
+  let
+    uniqueDeps = allDeps deps;
+
+    # The build steps below need to be executed conditionally for Go
+    # assembly if the analyser detected any *.s files.
+    #
+    # This is required for several popular packages (e.g. x/sys).
+    ifAsm = do: if sfiles == [] then "" else do;
+    asmBuild = ifAsm ''
+      ${go}/bin/go tool asm -trimpath $PWD -I $PWD -I ${go}/share/go/pkg/include -D GOOS_linux -D GOARCH_amd64 -gensymabis -o ./symabis ${spaceOut sfiles}
+      ${go}/bin/go tool asm -trimpath $PWD -I $PWD -I ${go}/share/go/pkg/include -D GOOS_linux -D GOARCH_amd64 -o ./asm.o ${spaceOut sfiles}
+    '';
+    asmLink = ifAsm "-symabis ./symabis -asmhdr $out/go_asm.h";
+    asmPack = ifAsm ''
+      ${go}/bin/go tool pack r $out/${path}.a ./asm.o
+    '';
   in (runCommand "golib-${name}" {} ''
     mkdir -p $out/${path}
     ${srcList path (map (s: "${s}") srcs)}
     ${asmBuild}
     ${go}/bin/go tool compile -pack ${asmLink} -o $out/${path}.a -trimpath=$PWD -trimpath=${go} -p ${path} ${includeSources uniqueDeps} ${spaceOut srcs}
+    ${asmPack}
   '') // { goDeps = uniqueDeps; goImportPath = path; };
 
   # Build a tree of Go libraries out of an external Go source
