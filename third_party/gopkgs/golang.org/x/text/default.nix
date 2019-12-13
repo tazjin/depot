@@ -4,7 +4,7 @@ pkgs.buildGo.external {
   path = "golang.org/x/text";
   src = builtins.fetchGit {
     url = "https://go.googlesource.com/text";
-    rev = "342b2e1fbaa52c93f31447ad2c6abc048c63e475";
+    rev = "cbf43d21aaebfdfeb81d91a5f444d13a3046e686";
   };
 
   deps = with pkgs.third_party; [

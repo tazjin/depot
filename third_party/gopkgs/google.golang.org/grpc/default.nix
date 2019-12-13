@@ -4,7 +4,7 @@ pkgs.buildGo.external {
   path = "google.golang.org/grpc";
   src = builtins.fetchGit {
     url = "https://github.com/grpc/grpc-go";
-    rev = "451cf373a706e089ca34abd9ea14cbc20b34c1fc";
+    rev = "085c980048876e2735d4aba8f0d5bca4d7acaaa5";
   };
 
   deps = with pkgs.third_party; map (p: p.gopkg) [

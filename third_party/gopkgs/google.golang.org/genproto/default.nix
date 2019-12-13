@@ -4,7 +4,7 @@ pkgs.buildGo.external {
   path = "google.golang.org/genproto";
   src = builtins.fetchGit {
     url = "https://github.com/google/go-genproto";
-    rev = "55e96fffbd486c27fc0d5b4468c497d0de3f2727";
+    rev = "0243a4be9c8f1264d238fdc2895620b4d9baf9e1";
   };
 
   deps = with pkgs.third_party; [

@@ -7,7 +7,7 @@ in pkgs.buildGo.external {
   path = "github.com/googleapis/gax-go";
   src = fetchGit {
     url = "https://github.com/googleapis/gax-go";
-    rev = "bd5b16380fd03dc758d11cef74ba2e3bc8b0e8c2";
+    rev = "b443e5a67ec8eeac76f5f384004931878cab24b3";
   };
 
   deps = with pkgs.third_party; [

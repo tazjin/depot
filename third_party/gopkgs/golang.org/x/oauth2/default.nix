@@ -4,7 +4,7 @@ pkgs.buildGo.external {
   path = "golang.org/x/oauth2";
   src = builtins.fetchGit {
     url = "https://go.googlesource.com/oauth2";
-    rev = "0f29369cfe4552d0e4bcddc57cc75f4d7e672a33";
+    rev = "858c2ad4c8b6c5d10852cb89079f6ca1c7309787";
   };
 
   deps = with pkgs.third_party; map (p: p.gopkg) [

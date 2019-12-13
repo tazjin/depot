@@ -4,7 +4,7 @@ pkgs.buildGo.external {
   path = "golang.org/x/net";
   src = builtins.fetchGit {
     url = "https://go.googlesource.com/net";
-    rev = "74dc4d7220e7acc4e100824340f3e66577424772";
+    rev = "c0dbc17a35534bf2e581d7a942408dc936316da4";
   };
 
   deps = with pkgs.third_party; [
