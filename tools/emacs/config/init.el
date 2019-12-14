@@ -8,9 +8,6 @@
 
 (package-initialize)
 
-;; Add 'init' folder that contains other settings to load.
-(add-to-list 'load-path (concat user-emacs-directory "init"))
-
 ;; Initialise all packages installed via Nix.
 ;;
 ;; TODO: Generate this section in Nix for all packages that do not
@@ -140,27 +137,24 @@
 ;; Seed RNG
 (random t)
 
-(defun load-other-settings ()
-  (mapc 'require '(desktop
-		   mail-setup
-                   look-and-feel
-                   functions
-                   settings
-                   modes
-                   bindings
-                   term-setup
-                   eshell-setup))
-  (telephone-line-setup)
-  (ace-window-display-mode))
+;; Load all other Emacs configuration. These configurations are
+;; added to `load-path' by Nix.
+(mapc 'require '(desktop
+                 mail-setup
+                 look-and-feel
+                 functions
+                 settings
+                 modes
+                 bindings
+                 term-setup
+                 eshell-setup))
+(telephone-line-setup)
+(ace-window-display-mode)
 
-;; If a local configuration file exists, it should be loaded.
+;; If a local configuration file exists, it should be loaded. No
+;; other configuration comes from `user-emacs-directory'.
 (let ((local-file (expand-file-name (f-join user-emacs-directory "local.el"))))
   (when (f-exists? local-file)
     (load local-file)))
 
-;; Some packages can only be initialised after the rest of the
-;; settings has been applied:
-
-(add-hook 'after-init-hook 'load-other-settings)
-(put 'narrow-to-region 'disabled nil)
-(put 'upcase-region 'disabled nil)
+(provide 'init)
