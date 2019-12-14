@@ -7,7 +7,7 @@
 # TODO(tazjin): Actually implement the above.
 
 let
-  pkgs = import ./default.nix;
+  pkgs = import ./default.nix {};
 in with pkgs; [
   services.tazblog
   services.nixcon-demo
