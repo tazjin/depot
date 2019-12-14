@@ -128,9 +128,16 @@
 (use-package web-mode)
 (use-package yaml-mode)
 
-;; Configure a few basics before moving on to package-specific initialisation.
-(setq custom-file (concat user-emacs-directory "init/custom.el"))
-(load custom-file)
+;; Configuration changes in `customize` can not actually be persisted
+;; to the customise file that Emacs is currently using (since it comes
+;; from the Nix store).
+;;
+;; The way this will work for now is that Emacs will *write*
+;; configuration to the file tracked in my repository, while not
+;; actually *reading* it from there (unless Emacs is rebuilt).
+(setq custom-file
+      (expand-file-name "~/projects/tazjin/tools/emacs/config/custom.el"))
+(require 'custom)
 
 (defvar home-dir (expand-file-name "~"))
 
