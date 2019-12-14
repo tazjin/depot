@@ -1,15 +1,9 @@
-;; Various keybindings, most of them taken from starter-kit-bindings
-
 ;; Font size
 (define-key global-map (kbd "C-+") 'text-scale-increase)
 (define-key global-map (kbd "C--") 'text-scale-decrease)
 
-;; Use regex searches by default.
-(global-set-key (kbd "\C-r") 'isearch-backward-regexp)
-(global-set-key (kbd "M-%") 'query-replace-regexp)
-(global-set-key (kbd "C-M-s") 'isearch-forward)
-(global-set-key (kbd "C-M-r") 'isearch-backward)
-(global-set-key (kbd "C-M-%") 'query-replace)
+;; What does <tab> do? Well, it depends ...
+(define-key prog-mode-map (kbd "<tab>") #'company-indent-or-complete-common)
 
 ;; Counsel stuff:
 (global-set-key (kbd "C-c r g") 'counsel-rg)
@@ -24,11 +18,10 @@
 (global-set-key (kbd "C-x m") 'eshell)
 
 ;; Start a new eshell even if one is active.
-(global-set-key (kbd "C-x M") (lambda () (interactive) (eshell t)))
-
 (global-set-key (kbd "C-x p") 'ivy-browse-repositories)
 (global-set-key (kbd "M-g M-g") 'goto-line-with-feedback)
 
+;; Miscellaneous editing commands
 (global-set-key (kbd "C-c w") 'whitespace-cleanup)
 (global-set-key (kbd "C-c a") 'align-regexp)
 
@@ -36,11 +29,8 @@
 (global-set-key (kbd "C-c b p") 'browse-url-at-point)
 (global-set-key (kbd "C-c b b") 'browse-url)
 
-;; Goodness from @magnars
-;; I don't need to kill emacs that easily
-;; the mnemonic is C-x REALLY QUIT
+;; C-x REALLY QUIT (idea by @magnars)
 (global-set-key (kbd "C-x r q") 'save-buffers-kill-terminal)
-(global-set-key (kbd "C-x C-c") 'delete-frame)
 
 ;; Open Fefes Blog
 (global-set-key (kbd "C-c C-f") 'fefes-blog)

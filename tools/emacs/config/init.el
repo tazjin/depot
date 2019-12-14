@@ -34,8 +34,6 @@
 
 (use-package company
   :hook ((prog-mode . company-mode))
-  :bind (:map rust-mode-map ("<tab>" . company-indent-or-complete-common)
-         :map lisp-mode-map ("<tab>" . company-indent-or-complete-common))
   :init (setq company-tooltip-align-annotations t))
 
 (use-package dash)
@@ -93,8 +91,7 @@
 (use-package f)
 
 (use-package go-mode
-  :bind (:map go-mode-map ("C-c C-r" . recompile)
-         :map go-mode-map ("<tab>" . company-indent-or-complete-common))
+  :bind (:map go-mode-map ("C-c C-r" . recompile))
   :hook ((go-mode . (lambda ()
                       (setq tab-width 2)
                       (setq-local compile-command
@@ -106,7 +103,8 @@
   :init (add-to-list 'auto-mode-alist '("\\.jq\\'" . jq-mode)))
 
 (use-package kotlin-mode
-  :bind (:map kotlin-mode-map ("<tab>" . indent-relative)))
+  :hook ((kotlin-mode . (lambda ()
+                          (setq indent-line-function #'indent-relative)))))
 
 (use-package lsp-mode)
 
@@ -119,7 +117,8 @@
 (use-package markdown-toc)
 
 (use-package nix-mode
-  :bind (:map nix-mode-map ("<tab>" . nix-indent-line)))
+  :hook ((nix-mode . (lambda ()
+                       (setq indent-line-function #'nix-indent-line)))))
 
 (use-package nginx-mode)
 (use-package rust-mode)
