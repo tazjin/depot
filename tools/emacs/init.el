@@ -93,6 +93,8 @@
                           ;; Don't indent after '>' while I'm writing
                           (local-set-key ">" 'self-insert-command)))))
 
+(use-package f)
+
 (use-package go-mode
   :bind (:map go-mode-map ("C-c C-r" . recompile)
          :map go-mode-map ("<tab>" . company-indent-or-complete-common))
@@ -151,6 +153,10 @@
   (telephone-line-setup)
   (ace-window-display-mode))
 
+;; If a local configuration file exists, it should be loaded.
+(let ((local-file (expand-file-name (f-join user-emacs-directory "local.el"))))
+  (when (f-exists? local-file)
+    (load local-file)))
 
 ;; Some packages can only be initialised after the rest of the
 ;; settings has been applied:
