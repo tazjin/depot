@@ -25,17 +25,11 @@ tagConfig = pkgs.writeText "notmuch-tags" ''
   # Tag nix-devel mailing list & discourse:
   -inbox +nix-devel -- to:nix-devel@googlegroups.com OR from:nixos1@discoursemail.com
 
-  # Filter out Gitlab mails:
-  -inbox +gitlab -- from:gitlab@aprila.no
-
   # Tag my own mail (from other devices) as sent:
-  -inbox +sent -- folder:"aprila/Sende element" OR from:vincent@aprila.no OR from:mail@tazj.in
+  -inbox +sent -- from:mail@tazj.in
 
   # Drafts are always read, duh.
   -unread -- tag:draft
-
-  # Tag development list
-  -inbox +aprila-dev -- to:dev@aprila.no OR cc:dev@aprila.no
 '';
 
 notmuchIndex = pkgs.writeShellScriptBin "notmuch-index" ''

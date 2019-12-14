@@ -20,8 +20,6 @@
 ;; Show me saved searches that I care about:
 (setq notmuch-saved-searches
       '((:name "inbox" :query "tag:inbox" :count-query "tag:inbox AND tag:unread" :key "i")
-        (:name "aprila-dev" :query "tag:aprila-dev" :count-query "tag:aprila-dev AND tag:unread" :key "d")
-        (:name "gitlab" :query "tag:gitlab" :key "g")
         (:name "sent" :query "tag:sent" :key "t")
         (:name "drafts" :query "tag:draft")))
 (setq notmuch-show-empty-saved-searches t)
@@ -44,12 +42,7 @@
 
 ;; Store sent mail in the correct folder per account
 (setq notmuch-maildir-use-notmuch-insert nil)
-(setq notmuch-fcc-dirs '(("mail@tazj.in" . "tazjin/Sent")
-                         ;; Not a mistake, Office365 apparently
-                         ;; renames IMAP folders (!) to your local
-                         ;; language instead of providing translations
-                         ;; in the UI m(
-                         ("vincent@aprila.no" . "aprila/Sende element")))
+(setq notmuch-fcc-dirs '(("mail@tazj.in" . "tazjin/Sent")))
 
 ;; I don't use drafts but I instinctively hit C-x C-s constantly, lets
 ;; handle that gracefully.
@@ -78,8 +71,7 @@
   (when (> (- (float-time) *last-notmuch-count-redraw*) 30)
     (setq *last-notmuch-count-redraw* (float-time))
     (let* ((inbox-unread (notmuch-saved-search-count "tag:inbox and tag:unread"))
-           (devel-unread (notmuch-saved-search-count "tag:aprila-dev and tag:unread"))
-           (notmuch-count (format "I: %s; D: %s" inbox-unread devel-unread)))
+           (notmuch-count (format "I: %s; D: %s" inbox-unread)))
       (setq *current-notmuch-count* notmuch-count)))
 
   (when (and (bottom-right-window-p)
