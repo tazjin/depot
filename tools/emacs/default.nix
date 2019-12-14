@@ -1,11 +1,5 @@
-# This file assembles a preconfigured Emacs with the dependencies that
-# I need.
-#
-# It can either build Emacs itself (`-A complete`) or just the
-# configuration (`-A config`). If the configuration is built
-# separately (e.g. for work machines where Emacs itself is installed
-# by other means) it is important that the versions of Emacs are kept
-# in sync.
+# This file builds an Emacs pre-configured with the packages I need
+# and my personal Emacs configuration.
 
 { pkgs, ... }:
 
@@ -34,7 +28,7 @@ let
     };
   };
 
-  complete = (emacsWithPackages(epkgs:
+  tazjinsEmacs = (emacsWithPackages(epkgs:
   # Actual ELPA packages (the enlightened!)
   (with epkgs.elpaPackages; [
     ace-window
@@ -107,7 +101,12 @@ let
   # Custom packages
   [ carpMode ]
   ));
-in {
-  inherit complete;
-  depsOnly = complete.deps;
-}
+in third_party.writeShellScriptBin "tazjins-emacs" ''
+  exec ${tazjinsEmacs}/bin/emacs \
+    --debug-init \
+    --no-site-file \
+    --no-site-lisp \
+    --no-init-file \
+    --directory ${./config} \
+    --eval "(require 'init)"
+''
