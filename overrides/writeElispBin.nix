@@ -3,10 +3,10 @@
 { name, src, deps ? (_: []), emacs ? pkgs.third_party.emacs26-nox }:
 
 let
-  inherit (pkgs.third_party) emacsPackagesFor writeTextFile;
+  inherit (pkgs.third_party) emacsPackagesNg emacsPackagesNgGen writeTextFile;
   inherit (builtins) isString toFile;
 
-  finalEmacs = (emacsPackagesFor emacs).emacsWithPackages deps;
+  finalEmacs = (emacsPackagesNgGen emacs).emacsWithPackages deps;
 
   srcFile = if isString src
     then toFile "${name}.el" src
