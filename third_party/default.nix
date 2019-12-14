@@ -54,6 +54,7 @@ let
       openssl
       protobuf
       remarshal
+      rink
       ripgrep
       rsync
       runCommand

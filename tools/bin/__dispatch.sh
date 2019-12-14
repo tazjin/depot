@@ -28,6 +28,9 @@ case "${TARGET_TOOL}" in
   aoc2019)
     attr="tools.aoc2019.${1}"
     ;;
+  rink)
+    attr="third_party.rink"
+    ;;
   *)
     echo "The tool '${TARGET_TOOL}' is currently not installed in this repository."
     exit 1
