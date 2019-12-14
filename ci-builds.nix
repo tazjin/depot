@@ -9,9 +9,10 @@
 let
   pkgs = import ./default.nix {};
 in with pkgs; [
-  services.tazblog
   services.nixcon-demo
-  tools.kms_pass
+  services.tazblog
   tools.blog_cli
+  tools.emacs
+  tools.kms_pass
 ]
 
