@@ -6,7 +6,7 @@
 # to the key in nixpkgs which represents the program you want to run.
 set -ueo pipefail
 
-readonly REPO_ROOT=$(git rev-parse --show-toplevel)
+readonly REPO_ROOT=$(dirname $0)/../..
 readonly TARGET_TOOL=$(basename $0)
 
 case "${TARGET_TOOL}" in
@@ -20,9 +20,9 @@ case "${TARGET_TOOL}" in
     attr="tools.blog_cli"
     ;;
   stern)
-    attr="stern"
+    attr="third_party.stern"
     ;;
-  pass)
+  kms_pass)
     attr="tools.kms_pass"
     ;;
   aoc2019)

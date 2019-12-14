@@ -61,6 +61,7 @@ let
       rustc
       sbcl
       stdenv
+      stern
       symlinkJoin
       terraform_0_12
       tree
