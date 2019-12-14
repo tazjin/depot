@@ -54,10 +54,10 @@ Including indent-buffer, which should not be called automatically on save."
   (interactive)
   (man "configuration.nix"))
 
-;; Open local emacs configuration
-(defun emacs-config ()
+;; Open my monorepo in magit
+(defun depot-status ()
   (interactive)
-  (dired "~/.emacs.d/"))
+  (magit-status "~/depot"))
 
 ;; Get the nix store path for a given derivation.
 ;; If the derivation has not been built before, this will trigger a build.
