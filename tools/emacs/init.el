@@ -43,7 +43,6 @@
 
 (use-package dash)
 (use-package dash-functional)
-(use-package edit-server :init (edit-server-start))
 (use-package gruber-darker-theme)
 (use-package ht)
 (use-package hydra)
@@ -89,19 +88,19 @@
 
 (use-package dockerfile-mode)
 
-(use-package eglot
-  :init (defvar rust-eglot-initialized nil)
-  :hook ((rust-mode . (lambda ()
-                        (unless rust-eglot-initialized
-                          (call-interactively #'eglot)
-                          (setq rust-eglot-initialized t))))))
-
 (use-package erlang
   :hook ((erlang-mode . (lambda ()
                           ;; Don't indent after '>' while I'm writing
                           (local-set-key ">" 'self-insert-command)))))
 
-(use-package go-mode)
+(use-package go-mode
+  :bind (:map go-mode-map ("C-c C-r" . recompile)
+         :map go-mode-map ("<tab>" . company-indent-or-complete-common))
+  :hook ((go-mode . (lambda ()
+                      (setq tab-width 2)
+                      (setq-local compile-command
+                                  (concat "go build " buffer-file-name))))))
+
 (use-package haskell-mode)
 
 (use-package jq-mode
@@ -109,6 +108,8 @@
 
 (use-package kotlin-mode
   :bind (:map kotlin-mode-map ("<tab>" . indent-relative)))
+
+(use-package lsp-mode)
 
 (use-package markdown-mode
   :init
@@ -128,10 +129,6 @@
 (use-package web-mode)
 (use-package yaml-mode)
 
-;;
-;; EXWM / NixOS related packages
-;;
-
 ;; Configure a few basics before moving on to package-specific initialisation.
 (setq custom-file (concat user-emacs-directory "init/custom.el"))
 (load custom-file)
@@ -142,7 +139,7 @@
 (random t)
 
 (defun load-other-settings ()
-  (mapc 'require '(nixos
+  (mapc 'require '(desktop
 		   mail-setup
                    look-and-feel
                    functions
@@ -152,12 +149,7 @@
                    term-setup
                    eshell-setup))
   (telephone-line-setup)
-  (ace-window-display-mode)
-
-  (use-package sly
-    :init (setq inferior-lisp-program (concat (nix-store-path "sbcl") "/bin/sbcl"))
-    ;;(add-to-list 'company-backends 'sly-company)
-    ))
+  (ace-window-display-mode))
 
 
 ;; Some packages can only be initialised after the rest of the

@@ -27,10 +27,6 @@
                               (font . ,font)))
   (set-frame-font font t t))
 
-;; Display battery in mode-line's misc section on adho:
-(when (equal "adho" (system-name))
-  (setq battery-mode-line-format " %b%p%%")
-  (display-battery-mode))
 ;; Display modeline time in dottime (see https://dotti.me)
 ;;
 ;; This is done in a way that initially seems more complicated than
@@ -53,7 +49,7 @@
   frame.
 
   The idea is to not display information like the current time,
-  load, battery levels in all buffers."
+  load, battery levels on all buffers."
 
   (when (bottom-right-window-p)
       (telephone-line-raw mode-line-misc-info t)))
@@ -81,7 +77,14 @@
         '((accent . (telephone-line-major-mode-segment))
           (nil . (telephone-line-last-window-segment
                   telephone-line-exwm-workspace-index))
-          (highlight . (telephone-line-notmuch-counts))))
+
+          ;; TODO(tazjin): lets not do this particular thing while I
+          ;; don't actually run notmuch, there are too many things
+          ;; that have a dependency on the modeline drawing correctly
+          ;; (including randr operations!)
+          ;;
+          ;; (highlight . (telephone-line-notmuch-counts))
+          ))
 
   (setq telephone-line-primary-left-separator 'telephone-line-tan-left
         telephone-line-primary-right-separator 'telephone-line-tan-right

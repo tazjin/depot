@@ -1,59 +1,4 @@
 (require 's)
-;; A few handy functions I use in init.el (or not, but they're nice to
-;; have)
-
-(defun custom-download-theme (url filename)
-  "Downloads a theme through HTTP and places it in ~/.emacs.d/themes"
-
-  ;; Ensure the directory exists
-  (unless (file-exists-p "~/.emacs.d/themes")
-    (make-directory "~/.emacs.d/themes"))
-
-  ;; Adds the themes folder to the theme load path (if not already
-  ;; there)
-  (unless (member "~/.emacs.d/themes" custom-theme-load-path)
-    (add-to-list 'custom-theme-load-path "~/.emacs.d/themes"))
-
-  ;; Download file if it doesn't exist.
-
-  (let ((file
-         (concat "~/.emacs.d/themes/" filename)))
-    (unless (file-exists-p file)
-      (url-copy-file url file))))
-
-(defun custom-download-script (url filename)
-  "Downloads an Elisp script, places it in ~/.emacs/other and then loads it"
-
-  ;; Ensure the directory exists
-  (unless (file-exists-p "~/.emacs.d/other")
-    (make-directory "~/.emacs.d/other"))
-
-  ;; Download file if it doesn't exist.
-  (let ((file
-         (concat "~/.emacs.d/other/" filename)))
-    (unless (file-exists-p file)
-      (url-copy-file url file))
-
-    (load file)))
-
-(defun keychain-password (account &optional keychain)
-  "Returns the password for the account, by default it's looked up in the Login.keychain but a
-   different keychain can be specified."
-  (let ((k (if keychain keychain "Login.keychain")))
-    (replace-regexp-in-string
-     "\n" ""
-     (shell-command-to-string (concat  "security find-generic-password -w -a "
-                                       account
-                                       " "
-                                       k)))))
-
-;; This clones a git repository to 'foldername in .emacs.d
-;; if there isn't already a folder with that name
-(defun custom-clone-git (url foldername)
-  "Clones a git repository to .emacs.d/foldername"
-  (let ((fullpath (concat "~/.emacs.d/" foldername)))
-    (unless (file-exists-p fullpath)
-      (async-shell-command (concat "git clone " url " " fullpath)))))
 
 (defun load-file-if-exists (filename)
   (if (file-exists-p filename)
@@ -69,7 +14,6 @@
           (avy-push-mark)
           (goto-line target)))
     (setq-local display-line-numbers nil)))
-
 
 (defun untabify-buffer ()
   (interactive)
@@ -104,11 +48,6 @@ Including indent-buffer, which should not be called automatically on save."
 (defun fefes-blog ()
   (interactive)
   (eww "https://blog.fefe.de/"))
-
-;; Open this machines NixOS config
-(defun nix-config ()
-  (interactive)
-  (find-file "/etc/nixos/configuration.nix"))
 
 ;; Open the NixOS man page
 (defun nixos-man ()
@@ -158,15 +97,23 @@ Including indent-buffer, which should not be called automatically on save."
    append lsdir into completions
    finally return (sort completions 'string-lessp)))
 
+(defvar external-command-flag-overrides
+  '(("google-chrome" . "--force-device-scale-factor=1.4"))
+
+  "This setting lets me add additional flags to specific commands
+  that are run interactively via `ivy-run-external-command'.")
+
 (defun run-external-command (cmd)
-    "Execute the specified command and notify the user when it
+  "Execute the specified command and notify the user when it
   finishes."
-    (message "Starting %s..." cmd)
-    (set-process-sentinel
-     (start-process-shell-command cmd nil cmd)
-     (lambda (process event)
-       (when (string= event "finished\n")
-         (message "%s process finished." process)))))
+    (let* ((extra-flags (cdr (assoc cmd external-command-flag-overrides)))
+           (cmd (if extra-flags (s-join " " (list cmd extra-flags)) cmd)))
+      (message "Starting %s..." cmd)
+      (set-process-sentinel
+       (start-process-shell-command cmd nil cmd)
+       (lambda (process event)
+         (when (string= event "finished\n")
+           (message "%s process finished." process))))))
 
 (defun ivy-run-external-command ()
   "Prompts the user with a list of all installed applications and
@@ -235,32 +182,25 @@ Including indent-buffer, which should not be called automatically on save."
   (inferior-erlang
    (format "nix-shell --command erl %s" (cdr (project-current)))))
 
-(defun intero-fix-ghci-panic ()
-  "Disable deferring of out of scope variable errors, which
-  triggers a bug in the interactive Emacs REPL printing a panic
-  under certain conditions."
+(defun memespace-region ()
+  "Make a meme out of it."
 
   (interactive)
-  (let* ((root (intero-project-root))
-         (package-name (intero-package-name))
-         (backend-buffer (intero-buffer 'backend))
-         (name (format "*intero:%s:%s:repl*"
-                       (file-name-nondirectory root)
-                       package-name))
-         (setting ":set -fno-defer-out-of-scope-variables\n"))
-    (when (get-buffer name)
-      (with-current-buffer (get-buffer name)
-        (goto-char (point-max))
-        (let ((process (get-buffer-process (current-buffer))))
-          (when process (process-send-string process setting)))))))
+  (let* ((start (region-beginning))
+         (end (region-end))
+         (memed
+          (message
+           (s-trim-right
+            (apply #'string
+                   (-flatten
+                    (nreverse
+                     (-reduce-from (lambda (acc x)
+                                     (cons (cons x (-repeat (+ 1 (length acc)) 32)) acc))
+                                   '()
+                                   (string-to-list (buffer-substring-no-properties start end))))))))))
 
-;; Brute-force fix: Ensure the setting is injected every time the REPL
-;; is selected.
-;;
-;; Upstream issue: https://github.com/commercialhaskell/intero/issues/569
-(advice-add 'intero-repl :after (lambda (&rest r) (intero-fix-ghci-panic))
-            '((name . intero-panic-fix)))
-(advice-add 'intero-repl-load :after (lambda (&rest r) (intero-fix-ghci-panic))
-            '((name . intero-panic-fix)))
+    (save-excursion (delete-region start end)
+                    (goto-char start)
+                    (insert memed))))
 
 (provide 'functions)
