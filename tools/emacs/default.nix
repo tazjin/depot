@@ -1,93 +1,64 @@
-# Derivation for Emacs pre-configured with packages that I need.
+# This file assembles a preconfigured Emacs with the dependencies that
+# I need.
 #
-# TODO: Fix sly (again)
+# It can either build Emacs itself (`-A complete`) or just the
+# configuration (`-A config`). If the configuration is built
+# separately (e.g. for work machines where Emacs itself is installed
+# by other means) it is important that the versions of Emacs are kept
+# in sync.
 
-{ pkgs }:
+{ pkgs, ... }:
 
-with pkgs; with emacsPackagesNg;
-let emacsWithPackages = (emacsPackagesNgGen emacs).emacsWithPackages;
+with pkgs;
+with third_party.emacsPackagesNg;
 
-# As the EXWM-README points out, XELB should be built from source if
-# EXWM is.
-xelb = melpaBuild {
-  pname   = "xelb";
-  ename   = "xelb";
-  version = "0.15";
-  recipe  = builtins.toFile "recipe" ''
-    (xelb :fetcher github
-          :repo "ch11ng/xelb")
-  '';
+let
+  emacsWithPackages = (third_party.emacsPackagesNgGen third_party.emacs26).emacsWithPackages;
 
-  packageRequires = [ cl-generic emacs ];
+  carpMode = melpaBuild {
+    pname = "carp-mode";
+    ename = "carp-mode";
+    version = "3.0";
+    recipe = builtins.toFile "recipe" ''
+      (carp-mode :fetcher github
+                 :repo "carp-lang/carp"
+                 :files ("emacs/*.el"))
+    '';
 
-  src = fetchFromGitHub {
-    owner  = "ch11ng";
-    repo   = "xelb";
-    rev    = "b8f168b401977098fe2b30f4ca32629c0ab6eb83";
-    sha256 = "1ack1h68x8ia0ji6wbhmayrakq35p5sgrrl6qvha3ns3pswc0pl9";
- };
-};
+    packageRequires = [ clojure-mode ];
+    src = third_party.fetchFromGitHub {
+      owner = "carp-lang";
+      repo = "carp";
+      rev = "6954642cadee730885717201c3180c7acfb1bfa9";
+      sha256 = "1pz4x2qkwjbz789bwc6nkacrjpzlxawxhl2nv0xdp731y7q7xyk9";
+    };
+  };
 
-# EXWM pinned to a newer version than what is released due to a
-# potential fix for ch11ng/exwm#425.
-exwm = melpaBuild {
-  pname   = "exwm";
-  ename   = "exwm";
-  version = "0.19";
-  recipe  = builtins.toFile "recipe" ''
-    (exwm :fetcher github
-          :repo "ch11ng/exwm")
-  '';
-
-  packageRequires = [ xelb ];
-
-  src = fetchFromGitHub {
-    owner  = "ch11ng";
-    repo   = "exwm";
-    rev    = "472f7cb82b67b98843f10c12e6bda9b8ae7262bc";
-    sha256 = "19gflsrb19aijf2xcw7j2m658qad21nbwziw38s1h2jw66vhk8dj";
- };
-};
-
-slyFixed = sly.overrideAttrs(_: {
-  recipe = builtins.toFile "recipe" ''
-(sly :repo "joaotavora/sly"
-     :fetcher github
-     :files ("*.el"
-             ("lib" "lib/*")
-             ("contrib" "contrib/*")
-             "doc/*.texi"
-             "doc/*.info"
-             "doc/dir"))
-'';
-});
-
-in emacsWithPackages(epkgs:
+  complete = (emacsWithPackages(epkgs:
   # Actual ELPA packages (the enlightened!)
   (with epkgs.elpaPackages; [
     ace-window
     avy
-    company
     pinentry
     rainbow-mode
     undo-tree
-    which-key
   ]) ++
 
   # MELPA packages:
   (with epkgs.melpaPackages; [
     browse-kill-ring
     cargo
+    clojure-mode
     counsel
     counsel-notmuch
-    dash
     dash-functional
+    direnv
     dockerfile-mode
-    edit-server
-    eglot
+    # TODO: eglot removed until workspace-folders are supported (needed for gopls)
+    # eglot
     elixir-mode
-    erlang
     elm-mode
+    erlang
     exwm
     go-mode
     gruber-darker-theme
@@ -101,38 +72,42 @@ in emacsWithPackages(epkgs:
     ivy-prescient
     jq-mode
     kotlin-mode
+    lsp-mode
     magit
-    markdown-mode
     markdown-toc
-    meghanada
     multi-term
     multiple-cursors
     nginx-mode
     nix-mode
-    omnisharp
     paredit
     password-store
     pg
-    pkgs.notmuch
+    notmuch # this comes from pkgs.third_party
     prescient
+    racket-mode
     rainbow-delimiters
     restclient
-    rust-mode
-    s
-    slyFixed
+    sly
     smartparens
     string-edit
     swiper
     telephone-line
     terraform-mode
     toml-mode
+    transient
     use-package
     uuidgen
     web-mode
     websocket
+    which-key
+    xelb
     yaml-mode
   ]) ++
 
-  # Custom packaged Emacs packages:
-  [ xelb exwm ]
-)
+  # Custom packages
+  [ carpMode ]
+  ));
+in {
+  inherit complete;
+  depsOnly = complete.deps;
+}

@@ -29,8 +29,10 @@ let
       coreutils
       darwin
       dockerTools
+      emacs26
       emacs26-nox
-      emacsPackagesFor
+      emacsPackagesNg
+      emacsPackagesNgGen
       fetchFromGitHub
       git
       gnutar
@@ -47,6 +49,7 @@ let
       makeWrapper
       mdbook
       nix
+      notmuch
       openssh
       openssl
       protobuf
