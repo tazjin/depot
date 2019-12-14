@@ -1,0 +1,11 @@
+.smex-items
+*token*
+auto-save-list/
+clones/
+elpa/
+irc.el
+local.el
+other/
+scripts/
+themes/
+*.elc
