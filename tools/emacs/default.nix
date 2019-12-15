@@ -65,7 +65,6 @@ let
     rainbow-delimiters
     restclient
     sly
-    smartparens
     string-edit
     swiper
     telephone-line

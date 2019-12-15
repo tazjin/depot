@@ -54,7 +54,6 @@
 (use-package rainbow-delimiters :hook (prog-mode . rainbow-delimiters-mode))
 (use-package rainbow-mode)
 (use-package s)
-(use-package smartparens :config (smartparens-global-mode))
 (use-package string-edit)
 (use-package telephone-line) ;; configuration happens outside of use-package
 (use-package undo-tree :config (global-undo-tree-mode))
