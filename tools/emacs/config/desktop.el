@@ -148,7 +148,7 @@
 (exwm-input-set-key (kbd "s-p") #'ivy-password-store)
 
 ;; Add X11 terminal selector to a key
-(exwm-input-set-key (kbd "C-x t") #'counsel-switch-to-terminal)
+(exwm-input-set-key (kbd "C-x t") #'ts/switch-to-terminal)
 
 ;; Toggle between line-mode / char-mode
 (exwm-input-set-key (kbd "C-c C-t C-t") #'exwm-input-toggle-keyboard)

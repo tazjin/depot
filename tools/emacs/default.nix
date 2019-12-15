@@ -5,28 +5,11 @@
 
 with pkgs;
 with third_party.emacsPackagesNg;
+with third_party.emacs;
 
 let
+  localPackages = pkgs.tools.emacs-pkgs;
   emacsWithPackages = (third_party.emacsPackagesNgGen third_party.emacs26).emacsWithPackages;
-
-  carpMode = melpaBuild {
-    pname = "carp-mode";
-    ename = "carp-mode";
-    version = "3.0";
-    recipe = builtins.toFile "recipe" ''
-      (carp-mode :fetcher github
-                 :repo "carp-lang/carp"
-                 :files ("emacs/*.el"))
-    '';
-
-    packageRequires = [ clojure-mode ];
-    src = third_party.fetchFromGitHub {
-      owner = "carp-lang";
-      repo = "carp";
-      rev = "6954642cadee730885717201c3180c7acfb1bfa9";
-      sha256 = "1pz4x2qkwjbz789bwc6nkacrjpzlxawxhl2nv0xdp731y7q7xyk9";
-    };
-  };
 
   tazjinsEmacs = (emacsWithPackages(epkgs:
   # Actual ELPA packages (the enlightened!)
@@ -82,7 +65,6 @@ let
     rainbow-delimiters
     restclient
     sly
-    smartparens
     string-edit
     swiper
     telephone-line
@@ -99,7 +81,7 @@ let
   ]) ++
 
   # Custom packages
-  [ carpMode ]
+  [ carp-mode localPackages.dottime localPackages.term-switcher ]
   ));
 in third_party.writeShellScriptBin "tazjins-emacs" ''
   exec ${tazjinsEmacs}/bin/emacs \
@@ -108,5 +90,5 @@ in third_party.writeShellScriptBin "tazjins-emacs" ''
     --no-site-lisp \
     --no-init-file \
     --directory ${./config} \
-    --eval "(require 'init)"
+    --eval "(require 'init)" $@
 ''

@@ -19,8 +19,7 @@
 (show-paren-mode 1)
 
 ;; Always auto-close parantheses and other pairs
-;; (replaced by smartparens)
-;; (electric-pair-mode)
+(electric-pair-mode)
 
 ;; Keep track of recent files
 (recentf-mode)

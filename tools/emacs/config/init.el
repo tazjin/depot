@@ -19,11 +19,11 @@
 
 (use-package ace-window
   :bind (("C-x o" . ace-window))
-  :init
+  :config
   (setq aw-keys '(?f ?j ?d ?k ?s ?l ?a)
         aw-scope 'frame))
 
-(use-package auth-source-pass :init (auth-source-pass-enable))
+(use-package auth-source-pass :config (auth-source-pass-enable))
 
 (use-package avy
   :bind (("M-j" . avy-goto-char)
@@ -34,10 +34,11 @@
 
 (use-package company
   :hook ((prog-mode . company-mode))
-  :init (setq company-tooltip-align-annotations t))
+  :config (setq company-tooltip-align-annotations t))
 
 (use-package dash)
 (use-package dash-functional)
+(use-package dottime :config (dottime-display-mode t))
 (use-package gruber-darker-theme)
 (use-package ht)
 (use-package hydra)
@@ -46,19 +47,19 @@
                             (emacs-lisp-mode . paredit-mode)))
 (use-package multiple-cursors)
 (use-package pinentry
-  :init
+  :config
   (setq epa-pinentry-mode 'loopback)
   (pinentry-start))
 
 (use-package rainbow-delimiters :hook (prog-mode . rainbow-delimiters-mode))
 (use-package rainbow-mode)
 (use-package s)
-(use-package smartparens :init (smartparens-global-mode))
 (use-package string-edit)
 (use-package telephone-line) ;; configuration happens outside of use-package
-(use-package undo-tree :init (global-undo-tree-mode))
+(use-package term-switcher)
+(use-package undo-tree :config (global-undo-tree-mode))
 (use-package uuidgen)
-(use-package which-key :init (which-key-mode t))
+(use-package which-key :config (which-key-mode t))
 
 ;;
 ;; Applications in emacs
@@ -66,7 +67,7 @@
 
 (use-package magit
   :bind ("C-c g" . magit-status)
-  :init (setq magit-repository-directories '(("/home/vincent/projects" . 2))))
+  :config (setq magit-repository-directories '(("/home/vincent/projects" . 2))))
 
 (use-package password-store)
 (use-package pg)
@@ -100,7 +101,7 @@
 (use-package haskell-mode)
 
 (use-package jq-mode
-  :init (add-to-list 'auto-mode-alist '("\\.jq\\'" . jq-mode)))
+  :config (add-to-list 'auto-mode-alist '("\\.jq\\'" . jq-mode)))
 
 (use-package kotlin-mode
   :hook ((kotlin-mode . (lambda ()
@@ -109,7 +110,7 @@
 (use-package lsp-mode)
 
 (use-package markdown-mode
-  :init
+  :config
   (add-to-list 'auto-mode-alist '("\\.txt\\'" . markdown-mode))
   (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
   (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode)))
@@ -151,7 +152,6 @@
                  settings
                  modes
                  bindings
-                 term-setup
                  eshell-setup))
 (telephone-line-setup)
 (ace-window-display-mode)
