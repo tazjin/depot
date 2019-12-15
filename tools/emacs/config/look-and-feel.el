@@ -27,21 +27,6 @@
                               (font . ,font)))
   (set-frame-font font t t))
 
-;; Display modeline time in dottime (see https://dotti.me)
-;;
-;; This is done in a way that initially seems more complicated than
-;; one would like, but this is unfortunately required due to the way
-;; `format-time-string' handles timezones.
-(defun format-dottime-advice (orig _ &optional _ _)
-  (let* ((offset-sec (car (current-time-zone)))
-         (offset-hours (/ offset-sec 60 60))
-         (dottime (if (/= offset-hours 0)
-                      (concat "%M-%Dt%H·%M" (format "%0+3d" offset-hours))
-                    "%m-%dT%H·%M")))
-    (apply orig '("%m-%dT%H·%M" nil t))))
-
-(advice-add 'format-time-string :around #'format-dottime-advice)
-
 ;; Configure telephone-line
 (defun telephone-misc-if-last-window ()
   "Renders the mode-line-misc-info string for display in the

@@ -38,6 +38,7 @@
 
 (use-package dash)
 (use-package dash-functional)
+(use-package dottime :config (dottime-display-mode t))
 (use-package gruber-darker-theme)
 (use-package ht)
 (use-package hydra)

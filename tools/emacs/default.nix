@@ -8,6 +8,7 @@ with third_party.emacsPackagesNg;
 with third_party.emacs;
 
 let
+  localPackages = pkgs.tools.emacs-pkgs;
   emacsWithPackages = (third_party.emacsPackagesNgGen third_party.emacs26).emacsWithPackages;
 
   tazjinsEmacs = (emacsWithPackages(epkgs:
@@ -81,7 +82,7 @@ let
   ]) ++
 
   # Custom packages
-  [ carp-mode ]
+  [ carp-mode localPackages.dottime ]
   ));
 in third_party.writeShellScriptBin "tazjins-emacs" ''
   exec ${tazjinsEmacs}/bin/emacs \
@@ -90,5 +91,5 @@ in third_party.writeShellScriptBin "tazjins-emacs" ''
     --no-site-lisp \
     --no-init-file \
     --directory ${./config} \
-    --eval "(require 'init)"
+    --eval "(require 'init)" $@
 ''
