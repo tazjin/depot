@@ -71,7 +71,7 @@ let
       };
 
       binArgs = args // {
-        name = last ([ path ] ++ entry.locator);
+        name = (last ((lib.splitString "/" path) ++ entry.locator));
       };
     in if entry.isCommand then (program binArgs) else (package libArgs);
 
