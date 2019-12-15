@@ -24,6 +24,7 @@
 ;; Miscellaneous editing commands
 (global-set-key (kbd "C-c w") 'whitespace-cleanup)
 (global-set-key (kbd "C-c a") 'align-regexp)
+(global-set-key (kbd "C-c m") 'mc/mark-dwim)
 
 ;; Browse URLs (very useful for Gitlab's SSH output!)
 (global-set-key (kbd "C-c b p") 'browse-url-at-point)

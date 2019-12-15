@@ -182,6 +182,33 @@ Including indent-buffer, which should not be called automatically on save."
   (inferior-erlang
    (format "nix-shell --command erl %s" (cdr (project-current)))))
 
+(defhydra mc/mark-more-hydra (:color pink)
+  ("<up>" mmlte--up "Mark previous like this")
+  ("<down>" mc/mmlte--down "Mark next like this")
+  ("<left>" mc/mmlte--left (if (eq mc/mark-more-like-this-extended-direction 'up)
+                               "Skip past the cursor furthest up"
+                             "Remove the cursor furthest down"))
+  ("<right>" mc/mmlte--right (if (eq mc/mark-more-like-this-extended-direction 'up)
+                                 "Remove the cursor furthest up"
+                               "Skip past the cursor furthest down"))
+  ("f" nil "Finish selecting"))
+
+;; Mute the message that mc/mmlte wants to print on its own
+(advice-add 'mc/mmlte--message :around (lambda (&rest args) (ignore)))
+
+(defun mc/mark-dwim (arg)
+  "Select multiple things, but do what I mean."
+
+  (interactive "p")
+  (if (not (region-active-p)) (mc/mark-next-lines arg)
+    (if (< 1 (count-lines (region-beginning)
+                          (region-end)))
+        (mc/edit-lines arg)
+      ;; The following is almost identical to `mc/mark-more-like-this-extended',
+      ;; but uses a hydra (`mc/mark-more-hydra') instead of a transient key map.
+      (mc/mmlte--down)
+      (mc/mark-more-hydra/body))))
+
 (defun memespace-region ()
   "Make a meme out of it."
 
