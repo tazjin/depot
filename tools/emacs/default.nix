@@ -81,7 +81,7 @@ let
   ]) ++
 
   # Custom packages
-  [ carp-mode localPackages.dottime ]
+  [ carp-mode localPackages.dottime localPackages.term-switcher ]
   ));
 in third_party.writeShellScriptBin "tazjins-emacs" ''
   exec ${tazjinsEmacs}/bin/emacs \
