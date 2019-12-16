@@ -67,7 +67,8 @@
 
 (use-package magit
   :bind ("C-c g" . magit-status)
-  :config (setq magit-repository-directories '(("/home/vincent/projects" . 2))))
+  :config (setq magit-repository-directories '(("/home/tazjin/projects" . 2)
+                                               ("/home/tazjin/depot" . 0))))
 
 (use-package password-store)
 (use-package pg)
