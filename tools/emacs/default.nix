@@ -64,6 +64,7 @@ let
     rainbow-delimiters
     refine
     restclient
+    request
     sly
     string-edit
     swiper
