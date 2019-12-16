@@ -1,6 +1,7 @@
 ;; Initializes modes I use.
 
 (add-hook 'prog-mode-hook 'esk-add-watchwords)
+(add-hook 'prog-mode-hook 'hl-line-mode)
 
 ;; Use auto-complete as completion at point
 (defun set-auto-complete-as-completion-at-point-function ()

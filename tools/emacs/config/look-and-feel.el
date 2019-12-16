@@ -90,9 +90,6 @@
 ;; Show column numbers in all buffers
 (column-number-mode t)
 
-;; Highlight currently active line
-(global-hl-line-mode t)
-
 (defalias 'yes-or-no-p 'y-or-n-p)
 (defalias 'auto-tail-revert-mode 'tail-mode)
 
