@@ -38,6 +38,12 @@ in fix(self: {
 
   # Elevate 'lib' from nixpkgs
   lib = import (self.third_party.nixpkgsSrc + "/lib");
+
+  # Expose readTree for downstream repo consumers.
+  readTree = {
+    __functor = x: (readTree' x.config);
+    config = self.config;
+  };
 }
 
 # Add local packages as structured by readTree
