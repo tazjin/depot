@@ -73,6 +73,7 @@ let
     transient
     use-package
     uuidgen
+    vterm
     web-mode
     websocket
     which-key

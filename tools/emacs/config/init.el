@@ -73,6 +73,19 @@
 (use-package pg)
 (use-package restclient)
 
+(use-package vterm
+  :config (progn
+            (setq vterm-shell "/usr/bin/fish")
+            (setq vterm-exit-functions
+                  (lambda (&rest _) (kill-buffer (current-buffer))))
+            (setq vterm-set-title-functions
+                  (lambda (title)
+                    (rename-buffer
+                     (generate-new-buffer-name
+                      (format "vterm<%s>"
+                              (s-trim-left
+                               (s-chop-prefix "fish" title)))))))))
+
 ;;
 ;; Packages providing language-specific functionality
 ;;
