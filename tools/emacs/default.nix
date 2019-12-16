@@ -31,8 +31,6 @@ let
     dash-functional
     direnv
     dockerfile-mode
-    # TODO: eglot removed until workspace-folders are supported (needed for gopls)
-    # eglot
     elixir-mode
     elm-mode
     erlang
@@ -56,13 +54,14 @@ let
     multiple-cursors
     nginx-mode
     nix-mode
+    notmuch # this comes from pkgs.third_party
     paredit
     password-store
     pg
-    notmuch # this comes from pkgs.third_party
     prescient
     racket-mode
     rainbow-delimiters
+    refine
     restclient
     sly
     string-edit
