@@ -34,7 +34,9 @@ let
       emacsPackagesNg
       emacsPackagesNgGen
       fetchFromGitHub
+      fetchurl
       git
+      glibc
       gnutar
       go
       google-cloud-sdk
@@ -69,7 +71,8 @@ let
       writeShellScriptBin
       writeText
       writeTextFile
-      zlib;
+      zlib
+      zstd;
   };
 
 in exposed // {

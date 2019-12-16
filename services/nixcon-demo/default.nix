@@ -1,3 +1,2 @@
 { pkgs, ... }:
-
-pkgs.third_party.naersk.buildPackage ./. {}
+pkgs.third_party.naersk.buildPackage ./.
