@@ -77,7 +77,11 @@ let
 
 in exposed // {
   callPackage = nixpkgs.lib.callPackageWith exposed;
+
   # Provide the source code of nixpkgs, but do not provide an imported
   # version of it.
   nixpkgsSrc = stableSrc;
+
+  # Surface these things from within the depths of the tree ...
+  pack = pkgs.third_party.gopkgs."github.com".buildpacks.pack.cmd.pack;
 }

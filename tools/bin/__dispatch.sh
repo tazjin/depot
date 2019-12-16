@@ -31,6 +31,9 @@ case "${TARGET_TOOL}" in
   rink)
     attr="third_party.rink"
     ;;
+  pack)
+    attr="third_party.pack"
+    ;;
   *)
     echo "The tool '${TARGET_TOOL}' is currently not installed in this repository."
     exit 1
