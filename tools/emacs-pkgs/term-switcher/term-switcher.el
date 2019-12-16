@@ -4,7 +4,7 @@
 ;;
 ;; Author: Vincent Ambo <tazjin@google.com>
 ;; Version: 1.1
-;; Package-Requires: (dash ivy s)
+;; Package-Requires: (dash ivy s vterm)
 ;;
 ;;; Commentary:
 ;;
@@ -14,6 +14,7 @@
 (require 'dash)
 (require 'ivy)
 (require 's)
+(require 'vterm)
 
 (defgroup term-switcher nil
   "Customization options `term-switcher'.")
