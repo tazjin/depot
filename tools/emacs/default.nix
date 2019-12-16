@@ -11,7 +11,8 @@ let
   localPackages = pkgs.tools.emacs-pkgs;
   emacsWithPackages = (third_party.emacsPackagesNgGen third_party.emacs26).emacsWithPackages;
 
-  tazjinsEmacs = (emacsWithPackages(epkgs:
+  identity = x: x;
+  tazjinsEmacs = pkgfun: (emacsWithPackages(epkgs: pkgfun(
   # Actual ELPA packages (the enlightened!)
   (with epkgs.elpaPackages; [
     ace-window
@@ -82,13 +83,13 @@ let
 
   # Custom packages
   [ carp-mode localPackages.dottime localPackages.term-switcher ]
-  ));
-in third_party.writeShellScriptBin "tazjins-emacs" ''
-  exec ${tazjinsEmacs}/bin/emacs \
+  )));
+in lib.fix(self: f: third_party.writeShellScriptBin "tazjins-emacs" ''
+  exec ${tazjinsEmacs f}/bin/emacs \
     --debug-init \
     --no-site-file \
     --no-site-lisp \
     --no-init-file \
     --directory ${./config} \
     --eval "(require 'init)" $@
-''
+  '' // { overrideEmacs = f': self f'; }) identity
