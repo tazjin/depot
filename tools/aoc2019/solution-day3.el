@@ -1,8 +1,7 @@
 ;; -*- lexical-binding: t; -*-
 ;; Advent of Code 2019 - Day 3
-;;
-;; Note: Input was pre-processed with some Emacs shortcuts.
-(require 'cl)
+
+(require 'cl-lib)
 (require 'dash)
 (require 'ht)
 (require 's)
@@ -37,22 +36,29 @@
                                (next (day3/move x y point)))
                          (-concat next acc)))
                      '((0 . 0)) wire)))
-    (-map (lambda (p) (ht-set! points p t)) point-list)
+    (-map (-lambda ((s . p)) (ht-set! points p s))
+          (-zip (reverse (number-sequence 0 (- (length point-list) 1))) point-list))
     (ht-remove! points '(0 . 0))
     points))
 
-(defun day3/closest-intersection (wire1 wire2)
-  (let* ((wire1-points (day3/wire-points (wire-from wire1)))
-         (wire2-points (day3/wire-points (wire-from wire2)))
-         (crossed-points (-filter (lambda (p) (ht-contains? wire1-points p))
-                                  (ht-keys wire2-points))))
+(defun day3/closest-intersection (crossed-points)
+  (car (-sort #'<
+              (-map (-lambda ((x . y))
+                      (+ (abs x) (abs y)))
+                    crossed-points))))
 
-    (car (-sort #'<
-                (-map (-lambda ((x . y))
-                        (+ (abs x) (abs y)))
-                      crossed-points)))))
+(defun day3/minimum-steps (wire1 wire2 crossed)
+  (car (-sort #'<
+              (-map (-lambda (p)
+                      (+ (ht-get wire1 p) (ht-get wire2 p)))
+                    crossed))))
 
-(message "Solution form day3/1: %d"
-         (day3/closest-intersection day3/input/wire1
-                                    day3/input/wire2))
-
+;; Example:
+(let* ((wire1-points (day3/wire-points (wire-from day3/input/wire1)))
+       (wire2-points (day3/wire-points (wire-from day3/input/wire2)))
+       (crossed-points (-filter (lambda (p) (ht-contains? wire1-points p))
+                                (ht-keys wire2-points))))
+  (message "Solution for day3/1: %d" (day3/closest-intersection crossed-points))
+  (message "Solution for day3/2: %d" (day3/minimum-steps wire1-points
+                                                         wire2-points
+                                                         crossed-points)))
