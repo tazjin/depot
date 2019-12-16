@@ -170,10 +170,11 @@
 (telephone-line-setup)
 (ace-window-display-mode)
 
-;; If a local configuration file exists, it should be loaded. No
-;; other configuration comes from `user-emacs-directory'.
-(let ((local-file (expand-file-name (f-join user-emacs-directory "local.el"))))
-  (when (f-exists? local-file)
-    (load local-file)))
+;; If a local configuration library exists, it should be loaded.
+;;
+;; This can be provided by calling my Emacs derivation with
+;; `withLocalConfig'.
+(if-let (local-file (locate-library "local"))
+    (load local-file))
 
 (provide 'init)

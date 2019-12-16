@@ -84,12 +84,20 @@ let
   # Custom packages
   [ carp-mode localPackages.dottime localPackages.term-switcher ]
   )));
-in lib.fix(self: f: third_party.writeShellScriptBin "tazjins-emacs" ''
+in lib.fix(self: l: f: third_party.writeShellScriptBin "tazjins-emacs" ''
   exec ${tazjinsEmacs f}/bin/emacs \
     --debug-init \
     --no-site-file \
     --no-site-lisp \
     --no-init-file \
-    --directory ${./config} \
+    --directory ${./config} ${if l != null then "--directory ${l}" else ""} \
     --eval "(require 'init)" $@
-  '' // { overrideEmacs = f': self f'; }) identity
+  '' // {
+    # Call overrideEmacs with a function (pkgs -> pkgs) to modify the
+    # packages that should be included in this Emacs distribution.
+    overrideEmacs = f': self l f';
+
+    # Call withLocalConfig with the path to a *folder* containing a
+    # `local.el` which provides local system configuration.
+    withLocalConfig = confDir: self confDir f;
+  }) null identity
