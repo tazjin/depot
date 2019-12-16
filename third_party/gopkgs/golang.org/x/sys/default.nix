@@ -6,7 +6,4 @@ pkgs.buildGo.external {
     url = "https://go.googlesource.com/sys";
     rev = "ac6580df4449443a05718fd7858c1f91ad5f8d20";
   };
-
-  deps = with pkgs.third_party; [
-  ];
 }
