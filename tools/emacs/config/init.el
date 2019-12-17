@@ -36,6 +36,11 @@
   :hook ((prog-mode . company-mode))
   :config (setq company-tooltip-align-annotations t))
 
+(use-package counsel
+  :after (ivy)
+  :config (counsel-mode 1)
+  :bind (("C-c r g" . counsel-rg)))
+
 (use-package dash)
 (use-package dash-functional)
 (use-package dottime :config (dottime-display-mode t))
@@ -43,18 +48,43 @@
 (use-package ht)
 (use-package hydra)
 (use-package idle-highlight-mode :hook ((prog-mode . idle-highlight-mode)))
+
+(use-package ivy
+  :config
+  (ivy-mode 1)
+  (setq enable-recursive-minibuffers t)
+  (setq ivy-use-virtual-buffers t))
+
+(use-package ivy-pass :after (ivy))
+
+(use-package ivy-prescient
+  :after (ivy prescient)
+  :config
+  (ivy-prescient-mode))
+
+(use-package multiple-cursors)
+
 (use-package paredit :hook ((lisp-mode . paredit-mode)
                             (emacs-lisp-mode . paredit-mode)))
-(use-package multiple-cursors)
+
 (use-package pinentry
   :config
   (setq epa-pinentry-mode 'loopback)
   (pinentry-start))
 
+(use-package prescient
+  :after (ivy counsel)
+  :config (prescient-persist-mode))
+
 (use-package rainbow-delimiters :hook (prog-mode . rainbow-delimiters-mode))
 (use-package rainbow-mode)
 (use-package s)
 (use-package string-edit)
+
+(use-package swiper
+  :after (counsel ivy)
+  :bind (("C-s" . swiper)))
+
 (use-package telephone-line) ;; configuration happens outside of use-package
 (use-package term-switcher)
 (use-package undo-tree :config (global-undo-tree-mode))

@@ -5,9 +5,6 @@
 ;; What does <tab> do? Well, it depends ...
 (define-key prog-mode-map (kbd "<tab>") #'company-indent-or-complete-common)
 
-;; Counsel stuff:
-(global-set-key (kbd "C-c r g") 'counsel-rg)
-
 ;; imenu instead of insert-file
 (global-set-key (kbd "C-x i") 'imenu)
 
@@ -39,8 +36,5 @@
 
 ;; Open a file in project:
 (global-set-key (kbd "C-c f") 'project-find-file)
-
-;; Use swiper instead of isearch
-(global-set-key "\C-s" 'swiper)
 
 (provide 'bindings)

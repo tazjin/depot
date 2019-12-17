@@ -1,18 +1,4 @@
-(require 'prescient)
-(require 'ivy-prescient)
 (require 'uniquify)
-(require 'ivy-pass)
-
-;; Make ivy go!
-(ivy-mode 1)
-(counsel-mode 1)
-
-(setq ivy-use-virtual-buffers t)
-(setq enable-recursive-minibuffers t)
-
-;; Enable support for prescient in ivy & configure it
-(ivy-prescient-mode)
-(prescient-persist-mode)
 
 ;; Move files to trash when deleting
 (setq delete-by-moving-to-trash t)
