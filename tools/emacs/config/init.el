@@ -60,7 +60,10 @@
 (use-package ivy-prescient
   :after (ivy prescient)
   :config
-  (ivy-prescient-mode))
+  (ivy-prescient-mode)
+  ;; Fixes an issue with how regexes are passed to ripgrep from counsel,
+  ;; see raxod502/prescient.el#43
+  (setf (alist-get 'counsel-rg ivy-re-builders-alist) #'ivy--regex-plus))
 
 (use-package multiple-cursors)
 
