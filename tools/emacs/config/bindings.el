@@ -37,4 +37,7 @@
 ;; Open a file in project:
 (global-set-key (kbd "C-c f") 'project-find-file)
 
+;; Insert TODO comments
+(global-set-key (kbd "C-c t") 'insert-todo-comment)
+
 (provide 'bindings)

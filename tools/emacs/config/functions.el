@@ -230,4 +230,16 @@ Including indent-buffer, which should not be called automatically on save."
                     (goto-char start)
                     (insert memed))))
 
+(defun insert-todo-comment (prefix todo)
+  "Insert a comment at point with something for me to do."
+
+  (interactive "P\nsWhat needs doing? ")
+  (save-excursion
+    (move-end-of-line nil)
+    (insert (format " %s TODO(%s): %s"
+                    comment-start
+                    (if prefix (read-string "Who needs to do this? ")
+                      (getenv "USER"))
+                    todo))))
+
 (provide 'functions)
