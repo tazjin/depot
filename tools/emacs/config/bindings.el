@@ -1,6 +1,7 @@
 ;; Font size
-(define-key global-map (kbd "C-+") 'text-scale-increase)
-(define-key global-map (kbd "C--") 'text-scale-decrease)
+(define-key global-map (kbd "C-=") 'increase-default-text-scale) ;; '=' because there lies '+'
+(define-key global-map (kbd "C--") 'decrease-default-text-scale)
+(define-key global-map (kbd "C-x C-0") 'set-default-text-scale)
 
 ;; What does <tab> do? Well, it depends ...
 (define-key prog-mode-map (kbd "<tab>") #'company-indent-or-complete-common)

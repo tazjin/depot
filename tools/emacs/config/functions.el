@@ -1,5 +1,3 @@
-(require 's)
-
 (defun load-file-if-exists (filename)
   (if (file-exists-p filename)
       (load filename)))
@@ -218,5 +216,35 @@
                     (if prefix (read-string "Who needs to do this? ")
                       (getenv "USER"))
                     todo))))
+
+;; Custom text scale adjustment functions that operate on the entire instance
+(defun modify-text-scale (factor)
+  (set-face-attribute 'default nil
+                      :height (+ (* factor 5) (face-attribute 'default :height))))
+
+(defun increase-default-text-scale (prefix)
+  "Increase default text scale in all Emacs frames, or just the
+  current frame if PREFIX is set."
+
+  (interactive "P")
+  (if prefix (text-scale-increase 1)
+    (modify-text-scale 1)))
+
+(defun decrease-default-text-scale (prefix)
+  "Increase default text scale in all Emacs frames, or just the
+  current frame if PREFIX is set."
+
+  (interactive "P")
+  (if prefix (text-scale-decrease 1)
+    (modify-text-scale -1)))
+
+(defun set-default-text-scale (prefix &optional to)
+  "Set the default text scale to the specified value, or the
+  default. Restores current frame's text scale only, if PREFIX is
+  set."
+
+  (interactive "P")
+  (if prefix (text-scale-adjust 0)
+    (set-face-attribute 'default nil :height (or to 120))))
 
 (provide 'functions)
