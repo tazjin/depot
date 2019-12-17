@@ -64,6 +64,7 @@ let
     rainbow-delimiters
     refine
     restclient
+    request
     sly
     string-edit
     swiper
@@ -100,4 +101,16 @@ in lib.fix(self: l: f: third_party.writeShellScriptBin "tazjins-emacs" ''
     # Call withLocalConfig with the path to a *folder* containing a
     # `local.el` which provides local system configuration.
     withLocalConfig = confDir: self confDir f;
+
+    # Build a derivation that uses the specified local Emacs (i.e.
+    # built outside of Nix) instead
+    withLocalEmacs = emacsBin: third_party.writeShellScriptBin "tazjins-emacs" ''
+      exec ${emacsBin} \
+        --debug-init \
+        --no-site-file \
+        --no-init-file \
+        --directory ${(tazjinsEmacs f).deps}/share/emacs/site-lisp \
+        --directory ${./config} ${if l != null then "--directory ${l}" else ""} \
+        --eval "(require 'init)" $@
+    '';
   }) null identity
