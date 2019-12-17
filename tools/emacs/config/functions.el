@@ -15,22 +15,6 @@
           (goto-line target)))
     (setq-local display-line-numbers nil)))
 
-(defun untabify-buffer ()
-  (interactive)
-  (untabify (point-min) (point-max)))
-
-(defun indent-buffer ()
-  (interactive)
-  (indent-region (point-min) (point-max)))
-
-(defun cleanup-buffer ()
-  "Perform a bunch of operations on the whitespace content of a buffer.
-Including indent-buffer, which should not be called automatically on save."
-  (interactive)
-  (untabify-buffer)
-  (delete-trailing-whitespace)
-  (indent-buffer))
-
 ;; These come from the emacs starter kit
 
 (defun esk-add-watchwords ()
@@ -174,13 +158,6 @@ Including indent-buffer, which should not be called automatically on save."
          (bottom-windows (window-at-side-list frame 'bottom))
          (last-window (car (seq-intersection right-windows bottom-windows))))
     (eq (current-buffer) (window-buffer last-window))))
-
-(defun inferior-erlang-nix-shell ()
-  "Start an inferior Erlang process from the root of the current
-  project."
-  (interactive)
-  (inferior-erlang
-   (format "nix-shell --command erl %s" (cdr (project-current)))))
 
 (defhydra mc/mark-more-hydra (:color pink)
   ("<up>" mmlte--up "Mark previous like this")
