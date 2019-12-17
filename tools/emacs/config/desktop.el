@@ -46,7 +46,7 @@
               ,(-map (lambda (n) (list n secondary)) (number-sequence 8 9)))))
 
 (defun randr-layout-dp1-extend ()
-  "Layout for connecting my X1 Carbon to my screen at home"
+  "Layout for connecting my X1 Carbon to my screen at home."
 
   (interactive)
   (setq exwm-randr-workspace-monitor-plist (generate-randr-config "DP1-1" "eDP1"))
@@ -59,7 +59,8 @@
   (interactive)
   (setq exwm-randr-workspace-monitor-plist (generate-randr-config "HDMI1" "eDP1"))
   (exwm-randr-refresh)
-  (shell-command "xrandr --output HDMI1 --dpi 144 --auto --right-of eDP1 --primary"))
+  (shell-command "xrandr --output HDMI1 --dpi 144 --auto --right-of eDP1 --primary")
+  (set-default-text-scale nil 165))
 
 (defun randr-layout-single ()
   "Laptop screen only!"
@@ -67,7 +68,8 @@
   (interactive)
   (shell-command "xrandr --output HDMI1 --off")
   (shell-command "xrandr --output DP1-1 --off")
-  (exwm-randr-refresh))
+  (exwm-randr-refresh)
+  (restore-default-text-scale))
 
 (defun set-xkb-layout (layout)
   "Set the current X keyboard layout."
