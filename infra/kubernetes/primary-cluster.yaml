@@ -25,10 +25,10 @@ include:
   - name: nixery
     values:
       port: 8080
-      version: as6056ijn2scvzq8n1i2nlqwc5kddp1s
+      version: xkm36vrbcnzxdccybzdrx4qzfcfqfrhg
       bucket: tazjins-data
       account: nixery@tazjins-infrastructure.iam.gserviceaccount.com
-      repo: git@github.com:tazjin/depot.git
+      repo: ssh://tazjin@gmail.com@source.developers.google.com:2022/p/tazjins-infrastructure/r/depot
       popularity: 'popularity-19.09.891.80b42e630b2.json'
   - name: tazblog
   - name: https-lb
