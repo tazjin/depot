@@ -29,7 +29,7 @@ include:
       bucket: tazjins-data
       account: nixery@tazjins-infrastructure.iam.gserviceaccount.com
       repo: ssh://tazjin@gmail.com@source.developers.google.com:2022/p/tazjins-infrastructure/r/depot
-      popularity: 'popularity-19.09.891.80b42e630b2.json'
+      popularity: 'popularity-nixos-unstable-3140fa89c51233397f496f49014f6b23216667c2.json'
   - name: tazblog
   - name: https-lb
   - name: nginx
