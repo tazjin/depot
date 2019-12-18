@@ -54,6 +54,9 @@ let
     patches = [ ./cgit_idx.patch thttpdConfigPatch ];
   });
 in writeShellScriptBin "cgit-launch" ''
+  # v0v
+  gcloud config set core/custom_ca_certs_file ${cacert}/etc/ssl/certs/ca-bundle.crt
+
   # The role account that this container is running at in Kubernetes
   # has permission to clone the repository.
   ${google-cloud-sdk}/bin/gcloud source repos --project tazjins-infrastructure clone depot /git/depot
