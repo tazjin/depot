@@ -26,6 +26,7 @@ let
       cacert
       cachix
       cargo
+      cgit
       coreutils
       darwin
       dockerTools
@@ -67,6 +68,7 @@ let
       stern
       symlinkJoin
       terraform_0_12
+      thttpd
       tree
       writeShellScriptBin
       writeText
