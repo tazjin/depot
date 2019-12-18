@@ -75,6 +75,7 @@ resource "google_container_node_pool" "primary_nodes" {
       "storage-rw",
       "logging-write",
       "monitoring",
+      "https://www.googleapis.com/auth/source.read_only",
     ]
   }
 }
