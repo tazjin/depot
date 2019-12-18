@@ -57,6 +57,7 @@ in writeShellScriptBin "cgit-launch" ''
   ${coreutils}/bin/mkdir -p /srv/git
 
   # The SSH keys are placed in the container by Kubernetes.
+  export GIT_SSH_COMMAND="${openssh}/bin/ssh -F /var/cgit/ssh_config"
   ${git}/bin/git clone --mirror \
     -c http.sslcainfo=${cacert}/etc/ssl/certs/ca-bundle.crt \
     ssh://source.developers.google.com:2022/p/tazjins-infrastructure/r/depot \
