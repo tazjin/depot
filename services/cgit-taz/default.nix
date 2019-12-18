@@ -56,12 +56,10 @@ let
 in writeShellScriptBin "cgit-launch" ''
   ${coreutils}/bin/mkdir -p /srv/git
 
-  # The cookie file is placed in the correct location by Kubernetes, based on
-  # information stored in a secret.
+  # The SSH keys are placed in the container by Kubernetes.
   ${git}/bin/git clone --mirror \
-    -c http.cookieFile=/var/cgit/gitcookies \
     -c http.sslcainfo=${cacert}/etc/ssl/certs/ca-bundle.crt \
-    https://source.developers.google.com/p/tazjins-infrastructure/r/depot \
+    ssh://source.developers.google.com:2022/p/tazjins-infrastructure/r/depot \
     /srv/git/depot
 
   exec ${thttpdCgit}/bin/thttpd -D -C ${thttpdConfig}
