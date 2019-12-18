@@ -14,5 +14,5 @@ in import src {
     export USER=root
     cachix use tazjin
   '';
-  extraPackages = [ pkgs.third_party.cachix ];
+  extraPackages = with pkgs.third_party; [ cachix openssh ];
 }
