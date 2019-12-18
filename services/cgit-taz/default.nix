@@ -56,6 +56,10 @@ let
 in writeShellScriptBin "cgit-launch" ''
   ${coreutils}/bin/mkdir -p /srv/git
 
+  # Create users required by SSH
+  echo 'somebody:x:1000:nixbld' >> /etc/group
+  echo 'somebody:x:1000:1000:somebody:/tmp:/bin/bash' >> /etc/passwd
+
   # The SSH keys are placed in the container by Kubernetes.
   export GIT_SSH_COMMAND="${openssh}/bin/ssh -F /var/cgit/ssh_config"
   ${git}/bin/git clone --mirror \
