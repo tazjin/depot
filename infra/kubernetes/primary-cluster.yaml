@@ -12,6 +12,10 @@ include:
     path: https-cert
     values:
       domain: www.tazj.in
+  - name: git-tazj-in-cert
+    path: https-cert
+    values:
+      domain: git.tazj.in
   - name: oslo-pub-cert
     path: https-cert
     values:
