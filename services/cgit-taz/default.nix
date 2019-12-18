@@ -10,41 +10,48 @@ with pkgs.third_party;
 
 let
   cgitConfig = writeText "cgitrc" ''
+    # Global configuration
     virtual-root=/cgit.cgi/
+    enable-http-clone=1
 
+    # Repository configuration
     repo.url=depot
-    repo.path=/home/tazjin/depot/.git
+    repo.path=/srv/git/depot
     repo.desc=tazjin's personal monorepo
+    repo.owner=tazjin <tazjin@google.com>
+    repo.clone-url=ssh://source.developers.google.com:2022/p/tazjins-infrastructure/r/depot
   '';
-  cgitPatch = writeText "cgit_config.patch" ''
-    diff --git a/Makefile b/Makefile
-    index 05ea71f..0df886e 100644
-    --- a/Makefile
-    +++ b/Makefile
-    @@ -4,7 +4,7 @@ CGIT_VERSION = v1.2.1
-     CGIT_SCRIPT_NAME = cgit.cgi
-     CGIT_SCRIPT_PATH = /var/www/htdocs/cgit
-     CGIT_DATA_PATH = $(CGIT_SCRIPT_PATH)
-    -CGIT_CONFIG = /etc/cgitrc
-    +CGIT_CONFIG = ${cgitConfig}
-     CACHE_ROOT = /var/cache/cgit
-     prefix = /usr/local
-     libdir = $(prefix)/lib
-  '';
-  cgitWithConfig = cgit.overrideAttrs(old: {
-    patches = old.patches ++ [ cgitPatch ];
-  });
   thttpdConfig = writeText "thttpd.conf" ''
     port=8080
-    dir=${cgitWithConfig}/cgit
+    dir=${cgit}/cgit
     nochroot
     novhost
     logfile=/dev/stdout
     cgipat=**.cgi
   '';
-  # Patched version of thttpd that serves cgit.cgi as the index
+
+  # Patched version of thttpd that serves cgit.cgi as the index and
+  # sets the environment variable for pointing cgit at the correct
+  # configuration.
+  #
+  # Things are done this way because recompilation of thttpd is much
+  # faster than cgit and I don't want to wait long when iterating on
+  # config.
+  thttpdConfigPatch = writeText "thttpd_cgit_conf.patch" ''
+    diff --git a/libhttpd.c b/libhttpd.c
+    index c6b1622..eef4b73 100644
+    --- a/libhttpd.c
+    +++ b/libhttpd.c
+    @@ -3055,4 +3055,6 @@ make_envp( httpd_conn* hc )
+
+         envn = 0;
+    +    // force cgit to load the correct configuration
+    +    envp[envn++] = "CGIT_CONFIG=${cgitConfig}";
+         envp[envn++] = build_env( "PATH=%s", CGI_PATH );
+     #ifdef CGI_LD_LIBRARY_PATH
+  '';
   thttpdCgit = thttpd.overrideAttrs(old: {
-    patches = [ ./cgit_idx.patch ];
+    patches = [ ./cgit_idx.patch thttpdConfigPatch ];
   });
 in writeShellScriptBin "cgit-launch" ''
   exec ${thttpdCgit}/bin/thttpd -D -C ${thttpdConfig}
