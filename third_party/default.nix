@@ -51,6 +51,8 @@ let
       llvmPackages
       makeWrapper
       mdbook
+      moreutils
+      nano
       nix
       notmuch
       openssh

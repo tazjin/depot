@@ -59,10 +59,13 @@ in fix(self: {
 # with Nixery.
 // {
   inherit (self.third_party)
+    bashInteractive
     cacert
     coreutils
     iana-etc
     jq
+    moreutils
+    nano
     openssl
     runCommand
     symlinkJoin
