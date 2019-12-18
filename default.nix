@@ -54,4 +54,17 @@ in fix(self: {
 # This can be used to move things from third_party into the top-level, too (such
 # as `lib`).
 // (readTree' self.config) ./overrides
-)
+
+# These packages must be exposed at the top-level for compatibility
+# with Nixery.
+// {
+  inherit (self.third_party)
+    cacert
+    coreutils
+    iana-etc
+    jq
+    openssl
+    runCommand
+    symlinkJoin
+    writeText;
+})
