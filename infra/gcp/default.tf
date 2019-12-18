@@ -27,6 +27,7 @@ resource "google_project_services" "primary" {
     "bigquerystorage.googleapis.com",
     "cloudapis.googleapis.com",
     "clouddebugger.googleapis.com",
+    "cloudfunctions.googleapis.com",
     "cloudkms.googleapis.com",
     "cloudtrace.googleapis.com",
     "compute.googleapis.com",
@@ -40,6 +41,7 @@ resource "google_project_services" "primary" {
     "monitoring.googleapis.com",
     "oslogin.googleapis.com",
     "pubsub.googleapis.com",
+    "run.googleapis.com",
     "servicemanagement.googleapis.com",
     "serviceusage.googleapis.com",
     "sourcerepo.googleapis.com",
@@ -100,4 +102,9 @@ resource "google_kms_crypto_key" "kontemplate_key" {
   lifecycle {
     prevent_destroy = true
   }
+}
+
+# Configure the git repository that contains everything.
+resource "google_sourcerepo_repository" "depot" {
+  name = "depot"
 }
