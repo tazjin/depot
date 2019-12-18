@@ -19,7 +19,7 @@ let
     repo.path=/srv/git/depot
     repo.desc=tazjin's personal monorepo
     repo.owner=tazjin <tazjin@google.com>
-    repo.clone-url=ssh://source.developers.google.com:2022/p/tazjins-infrastructure/r/depot
+    repo.clone-url=https://git.tazj.in ssh://source.developers.google.com:2022/p/tazjins-infrastructure/r/depot
   '';
   thttpdConfig = writeText "thttpd.conf" ''
     port=8080
@@ -54,5 +54,13 @@ let
     patches = [ ./cgit_idx.patch thttpdConfigPatch ];
   });
 in writeShellScriptBin "cgit-launch" ''
+  ${coreutils}/bin/mkdir -p /srv/git
+
+  # The cookie file is placed in the correct location by Kubernetes, based on
+  # information stored in a secret.
+  ${git}/bin/git clone --mirror -c http.cookieFile=/var/cgit/gitcookies \
+    https://source.developers.google.com/p/tazjins-infrastructure/r/depot \
+    /srv/git/depot
+
   exec ${thttpdCgit}/bin/thttpd -D -C ${thttpdConfig}
 # ''
