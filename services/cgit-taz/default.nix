@@ -16,7 +16,7 @@ let
 
     # Repository configuration
     repo.url=depot
-    repo.path=/srv/git/depot
+    repo.path=/git/depot
     repo.desc=tazjin's personal monorepo
     repo.owner=tazjin <tazjin@google.com>
     repo.clone-url=https://git.tazj.in ssh://source.developers.google.com:2022/p/tazjins-infrastructure/r/depot
@@ -54,18 +54,9 @@ let
     patches = [ ./cgit_idx.patch thttpdConfigPatch ];
   });
 in writeShellScriptBin "cgit-launch" ''
-  ${coreutils}/bin/mkdir -p /srv/git
-
-  # Create users required by SSH
-  echo 'somebody:x:1000:nixbld' >> /etc/group
-  echo 'somebody:x:1000:1000:somebody:/tmp:/bin/bash' >> /etc/passwd
-
-  # The SSH keys are placed in the container by Kubernetes.
-  export GIT_SSH_COMMAND="${openssh}/bin/ssh -F /var/cgit/ssh_config"
-  ${git}/bin/git clone --mirror \
-    -c http.sslcainfo=${cacert}/etc/ssl/certs/ca-bundle.crt \
-    ssh://source.developers.google.com:2022/p/tazjins-infrastructure/r/depot \
-    /srv/git/depot
+  # The role account that this container is running at in Kubernetes
+  # has permission to clone the repository.
+  ${google-cloud-sdk}/bin/gcloud source repos --project tazjins-infrastructure clone depot /git/depot
 
   exec ${thttpdCgit}/bin/thttpd -D -C ${thttpdConfig}
 # ''
