@@ -58,7 +58,9 @@ in writeShellScriptBin "cgit-launch" ''
 
   # The cookie file is placed in the correct location by Kubernetes, based on
   # information stored in a secret.
-  ${git}/bin/git clone --mirror -c http.cookieFile=/var/cgit/gitcookies \
+  ${git}/bin/git clone --mirror \
+    -c http.cookieFile=/var/cgit/gitcookies \
+    -c http.sslcainfo=${cacert}/etc/ssl/certs/ca-bundle.crt \
     https://source.developers.google.com/p/tazjins-infrastructure/r/depot \
     /srv/git/depot
 
