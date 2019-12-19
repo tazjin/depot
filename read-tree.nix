@@ -5,6 +5,7 @@ let
     attrNames
     baseNameOf
     filter
+    hasAttr
     head
     length
     listToAttrs
@@ -35,9 +36,15 @@ let
       self = importWithMark path parts;
       joinChild = c: path + ("/" + c);
 
-      # Import non-empty subdirectories
+      # Import subdirectories of the current one, unless the special
+      # `.skip-subtree` file exists which makes readTree ignore the
+      # children.
+      #
+      # This file can optionally contain information on why the tree
+      # should be ignored, but its content is not inspected by
+      # readTree
       filterDir = f: dir."${f}" == "directory";
-      children = map (c: {
+      children = if hasAttr ".skip-subtree" dir then [] else map (c: {
         name = c;
         value = readTree (joinChild c) (parts ++ [ c ]);
       }) (filter filterDir (attrNames dir));
