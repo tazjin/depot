@@ -1,4 +1,4 @@
-;;; nix-util.el --- Utilities for dealing with Nix code. -*- lexical-binding: true; -*-
+;;; nix-util.el --- Utilities for dealing with Nix code. -*- lexical-binding: t; -*-
 ;;
 ;; Copyright (C) 2019 Google Inc.
 ;;

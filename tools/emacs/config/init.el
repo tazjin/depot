@@ -168,6 +168,7 @@
   :hook ((nix-mode . (lambda ()
                        (setq indent-line-function #'nix-indent-line)))))
 
+(use-package nix-util)
 (use-package nginx-mode)
 (use-package rust-mode)
 (use-package terraform-mode)
