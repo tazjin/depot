@@ -171,7 +171,11 @@
 (use-package nix-util)
 (use-package nginx-mode)
 (use-package rust-mode)
-(use-package telega :config (telega-mode-line-mode 1))
+
+(use-package telega
+  :bind (:map global-map ("s-t" . telega))
+  :config (telega-mode-line-mode 1))
+
 (use-package terraform-mode)
 (use-package toml-mode)
 (use-package web-mode)
