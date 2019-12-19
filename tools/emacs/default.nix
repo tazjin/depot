@@ -83,8 +83,12 @@ let
   ]) ++
 
   # Custom packages
-  [ carp-mode localPackages.dottime localPackages.term-switcher ]
-  )));
+  (with localPackages; [
+    carp-mode
+    dottime
+    nix-util
+    term-switcher
+  ]))));
 in lib.fix(self: l: f: third_party.writeShellScriptBin "tazjins-emacs" ''
   exec ${tazjinsEmacs f}/bin/emacs \
     --debug-init \
