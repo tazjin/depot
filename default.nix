@@ -70,4 +70,13 @@ in fix(self: {
     runCommand
     symlinkJoin
     writeText;
-})
+}
+
+# These packages must be exposed for compatibility with buildGo.
+#
+# Despite buildGo being tracked in this tree, I want it to be possible
+# for external users to import it with the default nixpkgs layout.
+// {
+  inherit (self.third_party) go ripgrep;
+}
+)
