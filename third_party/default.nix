@@ -69,6 +69,7 @@ let
       stdenv
       stern
       symlinkJoin
+      tdlib
       terraform_0_12
       thttpd
       tree

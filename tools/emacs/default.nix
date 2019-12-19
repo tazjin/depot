@@ -11,6 +11,9 @@ let
   localPackages = pkgs.tools.emacs-pkgs;
   emacsWithPackages = (third_party.emacsPackagesNgGen third_party.emacs26).emacsWithPackages;
 
+  # $PATH for binaries that need to be available to Emacs
+  emacsBinPath = lib.makeBinPath [ third_party.telega ];
+
   identity = x: x;
   tazjinsEmacs = pkgfun: (emacsWithPackages(epkgs: pkgfun(
   # Actual ELPA packages (the enlightened!)
@@ -68,6 +71,7 @@ let
     sly
     string-edit
     swiper
+    telega
     telephone-line
     terraform-mode
     toml-mode
@@ -90,6 +94,7 @@ let
     term-switcher
   ]))));
 in lib.fix(self: l: f: third_party.writeShellScriptBin "tazjins-emacs" ''
+  export PATH="${emacsBinPath}:$PATH"
   exec ${tazjinsEmacs f}/bin/emacs \
     --debug-init \
     --no-site-file \
@@ -109,6 +114,7 @@ in lib.fix(self: l: f: third_party.writeShellScriptBin "tazjins-emacs" ''
     # Build a derivation that uses the specified local Emacs (i.e.
     # built outside of Nix) instead
     withLocalEmacs = emacsBin: third_party.writeShellScriptBin "tazjins-emacs" ''
+      export PATH="${emacsBinPath}:$PATH"
       export EMACSLOADPATH="${(tazjinsEmacs f).deps}/share/emacs/site-lisp:"
       exec ${emacsBin} \
         --debug-init \
