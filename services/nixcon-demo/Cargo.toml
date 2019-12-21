@@ -1,8 +1,0 @@
-[package]
-name = "nixcon-demo"
-version = "0.1.0"
-authors = ["Vincent Ambo <tazjin@google.com>"]
-edition = "2018"
-
-[dependencies]
-rouille = "3.0"

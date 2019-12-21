@@ -1,15 +1,13 @@
-depot
-=====
+**depot** is my personal monorepo of my tools, services and configuration.
 
-[![Build Status](https://travis-ci.org/tazjin/depot.svg?branch=master)](https://travis-ci.org/tazjin/depot)
+Its **has moved** [git.tazj.in][]. At this point most of my software (unless it
+lives in other organisations) is no longer developed on GitHub.
 
-This repository is the [monorepo][] for my personal infrastructure. It is built
-using [Nix][] and services are deployed on Google Cloud Platform using
-[Nixery][].
+You probably want to look at the new [about page][https://git.tazj.in/about/].
 
-Everything in here is MIT-licensed unless otherwise indicated in a service
-subfolder.
+If you are looking for an issue tracker, issues and patches for my projects are
+tracked at [depot@tazj.in][] (which is also the email address that you can send
+issues and patches to).
 
-[monorepo]: https://en.wikipedia.org/wiki/Monorepo
-[Nix]: https://nixos.org/nix
-[Nixery]: https://github.com/google/nixery
+[git.tazj.in]: https://git.tazj.in/
+[depot@tazj.in]: https://groups.google.com/a/tazj.in/forum/?hl=en#!forum/depot

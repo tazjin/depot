@@ -1,9 +1,0 @@
-language: nix
-nix: 2.2.2
-env:
-  - NIX_PATH="nixpkgs=${TRAVIS_BUILD_DIR}"
-before_script:
-  - nix-env -f '<nixpkgs>' -iA third_party.cachix
-  - cachix use tazjin
-script:
-  - nix-build ci-builds.nix | cachix push tazjin

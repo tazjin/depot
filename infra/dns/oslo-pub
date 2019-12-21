@@ -1,8 +1,0 @@
-;; Do not delete these
-oslo.pub. 21600 IN NS ns-cloud-c1.googledomains.com.
-oslo.pub. 21600 IN NS ns-cloud-c2.googledomains.com.
-oslo.pub. 21600 IN NS ns-cloud-c3.googledomains.com.
-oslo.pub. 21600 IN NS ns-cloud-c4.googledomains.com.
-oslo.pub. 21600 IN SOA ns-cloud-c1.googledomains.com. cloud-dns-hostmaster.google.com. 4 21600 3600 1209600 300
-
-oslo.pub. 60 IN A 46.21.106.241
